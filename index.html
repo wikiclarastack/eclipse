@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>EclipseXploits Studio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -31,6 +31,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
@@ -40,13 +41,11 @@
             line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
         }
         
-        /* Anti DevTools Styles */
+        /* Anti DevTools */
         #devtools-detected {
             display: none;
             position: fixed;
@@ -54,43 +53,29 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #0f172a, #1e0f3a);
-            z-index: 999999;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 99999;
             justify-content: center;
             align-items: center;
             text-align: center;
             padding: 20px;
         }
         
-        #devtools-detected h1 {
-            color: var(--danger);
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
-        }
-        
-        #devtools-detected p {
-            color: var(--gray);
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            max-width: 500px;
-        }
-        
         .container {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 15px;
         }
         
-        /* Header */
+        /* Header Mobile Friendly */
         header {
-            background: rgba(15, 23, 42, 0.95);
+            background: rgba(15, 23, 42, 0.98);
             backdrop-filter: blur(10px);
             position: fixed;
             width: 100%;
             z-index: 1000;
-            padding: 15px 0;
+            padding: 12px 0;
             border-bottom: 1px solid rgba(109, 40, 217, 0.3);
         }
         
@@ -98,26 +83,38 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
         
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             font-weight: 700;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: var(--light);
             text-decoration: none;
+            white-space: nowrap;
         }
         
         .logo-icon {
             color: var(--accent);
+            font-size: 1.3rem;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
         }
         
         .nav-links {
             display: flex;
-            gap: 25px;
+            gap: 15px;
             align-items: center;
         }
         
@@ -125,109 +122,69 @@
             color: var(--light);
             text-decoration: none;
             font-weight: 500;
-            padding: 8px 0;
-            position: relative;
+            font-size: 0.9rem;
+            padding: 6px 10px;
+            border-radius: 8px;
             transition: var(--transition);
+            white-space: nowrap;
         }
         
         .nav-link:hover {
+            background: rgba(109, 40, 217, 0.1);
             color: var(--accent);
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent);
-            transition: var(--transition);
-        }
-        
-        .nav-link:hover::after {
-            width: 100%;
         }
         
         .user-section {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
         
         .user-avatar {
-            width: 45px;
-            height: 45px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: linear-gradient(45deg, var(--primary), var(--accent));
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
-            position: relative;
-            transition: var(--transition);
+            flex-shrink: 0;
         }
         
-        .user-avatar:hover {
-            transform: scale(1.05);
-        }
-        
-        .user-avatar.online::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 12px;
-            height: 12px;
-            background: var(--success);
-            border-radius: 50%;
-            border: 2px solid var(--dark);
-        }
-        
+        /* Main Content */
         main {
-            padding-top: 80px;
-            min-height: calc(100vh - 200px);
+            padding-top: 70px;
+            min-height: calc(100vh - 160px);
         }
         
         .hero {
             text-align: center;
-            padding: 100px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 30% 20%, rgba(109, 40, 217, 0.2) 0%, transparent 50%);
-            z-index: -1;
+            padding: 40px 0;
         }
         
         .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
+            font-size: 2rem;
+            margin-bottom: 15px;
             background: linear-gradient(45deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: fadeInUp 0.8s ease;
+            line-height: 1.2;
         }
         
         .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 40px;
+            font-size: 1rem;
+            max-width: 100%;
+            margin: 0 auto 30px;
             color: var(--gray);
-            animation: fadeInUp 0.8s ease 0.2s both;
+            padding: 0 10px;
         }
         
         .btn {
-            padding: 14px 32px;
+            padding: 12px 24px;
             border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
@@ -235,36 +192,20 @@
             font-family: 'Poppins', sans-serif;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: 0.5s;
-        }
-        
-        .btn:hover::before {
-            left: 100%;
+            gap: 8px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            white-space: nowrap;
         }
         
         .btn-primary {
             background: linear-gradient(45deg, var(--primary), var(--primary-dark));
             color: white;
-            box-shadow: 0 4px 15px rgba(109, 40, 217, 0.3);
         }
         
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(109, 40, 217, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(109, 40, 217, 0.3);
         }
         
         .btn-secondary {
@@ -273,512 +214,196 @@
             border: 2px solid var(--primary);
         }
         
-        .btn-secondary:hover {
-            background: rgba(109, 40, 217, 0.1);
-        }
-        
         .btn-danger {
             background: var(--danger);
             color: white;
         }
         
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-        }
-        
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-        
         .btn-sm {
-            padding: 8px 16px;
-            font-size: 0.9rem;
+            padding: 6px 12px;
+            font-size: 0.85rem;
         }
         
+        /* Sections */
         .section {
-            padding: 80px 0;
+            padding: 40px 0;
         }
         
         .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 40px;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
             text-align: center;
-            position: relative;
+            padding: 0 10px;
         }
         
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: 2px;
-        }
-        
-        /* Global Notification */
-        .global-notification {
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
-            border-left: 5px solid white;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.9; }
-        }
-        
-        /* Scripts Grid */
+        /* Scripts Grid - Mobile Friendly */
         .scripts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
         }
         
         .script-card {
             background: rgba(30, 41, 59, 0.7);
-            border-radius: 15px;
-            padding: 25px;
+            border-radius: 12px;
+            padding: 20px;
             border: 1px solid rgba(109, 40, 217, 0.2);
             transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .script-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(to bottom, var(--primary), var(--accent));
-        }
-        
-        .script-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border-color: var(--primary);
         }
         
         .script-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         
         .script-title {
             font-weight: 600;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--light);
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
         }
         
         .script-date {
             color: var(--gray);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             background: rgba(30, 41, 59, 0.8);
-            padding: 5px 10px;
-            border-radius: 20px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
         }
         
         .script-content {
             color: var(--gray);
-            margin-bottom: 20px;
-            line-height: 1.7;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            font-size: 0.9rem;
         }
         
         .script-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 8px;
+            margin-top: 12px;
             flex-wrap: wrap;
-        }
-        
-        .loadstring-generator {
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 30px;
-        }
-        
-        .loadstring-code {
-            background: rgba(15, 23, 42, 0.8);
-            padding: 15px;
-            border-radius: 10px;
-            font-family: 'Roboto Mono', monospace;
-            margin: 15px 0;
-            word-break: break-all;
-            position: relative;
-        }
-        
-        .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 5px 10px;
-            background: var(--primary);
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            font-size: 0.8rem;
         }
         
         /* Admin Panel */
         .admin-panel {
             background: rgba(30, 41, 59, 0.8);
-            border-radius: 15px;
-            padding: 30px;
-            margin-top: 40px;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
             border: 2px solid var(--primary);
         }
         
         .admin-tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
             flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
         }
         
         .admin-tab {
-            padding: 12px 24px;
+            padding: 10px 15px;
             background: rgba(15, 23, 42, 0.5);
             border: none;
             color: var(--light);
             border-radius: 8px;
             cursor: pointer;
             transition: var(--transition);
-            font-weight: 500;
-        }
-        
-        .admin-tab:hover {
-            background: rgba(109, 40, 217, 0.2);
+            font-size: 0.85rem;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
         }
         
         .admin-tab.active {
             background: var(--primary);
         }
         
-        .admin-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .admin-content.active {
-            display: block;
-        }
-        
-        .user-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 300px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-        
-        .user-item {
-            background: rgba(15, 23, 42, 0.5);
-            padding: 15px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
         /* Chat Section */
         .chat-section {
             background: rgba(30, 41, 59, 0.7);
-            border-radius: 15px;
+            border-radius: 12px;
             overflow: hidden;
-            margin-top: 40px;
-            border: 1px solid rgba(109, 40, 217, 0.3);
+            margin-top: 30px;
         }
         
         .chat-header {
             background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-            padding: 20px;
+            padding: 15px;
             font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            font-size: 0.95rem;
         }
         
-        .chat-actions {
+        .chat-messages {
+            height: 300px;
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.5);
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .message {
+            margin-bottom: 12px;
             display: flex;
             gap: 10px;
         }
         
-        .chat-messages {
-            height: 400px;
-            overflow-y: auto;
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.5);
-        }
-        
-        .message {
-            margin-bottom: 15px;
-            display: flex;
-            gap: 12px;
-            position: relative;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .message.admin {
-            border-left: 3px solid var(--accent);
-            padding-left: 5px;
-        }
-        
-        .message.banned {
-            opacity: 0.5;
-            filter: grayscale(1);
-        }
-        
-        .message.reply {
-            margin-left: 40px;
-            position: relative;
-        }
-        
-        .message.reply::before {
-            content: '↳';
-            position: absolute;
-            left: -25px;
-            color: var(--accent);
-        }
-        
         .message-avatar {
-            width: 40px;
-            height: 40px;
-            min-width: 40px;
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
             border-radius: 50%;
             background: linear-gradient(45deg, var(--primary), var(--accent));
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-        
-        .message-avatar.admin {
-            background: linear-gradient(45deg, var(--accent), #d97706);
+            font-size: 0.85rem;
         }
         
         .message-content {
             background: rgba(30, 41, 59, 0.8);
-            border-radius: 12px;
-            padding: 12px 15px;
-            max-width: 70%;
-            position: relative;
-            border: 1px solid rgba(109, 40, 217, 0.1);
-        }
-        
-        .message-content.admin {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(30, 41, 59, 0.8));
-            border-color: var(--accent);
-        }
-        
-        .message-sender {
-            font-weight: 600;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .message-sender.admin::after {
-            content: '👑';
-            font-size: 0.9rem;
+            border-radius: 10px;
+            padding: 10px 12px;
+            max-width: 85%;
+            word-wrap: break-word;
         }
         
         .message-text {
             color: var(--light);
-            word-break: break-word;
-        }
-        
-        .message-time {
-            font-size: 0.8rem;
-            color: var(--gray);
-            margin-top: 5px;
-            text-align: right;
-        }
-        
-        .message-actions {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            display: none;
-            gap: 5px;
-            background: rgba(15, 23, 42, 0.9);
-            padding: 5px;
-            border-radius: 5px;
-        }
-        
-        .message:hover .message-actions {
-            display: flex;
-        }
-        
-        .message-action-btn {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            background: rgba(109, 40, 217, 0.3);
-            border: none;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
         }
         
         .chat-input-container {
-            padding: 20px;
+            padding: 15px;
             background: rgba(30, 41, 59, 0.9);
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            flex-direction: column;
         }
         
         .chat-input {
             flex: 1;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 8px;
             background: rgba(15, 23, 42, 0.8);
             border: 1px solid rgba(109, 40, 217, 0.3);
             color: var(--light);
             font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            transition: var(--transition);
+            font-size: 0.95rem;
+            width: 100%;
         }
         
-        .chat-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.2);
-        }
-        
-        .cooldown {
-            color: var(--accent);
-            font-size: 0.9rem;
-            text-align: center;
-            margin-top: 5px;
-        }
-        
-        /* Profile Section */
-        .profile-section {
-            display: none;
-        }
-        
-        .profile-card {
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 500px;
-            margin: 0 auto;
-            text-align: center;
-            position: relative;
-        }
-        
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            font-weight: 600;
-            margin: 0 auto 20px;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 4px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .profile-avatar:hover {
-            transform: scale(1.05);
-            border-color: var(--primary);
-        }
-        
-        .profile-banner {
-            height: 150px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 15px;
-            margin-bottom: -60px;
-            position: relative;
-        }
-        
-        .profile-banner-edit {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.5);
-            border: none;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .profile-name {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .profile-username {
-            color: var(--gray);
-            margin-bottom: 20px;
-        }
-        
-        .profile-bio {
-            color: var(--light);
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-        
-        .profile-stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 25px;
-        }
-        
-        .stat {
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--accent);
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--gray);
-        }
-        
-        /* Modals */
+        /* Modals - Mobile Friendly */
         .modal {
             display: none;
             position: fixed;
@@ -786,355 +411,262 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.9);
             z-index: 2000;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(5px);
+            padding: 15px;
+            overflow-y: auto;
         }
         
         .modal-content {
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.98));
-            border-radius: 20px;
-            width: 90%;
-            max-width: 500px;
-            padding: 40px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
             position: relative;
-            border: 1px solid rgba(109, 40, 217, 0.3);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            animation: modalIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            max-height: 85vh;
+            overflow-y: auto;
         }
         
         .close-modal {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 24px;
+            top: 15px;
+            right: 15px;
+            font-size: 22px;
             cursor: pointer;
             color: var(--gray);
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            transition: var(--transition);
-        }
-        
-        .close-modal:hover {
-            color: var(--light);
-            background: rgba(239, 68, 68, 0.1);
         }
         
         .form-group {
-            margin-bottom: 25px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--gray);
-            font-weight: 500;
+            margin-bottom: 18px;
         }
         
         .form-control {
             width: 100%;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 8px;
             background: rgba(15, 23, 42, 0.8);
             border: 1px solid rgba(100, 116, 139, 0.3);
             color: var(--light);
             font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.2);
+            font-size: 0.95rem;
         }
         
         textarea.form-control {
-            min-height: 120px;
+            min-height: 80px;
             resize: vertical;
         }
         
         .error-message {
             background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
-            padding: 12px 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
             display: none;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            font-size: 0.9rem;
         }
         
+        /* Footer */
         footer {
             background: rgba(15, 23, 42, 0.9);
-            padding: 40px 0;
+            padding: 30px 0;
             text-align: center;
             border-top: 1px solid rgba(109, 40, 217, 0.2);
         }
         
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
         /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-            
-            .scripts-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .admin-tabs {
-                flex-direction: column;
-            }
-            
-            .message-content {
-                max-width: 85%;
-            }
-            
-            .chat-input-container {
-                flex-direction: column;
-            }
-            
-            .chat-input {
-                width: 100%;
+            .mobile-menu-btn {
+                display: block;
             }
             
             .nav-links {
-                gap: 15px;
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(15, 23, 42, 0.98);
+                flex-direction: column;
+                padding: 15px;
+                gap: 10px;
+                border-top: 1px solid rgba(109, 40, 217, 0.3);
+                z-index: 1001;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+            }
+            
+            .admin-tab {
+                min-width: calc(50% - 8px);
             }
         }
         
         @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.6rem;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
             .user-section {
-                flex-direction: column;
-                align-items: flex-end;
+                flex-direction: row;
+                gap: 8px;
+            }
+        }
+        
+        /* Fix para iOS */
+        @supports (-webkit-touch-callout: none) {
+            .chat-messages {
+                height: 250px;
             }
             
-            .message-actions {
-                position: static;
-                display: flex;
-                margin-top: 10px;
-            }
-            
-            .message:hover .message-actions {
-                display: flex;
+            .modal-content {
+                max-height: 80vh;
             }
         }
     </style>
 </head>
-<body oncontextmenu="return false" onkeydown="return disableDevTools(event)">
-    <!-- Anti DevTools Screen -->
-    <div id="devtools-detected">
-        <div>
-            <h1><i class="fas fa-shield-alt"></i> PROTEÇÃO ATIVADA</h1>
-            <p>⚠️ <strong>ATENÇÃO:</strong> Tentativa de acesso às ferramentas de desenvolvedor detectada!</p>
-            <p>Seu IP foi registrado e esta ação será reportada.</p>
-            <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
-                <button onclick="location.reload()" class="btn btn-primary">
-                    <i class="fas fa-redo"></i> Voltar ao site
-                </button>
-                <button onclick="closeTab()" class="btn btn-danger">
-                    <i class="fas fa-times"></i> Fechar página
-                </button>
-            </div>
-        </div>
-    </div>
-
+<body>
     <!-- Header -->
     <header>
         <div class="container">
             <nav>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
                 <a href="#" class="logo">
                     <i class="fas fa-meteor logo-icon"></i>
                     EclipseXploits
                 </a>
                 
-                <div class="nav-links">
+                <div class="nav-links" id="navLinks">
                     <a href="#home" class="nav-link">Home</a>
                     <a href="#scripts" class="nav-link">Scripts</a>
-                    <a href="#chat" class="nav-link" id="chatLink">Chat Global</a>
-                    <a href="#profile" class="nav-link" id="profileLink" style="display: none;">
-                        <i class="fas fa-user"></i> Perfil
-                    </a>
+                    <a href="#chat" class="nav-link" id="chatLink">Chat</a>
                 </div>
                 
                 <div class="user-section">
-                    <button id="loginBtn" class="btn btn-secondary">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </button>
+                    <button id="loginBtn" class="btn btn-secondary">Login</button>
                     <div id="userAvatar" class="user-avatar" style="display: none;"></div>
                 </div>
             </nav>
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Main -->
     <main>
-        <!-- Global Notification -->
-        <div id="globalNotification" style="display: none;"></div>
-
-        <!-- Home Section -->
         <section id="home" class="hero">
             <div class="container">
                 <h1>EclipseXploits Studio</h1>
-                <p>Desenvolvimento de scripts premium e automações de alta performance</p>
+                <p>Scripts premium e automações de alta performance</p>
                 <button id="getStartedBtn" class="btn btn-primary">
-                    <i class="fas fa-rocket"></i> Começar Agora
+                    <i class="fas fa-rocket"></i> Começar
                 </button>
             </div>
         </section>
 
-        <!-- Scripts Section -->
         <section id="scripts" class="section">
             <div class="container">
-                <h2 class="section-title">Scripts Disponíveis</h2>
+                <h2 class="section-title">Scripts</h2>
                 <div id="scriptsList" class="scripts-grid">
-                    <!-- Scripts serão carregados aqui -->
+                    <!-- Scripts carregados aqui -->
                 </div>
                 
-                <!-- Loadstring Generator -->
-                <div class="loadstring-generator">
-                    <h3 style="margin-bottom: 15px; color: var(--accent);">
-                        <i class="fas fa-code"></i> Gerador de Loadstring
-                    </h3>
-                    <div class="form-group">
-                        <label>Cole a URL do seu script:</label>
-                        <input type="text" id="scriptUrl" class="form-control" placeholder="https://seusite.com/script.lua">
-                    </div>
-                    <div class="loadstring-code">
-                        loadstring(game:HttpGet("URL_DO_SCRIPT"))()
-                        <button onclick="copyLoadstring()" class="copy-btn">
-                            <i class="fas fa-copy"></i> Copiar
-                        </button>
-                    </div>
-                    <button onclick="generateLoadstring()" class="btn btn-primary">
-                        <i class="fas fa-magic"></i> Gerar Loadstring
-                    </button>
-                </div>
-                
-                <!-- Admin Panel -->
                 <div id="adminPanel" class="admin-panel" style="display: none;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
-                        <h3 style="margin: 0; color: var(--accent);">
-                            <i class="fas fa-crown"></i> Painel de Administração
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                        <h3 style="margin: 0; color: var(--accent); font-size: 1.2rem;">
+                            <i class="fas fa-crown"></i> Painel Admin
                         </h3>
                         <button id="addScriptBtn" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Novo Script
                         </button>
                     </div>
                     
-                    <!-- Admin Tabs -->
                     <div class="admin-tabs">
                         <button class="admin-tab active" data-tab="scripts-tab">Scripts</button>
                         <button class="admin-tab" data-tab="users-tab">Usuários</button>
-                        <button class="admin-tab" data-tab="chat-tab">Moderação Chat</button>
                         <button class="admin-tab" data-tab="notifications-tab">Notificações</button>
                     </div>
                     
-                    <!-- Admin Content -->
                     <div class="admin-content active" id="scripts-tab">
                         <div id="adminScriptsList" class="scripts-grid"></div>
                     </div>
                     
                     <div class="admin-content" id="users-tab">
-                        <h4 style="margin-bottom: 15px;">Gerenciar Usuários</h4>
-                        <div class="user-list" id="userList">
-                            <!-- Usuários carregados aqui -->
-                        </div>
-                    </div>
-                    
-                    <div class="admin-content" id="chat-tab">
-                        <h4 style="margin-bottom: 15px;">Moderação do Chat</h4>
-                        <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-                            <button onclick="clearAllChat()" class="btn btn-danger">
-                                <i class="fas fa-trash"></i> Limpar Chat
-                            </button>
-                            <button onclick="showBanUserModal()" class="btn btn-warning">
-                                <i class="fas fa-ban"></i> Banir Usuário
-                            </button>
-                            <button onclick="showTimeoutModal()" class="btn btn-secondary">
-                                <i class="fas fa-clock"></i> Timeout
-                            </button>
-                        </div>
-                        <div id="chatModerationList"></div>
+                        <h4 style="margin-bottom: 15px; font-size: 1.1rem;">Usuários</h4>
+                        <div id="userList" style="max-height: 200px; overflow-y: auto;"></div>
                     </div>
                     
                     <div class="admin-content" id="notifications-tab">
-                        <h4 style="margin-bottom: 15px;">Notificações Globais</h4>
+                        <h4 style="margin-bottom: 15px; font-size: 1.1rem;">Notificação</h4>
                         <form id="notificationForm">
                             <div class="form-group">
-                                <label>Título da Notificação</label>
-                                <input type="text" id="notificationTitle" class="form-control" required>
+                                <input type="text" id="notificationTitle" class="form-control" placeholder="Título" required>
                             </div>
                             <div class="form-group">
-                                <label>Mensagem</label>
-                                <textarea id="notificationMessage" class="form-control" rows="3" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Tipo</label>
-                                <select id="notificationType" class="form-control">
-                                    <option value="info">Informação</option>
-                                    <option value="warning">Aviso</option>
-                                    <option value="danger">Importante</option>
-                                    <option value="success">Sucesso</option>
-                                </select>
+                                <textarea id="notificationMessage" class="form-control" placeholder="Mensagem" rows="3" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-bullhorn"></i> Enviar Notificação
+                                <i class="fas fa-bullhorn"></i> Enviar
                             </button>
                         </form>
                     </div>
                 </div>
+                
+                <!-- Loadstring Generator -->
+                <div style="background: rgba(30, 41, 59, 0.7); border-radius: 12px; padding: 20px; margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: var(--accent);">
+                        <i class="fas fa-code"></i> Gerar Loadstring
+                    </h3>
+                    <div class="form-group">
+                        <input type="text" id="scriptUrl" class="form-control" placeholder="URL do script">
+                    </div>
+                    <div style="background: rgba(15, 23, 42, 0.8); padding: 12px; border-radius: 8px; margin: 12px 0; position: relative;">
+                        <code id="loadstringOutput" style="font-family: 'Roboto Mono', monospace; font-size: 0.85rem; word-break: break-all;">loadstring(game:HttpGet("URL"))()</code>
+                        <button onclick="copyLoadstring()" style="position: absolute; top: 8px; right: 8px; background: var(--primary); border: none; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <button onclick="generateLoadstring()" class="btn btn-primary">
+                        <i class="fas fa-magic"></i> Gerar
+                    </button>
+                </div>
             </div>
         </section>
 
-        <!-- Chat Section -->
         <section id="chatSection" class="section" style="display: none;">
             <div class="container">
                 <h2 class="section-title">Chat Global</h2>
                 <div class="chat-section">
                     <div class="chat-header">
-                        <div>
-                            <i class="fas fa-comments"></i> Chat da Comunidade
-                            <span style="font-size: 0.9rem; color: rgba(255,255,255,0.7); margin-left: 10px;">
-                                (Todos podem enviar mensagens)
-                            </span>
-                        </div>
-                        <div class="chat-actions" id="chatAdminActions" style="display: none;">
-                            <button onclick="clearChat()" class="btn btn-sm btn-danger">
-                                <i class="fas fa-trash"></i> Limpar
-                            </button>
-                        </div>
+                        <i class="fas fa-comments"></i> Chat (cooldown: 5s)
                     </div>
                     
                     <div id="chatMessages" class="chat-messages">
@@ -1143,358 +675,91 @@
                     
                     <div class="chat-input-container">
                         <input type="text" id="chatInput" class="chat-input" placeholder="Digite sua mensagem...">
-                        <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
                             <button id="sendMessageBtn" class="btn btn-primary">
                                 <i class="fas fa-paper-plane"></i> Enviar
                             </button>
-                            <div id="cooldownTimer" class="cooldown"></div>
+                            <div id="cooldownTimer" style="color: var(--accent); font-size: 0.8rem;"></div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Profile Section -->
-        <section id="profileSection" class="section" style="display: none;">
-            <div class="container">
-                <h2 class="section-title">Meu Perfil</h2>
-                <div class="profile-card">
-                    <div class="profile-banner" id="profileBanner">
-                        <button class="profile-banner-edit" onclick="editBanner()" style="display: none;">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </div>
-                    <div class="profile-avatar" id="profileAvatar" onclick="editAvatar()">
-                        <!-- Avatar será carregado aqui -->
-                    </div>
-                    <h2 class="profile-name" id="profileName">Carregando...</h2>
-                    <div class="profile-username" id="profileUsername">@usuario</div>
-                    <div class="profile-bio" id="profileBio">
-                        Esta é sua biografia. Clique em editar para alterar.
-                    </div>
-                    <div class="profile-stats">
-                        <div class="stat">
-                            <div class="stat-value" id="statScripts">0</div>
-                            <div class="stat-label">Scripts</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value" id="statMessages">0</div>
-                            <div class="stat-label">Mensagens</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value" id="statDays">0</div>
-                            <div class="stat-label">Dias</div>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button onclick="editProfile()" class="btn btn-primary">
-                            <i class="fas fa-edit"></i> Editar Perfil
-                        </button>
-                        <button onclick="showSettings()" class="btn btn-secondary">
-                            <i class="fas fa-cog"></i> Configurações
-                        </button>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
-            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-                <div class="logo">
+            <div style="margin-bottom: 15px;">
+                <div class="logo" style="justify-content: center;">
                     <i class="fas fa-meteor logo-icon"></i>
                     EclipseXploits
                 </div>
             </div>
-            <p style="color: var(--gray); margin-bottom: 20px;">
-                © 2023 EclipseXploits Studio. Protegido por sistemas de segurança avançados.
-            </p>
-            <div style="color: var(--gray); font-size: 0.9rem;">
-                <i class="fas fa-shield-alt"></i> Sistema anti-devtools ativo | 
-                <i class="fas fa-user-secret"></i> IDs únicos gerados | 
-                <i class="fas fa-bell-slash"></i> Spam controlado
-            </div>
+            <p style="color: var(--gray); font-size: 0.9rem;">© 2023 EclipseXploits Studio</p>
         </div>
     </footer>
 
-    <!-- Modals -->
+    <!-- Login Modal -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <div class="close-modal" id="closeModal">&times;</div>
-            <h2 style="text-align: center; margin-bottom: 30px; color: var(--accent);">
-                <i class="fas fa-sign-in-alt"></i> Acesso EclipseXploits
+            <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.4rem;">
+                <i class="fas fa-sign-in-alt"></i> Login
             </h2>
             
             <div id="errorMessage" class="error-message"></div>
             
             <form id="loginForm">
                 <div class="form-group">
-                    <label><i class="fas fa-envelope"></i> E-mail</label>
-                    <input type="email" id="email" class="form-control" required>
+                    <input type="email" id="email" class="form-control" placeholder="E-mail" required>
                 </div>
                 
                 <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Senha</label>
-                    <input type="password" id="password" class="form-control" required>
+                    <input type="password" id="password" class="form-control" placeholder="Senha" required>
                 </div>
                 
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 15px;">
                     <i class="fas fa-sign-in-alt"></i> Entrar
                 </button>
                 
-                <div style="text-align: center; margin: 20px 0;">
-                    <div style="color: var(--gray); margin-bottom: 10px;">Ou entre com</div>
-                    <button type="button" id="googleLoginBtn" class="btn btn-secondary" style="width: 100%;">
-                        <i class="fab fa-google"></i> Google
-                    </button>
-                </div>
-                
-                <div style="text-align: center; margin-top: 20px;">
-                    <a href="#" id="switchToRegister" style="color: var(--primary); text-decoration: none;">
-                        Não tem conta? <strong>Registre-se aqui</strong>
+                <div style="text-align: center;">
+                    <a href="#" id="switchToRegister" style="color: var(--primary); font-size: 0.9rem;">
+                        Não tem conta? Registrar
                     </a>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Add Script Modal -->
     <div id="addScriptModal" class="modal">
         <div class="modal-content">
             <div class="close-modal" id="closeScriptModal">&times;</div>
-            <h2 style="text-align: center; color: var(--accent);">
+            <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.4rem;">
                 <i class="fas fa-code"></i> Novo Script
             </h2>
             
             <form id="addScriptForm">
                 <div class="form-group">
-                    <label>Título do Script</label>
-                    <input type="text" id="scriptTitle" class="form-control" required>
+                    <input type="text" id="scriptTitle" class="form-control" placeholder="Título" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>Descrição</label>
-                    <textarea id="scriptDescription" class="form-control" required></textarea>
+                    <textarea id="scriptDescription" class="form-control" placeholder="Descrição" rows="2" required></textarea>
                 </div>
                 
                 <div class="form-group">
-                    <label>Código (Lua/Python/JavaScript)</label>
-                    <textarea id="scriptCode" class="form-control" rows="8" required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label>URL do Script (para loadstring)</label>
-                    <input type="text" id="scriptURL" class="form-control" placeholder="https://seusite.com/script.lua">
+                    <textarea id="scriptCode" class="form-control" placeholder="Código do script" rows="4" required></textarea>
                 </div>
                 
                 <button type="submit" class="btn btn-primary" style="width: 100%;">
-                    <i class="fas fa-upload"></i> Publicar Script
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <div id="editProfileModal" class="modal">
-        <div class="modal-content">
-            <div class="close-modal" id="closeProfileModal">&times;</div>
-            <h2 style="text-align: center; color: var(--accent);">
-                <i class="fas fa-user-edit"></i> Editar Perfil
-            </h2>
-            
-            <form id="editProfileForm">
-                <div class="form-group">
-                    <label>Nome de Exibição</label>
-                    <input type="text" id="editDisplayName" class="form-control">
-                </div>
-                
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="editUsername" class="form-control">
-                </div>
-                
-                <div class="form-group">
-                    <label>Biografia</label>
-                    <textarea id="editBio" class="form-control" rows="4"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label>Cor do Avatar (código hex)</label>
-                    <input type="color" id="editAvatarColor" class="form-control" value="#6d28d9">
-                </div>
-                
-                <button type="submit" class="btn btn-primary" style="width: 100%;">
-                    <i class="fas fa-save"></i> Salvar Alterações
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <div id="banUserModal" class="modal">
-        <div class="modal-content">
-            <div class="close-modal" id="closeBanModal">&times;</div>
-            <h2 style="text-align: center; color: var(--danger);">
-                <i class="fas fa-ban"></i> Banir Usuário
-            </h2>
-            
-            <form id="banUserForm">
-                <div class="form-group">
-                    <label>ID do Usuário</label>
-                    <input type="text" id="banUserId" class="form-control" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Motivo</label>
-                    <select id="banReason" class="form-control">
-                        <option value="spam">Spam no chat</option>
-                        <option value="flood">Flood</option>
-                        <option value="offensive">Linguagem ofensiva</option>
-                        <option value="hacking">Tentativa de hack</option>
-                        <option value="other">Outro</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Duração</label>
-                    <select id="banDuration" class="form-control">
-                        <option value="1h">1 Hora</option>
-                        <option value="1d">1 Dia</option>
-                        <option value="7d">7 Dias</option>
-                        <option value="30d">30 Dias</option>
-                        <option value="permanent">Permanente</option>
-                    </select>
-                </div>
-                
-                <button type="submit" class="btn btn-danger" style="width: 100%;">
-                    <i class="fas fa-gavel"></i> Aplicar Ban
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <div id="replyModal" class="modal">
-        <div class="modal-content">
-            <div class="close-modal" id="closeReplyModal">&times;</div>
-            <h2 style="text-align: center; color: var(--accent);">
-                <i class="fas fa-reply"></i> Responder Mensagem
-            </h2>
-            
-            <div style="background: rgba(30, 41, 59, 0.5); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-                <div id="replyToUser" style="font-weight: 600; color: var(--accent);"></div>
-                <div id="replyToMessage" style="color: var(--light);"></div>
-            </div>
-            
-            <form id="replyForm">
-                <div class="form-group">
-                    <label>Sua resposta</label>
-                    <textarea id="replyMessage" class="form-control" rows="3" required></textarea>
-                </div>
-                
-                <button type="submit" class="btn btn-primary" style="width: 100%;">
-                    <i class="fas fa-paper-plane"></i> Enviar Resposta
+                    <i class="fas fa-upload"></i> Publicar
                 </button>
             </form>
         </div>
     </div>
 
     <script>
-        // ==============================================
-        // ANTI DEVTOOLS PROTECTION
-        // ==============================================
-        let devToolsOpen = false;
-        let detectionCount = 0;
-        
-        function detectDevTools() {
-            const threshold = 160; // Diferença entre outer e inner
-            const widthDiff = window.outerWidth - window.innerWidth;
-            const heightDiff = window.outerHeight - window.innerHeight;
-            
-            if (widthDiff > threshold || heightDiff > threshold) {
-                devToolsOpen = true;
-                showDevToolsWarning();
-                return;
-            }
-            
-            // Detecta F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
-            document.addEventListener('keydown', function(e) {
-                if (
-                    e.key === 'F12' ||
-                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
-                    (e.ctrlKey && e.key === 'U')
-                ) {
-                    e.preventDefault();
-                    devToolsOpen = true;
-                    showDevToolsWarning();
-                    return false;
-                }
-            });
-            
-            // Detecta clique direito
-            document.addEventListener('contextmenu', function(e) {
-                if (currentUser && isAdmin) return true; // Admins podem
-                e.preventDefault();
-                devToolsOpen = true;
-                showDevToolsWarning();
-                return false;
-            });
-            
-            // Monitora periodicamente
-            setInterval(() => {
-                if (devToolsOpen) return;
-                
-                const start = performance.now();
-                debugger;
-                const end = performance.now();
-                
-                if (end - start > 100) {
-                    devToolsOpen = true;
-                    showDevToolsWarning();
-                }
-            }, 1000);
-        }
-        
-        function showDevToolsWarning() {
-            detectionCount++;
-            if (detectionCount > 2) {
-                document.body.innerHTML = '';
-                document.body.appendChild(document.getElementById('devtools-detected'));
-                document.getElementById('devtools-detected').style.display = 'flex';
-                
-                // Report to Firebase
-                if (typeof database !== 'undefined') {
-                    database.ref('security_logs').push({
-                        type: 'devtools_detected',
-                        timestamp: Date.now(),
-                        userAgent: navigator.userAgent,
-                        url: window.location.href,
-                        count: detectionCount
-                    });
-                }
-                
-                // Bloqueia navegação
-                window.onbeforeunload = null;
-                window.location.replace('about:blank');
-            } else {
-                alert(`⚠️ ATENÇÃO: Tentativa de acesso às ferramentas de desenvolvedor detectada!\nEsta é sua tentativa ${detectionCount} de 3.`);
-            }
-        }
-        
-        function disableDevTools(e) {
-            if (
-                e.key === 'F12' ||
-                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
-                (e.ctrlKey && e.key === 'U')
-            ) {
-                e.preventDefault();
-                return false;
-            }
-        }
-        
-        function closeTab() {
-            window.open('', '_self', '');
-            window.close();
-        }
-        
         // ==============================================
         // FIREBASE CONFIGURATION (SUAS CREDENCIAIS)
         // ==============================================
@@ -1510,7 +775,14 @@
         };
 
         // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log("✅ Firebase inicializado!");
+        } catch (error) {
+            console.error("❌ Erro Firebase:", error);
+            alert("Erro ao conectar com Firebase. Verifique o console.");
+        }
+
         const auth = firebase.auth();
         const database = firebase.database();
 
@@ -1519,147 +791,93 @@
         // ==============================================
         let currentUser = null;
         let isAdmin = false;
-        let userProfile = null;
-        let userUniqueId = null;
+        let isLoginMode = true;
         let lastMessageTime = 0;
-        let cooldownActive = false;
-        const COOLDOWN_TIME = 5000; // 5 segundos
-        let replyingTo = null;
+        const COOLDOWN_TIME = 5000;
 
         // ==============================================
         // ELEMENTOS DOM
         // ==============================================
         const elements = {
-            // Anti DevTools
-            devtoolsDetected: document.getElementById('devtools-detected'),
-            
-            // Header
+            mobileMenuBtn: document.getElementById('mobileMenuBtn'),
+            navLinks: document.getElementById('navLinks'),
             loginBtn: document.getElementById('loginBtn'),
             userAvatar: document.getElementById('userAvatar'),
-            profileLink: document.getElementById('profileLink'),
-            chatLink: document.getElementById('chatLink'),
-            
-            // Modals
             loginModal: document.getElementById('loginModal'),
             closeModal: document.getElementById('closeModal'),
-            addScriptModal: document.getElementById('addScriptModal'),
-            closeScriptModal: document.getElementById('closeScriptModal'),
-            editProfileModal: document.getElementById('editProfileModal'),
-            closeProfileModal: document.getElementById('closeProfileModal'),
-            banUserModal: document.getElementById('banUserModal'),
-            closeBanModal: document.getElementById('closeBanModal'),
-            replyModal: document.getElementById('replyModal'),
-            closeReplyModal: document.getElementById('closeReplyModal'),
-            
-            // Forms
-            loginForm: document.getElementById('loginForm'),
             errorMessage: document.getElementById('errorMessage'),
-            googleLoginBtn: document.getElementById('googleLoginBtn'),
+            loginForm: document.getElementById('loginForm'),
             switchToRegister: document.getElementById('switchToRegister'),
-            addScriptForm: document.getElementById('addScriptForm'),
-            editProfileForm: document.getElementById('editProfileForm'),
-            banUserForm: document.getElementById('banUserForm'),
-            notificationForm: document.getElementById('notificationForm'),
-            replyForm: document.getElementById('replyForm'),
-            
-            // Buttons
             getStartedBtn: document.getElementById('getStartedBtn'),
-            addScriptBtn: document.getElementById('addScriptBtn'),
-            sendMessageBtn: document.getElementById('sendMessageBtn'),
-            
-            // Content
             scriptsList: document.getElementById('scriptsList'),
             adminPanel: document.getElementById('adminPanel'),
+            addScriptBtn: document.getElementById('addScriptBtn'),
+            addScriptModal: document.getElementById('addScriptModal'),
+            closeScriptModal: document.getElementById('closeScriptModal'),
+            addScriptForm: document.getElementById('addScriptForm'),
             adminScriptsList: document.getElementById('adminScriptsList'),
             chatMessages: document.getElementById('chatMessages'),
             chatInput: document.getElementById('chatInput'),
+            sendMessageBtn: document.getElementById('sendMessageBtn'),
+            chatLink: document.getElementById('chatLink'),
             chatSection: document.getElementById('chatSection'),
             cooldownTimer: document.getElementById('cooldownTimer'),
-            chatAdminActions: document.getElementById('chatAdminActions'),
-            profileSection: document.getElementById('profileSection'),
-            globalNotification: document.getElementById('globalNotification'),
-            
-            // Profile
-            profileName: document.getElementById('profileName'),
-            profileUsername: document.getElementById('profileUsername'),
-            profileBio: document.getElementById('profileBio'),
-            profileAvatar: document.getElementById('profileAvatar'),
-            profileBanner: document.getElementById('profileBanner'),
-            statScripts: document.getElementById('statScripts'),
-            statMessages: document.getElementById('statMessages'),
-            statDays: document.getElementById('statDays'),
-            
-            // Loadstring
-            scriptUrl: document.getElementById('scriptUrl')
+            scriptUrl: document.getElementById('scriptUrl'),
+            loadstringOutput: document.getElementById('loadstringOutput'),
+            userList: document.getElementById('userList'),
+            notificationForm: document.getElementById('notificationForm')
         };
 
         // ==============================================
         // INICIALIZAÇÃO
         // ==============================================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('%c⚠️ EclipseXploits Studio - Sistema Protegido ⚠️', 
-                'color: #f59e0b; font-size: 16px; font-weight: bold;');
-            console.log('%cAcesso às ferramentas de desenvolvedor é monitorado e bloqueado.',
-                'color: #ef4444;');
-            
-            // Iniciar proteção anti-devtools
-            detectDevTools();
-            
-            // Configurar eventos
             setupEventListeners();
-            
-            // Verificar autenticação
             checkAuthState();
-            
-            // Carregar dados
             loadScripts();
             loadChat();
-            loadGlobalNotification();
             
-            // Inicializar abas admin
-            initAdminTabs();
+            console.log("✅ Site carregado!");
         });
 
         // ==============================================
         // EVENT LISTENERS
         // ==============================================
         function setupEventListeners() {
-            // Login/Modal
+            // Menu Mobile
+            elements.mobileMenuBtn.addEventListener('click', () => {
+                elements.navLinks.classList.toggle('active');
+            });
+            
+            // Fechar menu ao clicar em link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    elements.navLinks.classList.remove('active');
+                });
+            });
+            
+            // Login
             elements.loginBtn.addEventListener('click', toggleLoginModal);
             elements.closeModal.addEventListener('click', () => elements.loginModal.style.display = 'none');
             elements.closeScriptModal.addEventListener('click', () => elements.addScriptModal.style.display = 'none');
-            elements.closeProfileModal.addEventListener('click', () => elements.editProfileModal.style.display = 'none');
-            elements.closeBanModal.addEventListener('click', () => elements.banUserModal.style.display = 'none');
-            elements.closeReplyModal.addEventListener('click', () => {
-                elements.replyModal.style.display = 'none';
-                replyingTo = null;
-            });
             
             // Forms
             elements.loginForm.addEventListener('submit', handleAuthSubmit);
             elements.addScriptForm.addEventListener('submit', handleAddScript);
-            elements.editProfileForm.addEventListener('submit', handleEditProfile);
-            elements.banUserForm.addEventListener('submit', handleBanUser);
             elements.notificationForm.addEventListener('submit', handleNotification);
-            elements.replyForm.addEventListener('submit', handleReply);
-            
-            // Google Login
-            elements.googleLoginBtn.addEventListener('click', signInWithGoogle);
             
             // Registrar/Login switch
             elements.switchToRegister.addEventListener('click', function(e) {
                 e.preventDefault();
+                isLoginMode = !isLoginMode;
                 const submitBtn = elements.loginForm.querySelector('button[type="submit"]');
-                const title = document.querySelector('#loginModal h2');
                 
-                if (submitBtn.textContent.includes('Entrar')) {
-                    title.innerHTML = '<i class="fas fa-user-plus"></i> Registrar';
-                    submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Criar Conta';
-                    this.innerHTML = 'Já tem conta? <strong>Faça login</strong>';
-                } else {
-                    title.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                if (isLoginMode) {
                     submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
-                    this.innerHTML = 'Não tem conta? <strong>Registre-se aqui</strong>';
+                    this.textContent = 'Não tem conta? Registrar';
+                } else {
+                    submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Criar Conta';
+                    this.textContent = 'Já tem conta? Login';
                 }
             });
             
@@ -1670,12 +888,7 @@
             
             elements.chatLink.addEventListener('click', function(e) {
                 e.preventDefault();
-                showSection('chat');
-            });
-            
-            elements.profileLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                showSection('profile');
+                showChatSection();
             });
             
             // Admin
@@ -1691,170 +904,93 @@
                 if (e.key === 'Enter') sendMessage();
             });
             
+            // Logo click - volta para home
+            document.querySelector('.logo').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('section').forEach(s => s.style.display = 'block');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
             // Fechar modais ao clicar fora
             window.addEventListener('click', function(e) {
                 if (e.target === elements.loginModal) elements.loginModal.style.display = 'none';
                 if (e.target === elements.addScriptModal) elements.addScriptModal.style.display = 'none';
-                if (e.target === elements.editProfileModal) elements.editProfileModal.style.display = 'none';
-                if (e.target === elements.banUserModal) elements.banUserModal.style.display = 'none';
-                if (e.target === elements.replyModal) elements.replyModal.style.display = 'none';
             });
             
-            // Logo click - volta para home
-            document.querySelector('.logo').addEventListener('click', function(e) {
-                e.preventDefault();
-                showSection('home');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-            
-            // Avatar click - menu do usuário
-            elements.userAvatar.addEventListener('click', showUserMenu);
-        }
-
-        function initAdminTabs() {
+            // Admin tabs
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     const tabId = this.getAttribute('data-tab');
                     
-                    // Remove active de todas as abas
-                    document.querySelectorAll('.admin-tab').forEach(t => {
-                        t.classList.remove('active');
-                    });
+                    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.admin-content').forEach(c => c.classList.remove('active'));
                     
-                    // Remove active de todos os conteúdos
-                    document.querySelectorAll('.admin-content').forEach(c => {
-                        c.classList.remove('active');
-                    });
-                    
-                    // Ativa a aba e conteúdo clicados
                     this.classList.add('active');
                     document.getElementById(tabId).classList.add('active');
                     
-                    // Carrega dados específicos da aba
-                    if (tabId === 'users-tab') {
-                        loadUserList();
-                    } else if (tabId === 'chat-tab') {
-                        loadChatModeration();
-                    }
+                    if (tabId === 'users-tab') loadUserList();
                 });
             });
         }
 
         // ==============================================
-        // NAVIGATION
-        // ==============================================
-        function showSection(section) {
-            // Esconde todas as seções
-            document.querySelectorAll('section').forEach(sec => {
-                sec.style.display = 'none';
-            });
-            
-            // Mostra a seção solicitada
-            if (section === 'chat') {
-                elements.chatSection.style.display = 'block';
-                elements.chatInput.focus();
-            } else if (section === 'profile') {
-                elements.profileSection.style.display = 'block';
-                loadProfile();
-            } else if (section === 'home') {
-                document.querySelector('#home').style.display = 'block';
-                document.querySelector('#scripts').style.display = 'block';
-            }
-        }
-
-        // ==============================================
-        // AUTHENTICATION & USER MANAGEMENT
+        // AUTENTICAÇÃO (CORRIGIDA)
         // ==============================================
         function checkAuthState() {
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
+                    console.log("✅ Usuário autenticado:", user.email);
                     currentUser = user;
                     await initializeUserProfile(user);
                     updateUIForUser(user);
                     await checkIfUserIsAdmin(user.uid);
-                    loadUserStats(user.uid);
                 } else {
+                    console.log("🚪 Usuário não autenticado");
                     currentUser = null;
-                    userProfile = null;
                     updateUIForGuest();
                 }
             });
         }
 
         async function initializeUserProfile(user) {
-            // Gera ID único baseado no UID do Firebase
-            userUniqueId = 'user_' + user.uid.substring(0, 8) + '_' + Date.now().toString(36);
-            
-            // Verifica se o perfil já existe
-            const profileSnapshot = await database.ref('users/' + user.uid).once('value');
-            
-            if (!profileSnapshot.exists()) {
-                // Cria novo perfil com username único
-                const username = await generateUniqueUsername(user.email);
+            try {
+                // Verifica se perfil já existe
+                const snapshot = await database.ref('users/' + user.uid).once('value');
                 
-                userProfile = {
-                    uid: user.uid,
-                    email: user.email,
-                    displayName: user.displayName || user.email.split('@')[0],
-                    username: username,
-                    bio: 'Novo membro do EclipseXploits!',
-                    avatarColor: '#6d28d9',
-                    bannerColor: '#1e293b',
-                    createdAt: Date.now(),
-                    lastLogin: Date.now(),
-                    isBanned: false,
-                    muteUntil: 0,
-                    messageCount: 0,
-                    scriptCount: 0,
-                    uniqueId: userUniqueId
-                };
-                
-                await database.ref('users/' + user.uid).set(userProfile);
-                
-                // Se for o email admin, define como admin
-                if (user.email === 'guizinbzsk@gmail.com') {
-                    await database.ref('admins/' + user.uid).set(true);
-                }
-            } else {
-                userProfile = profileSnapshot.val();
-                userProfile.lastLogin = Date.now();
-                await database.ref('users/' + user.uid + '/lastLogin').set(Date.now());
-            }
-            
-            return userProfile;
-        }
-
-        async function generateUniqueUsername(email) {
-            const baseUsername = email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
-            let username = baseUsername;
-            let counter = 1;
-            
-            while (true) {
-                const snapshot = await database.ref('usernames/' + username).once('value');
                 if (!snapshot.exists()) {
-                    await database.ref('usernames/' + username).set(currentUser.uid);
-                    return username;
+                    // Cria novo perfil
+                    const username = user.email.split('@')[0];
+                    await database.ref('users/' + user.uid).set({
+                        email: user.email,
+                        username: username,
+                        displayName: username,
+                        createdAt: Date.now(),
+                        isAdmin: user.email === 'guizinbzsk@gmail.com'
+                    });
+                    
+                    // Se for admin, adiciona à lista de admins
+                    if (user.email === 'guizinbzsk@gmail.com') {
+                        await database.ref('admins/' + user.uid).set(true);
+                    }
                 }
-                username = baseUsername + counter;
-                counter++;
+                
+                console.log("✅ Perfil inicializado");
+            } catch (error) {
+                console.error("❌ Erro ao criar perfil:", error);
             }
         }
 
         async function checkIfUserIsAdmin(uid) {
-            if (currentUser.email === 'guizinbzsk@gmail.com') {
-                isAdmin = true;
-                elements.adminPanel.style.display = 'block';
-                elements.chatAdminActions.style.display = 'flex';
-                loadAdminScripts();
-                return;
-            }
-            
-            const snapshot = await database.ref('admins/' + uid).once('value');
-            if (snapshot.exists()) {
-                isAdmin = true;
-                elements.adminPanel.style.display = 'block';
-                elements.chatAdminActions.style.display = 'flex';
-                loadAdminScripts();
+            try {
+                const snapshot = await database.ref('admins/' + uid).once('value');
+                if (snapshot.exists() || currentUser.email === 'guizinbzsk@gmail.com') {
+                    isAdmin = true;
+                    elements.adminPanel.style.display = 'block';
+                    loadAdminScripts();
+                    console.log("✅ Usuário é admin");
+                }
+            } catch (error) {
+                console.error("❌ Erro ao verificar admin:", error);
             }
         }
 
@@ -1863,44 +999,36 @@
             
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const submitBtn = elements.loginForm.querySelector('button[type="submit"]');
             
-            if (submitBtn.textContent.includes('Entrar')) {
-                // Login
+            console.log("📧 Tentando login com:", email);
+            
+            if (isLoginMode) {
+                // LOGIN
                 auth.signInWithEmailAndPassword(email, password)
-                    .then(() => {
+                    .then((userCredential) => {
+                        console.log("✅ Login bem-sucedido");
                         elements.loginModal.style.display = 'none';
-                        showNotification('✅ Login realizado com sucesso!', 'success');
+                        showNotification('Login realizado!', 'success');
                     })
                     .catch((error) => {
+                        console.error("❌ Erro no login:", error);
                         elements.errorMessage.textContent = getAuthErrorMessage(error);
                         elements.errorMessage.style.display = 'block';
                     });
             } else {
-                // Registrar
+                // REGISTRO
                 auth.createUserWithEmailAndPassword(email, password)
-                    .then(() => {
+                    .then((userCredential) => {
+                        console.log("✅ Registro bem-sucedido");
                         elements.loginModal.style.display = 'none';
-                        showNotification('✅ Conta criada com sucesso!', 'success');
+                        showNotification('Conta criada!', 'success');
                     })
                     .catch((error) => {
+                        console.error("❌ Erro no registro:", error);
                         elements.errorMessage.textContent = getAuthErrorMessage(error);
                         elements.errorMessage.style.display = 'block';
                     });
             }
-        }
-
-        function signInWithGoogle() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider)
-                .then(() => {
-                    elements.loginModal.style.display = 'none';
-                    showNotification('✅ Login com Google realizado!', 'success');
-                })
-                .catch((error) => {
-                    elements.errorMessage.textContent = error.message;
-                    elements.errorMessage.style.display = 'block';
-                });
         }
 
         function getAuthErrorMessage(error) {
@@ -1912,61 +1040,14 @@
                 'auth/email-already-in-use': 'E-mail já cadastrado.',
                 'auth/weak-password': 'Senha muito fraca (mínimo 6 caracteres).',
                 'auth/operation-not-allowed': 'Operação não permitida.',
-                'auth/popup-closed-by-user': 'Login cancelado.',
-                'auth/unauthorized-domain': 'Domínio não autorizado.'
+                'auth/network-request-failed': 'Erro de conexão. Verifique sua internet.'
             };
             return messages[error.code] || error.message;
         }
 
-        function showUserMenu() {
-            const menu = document.createElement('div');
-            menu.style.cssText = `
-                position: absolute;
-                top: 60px;
-                right: 0;
-                background: rgba(30, 41, 59, 0.95);
-                border-radius: 10px;
-                padding: 15px;
-                min-width: 200px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                border: 1px solid rgba(109, 40, 217, 0.3);
-                z-index: 1001;
-            `;
-            
-            menu.innerHTML = `
-                <div style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                    <div style="font-weight: 600;">${userProfile?.displayName || currentUser.email}</div>
-                    <div style="font-size: 0.9rem; color: var(--gray);">@${userProfile?.username || 'user'}</div>
-                </div>
-                <button onclick="showSection('profile')" style="width: 100%; padding: 10px; background: none; border: none; color: var(--light); text-align: left; cursor: pointer; border-radius: 5px;">
-                    <i class="fas fa-user" style="margin-right: 10px;"></i> Meu Perfil
-                </button>
-                ${isAdmin ? `
-                <button onclick="elements.adminPanel.scrollIntoView()" style="width: 100%; padding: 10px; background: none; border: none; color: var(--light); text-align: left; cursor: pointer; border-radius: 5px;">
-                    <i class="fas fa-crown" style="margin-right: 10px;"></i> Painel Admin
-                </button>
-                ` : ''}
-                <button onclick="auth.signOut()" style="width: 100%; padding: 10px; background: none; border: none; color: var(--danger); text-align: left; cursor: pointer; border-radius: 5px; margin-top: 10px;">
-                    <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i> Sair
-                </button>
-            `;
-            
-            // Remove menu anterior se existir
-            const oldMenu = document.querySelector('.user-menu');
-            if (oldMenu) oldMenu.remove();
-            
-            menu.className = 'user-menu';
-            document.body.appendChild(menu);
-            
-            // Fecha menu ao clicar fora
-            setTimeout(() => {
-                document.addEventListener('click', function closeMenu(e) {
-                    if (!menu.contains(e.target) && e.target !== elements.userAvatar) {
-                        menu.remove();
-                        document.removeEventListener('click', closeMenu);
-                    }
-                });
-            }, 100);
+        function toggleLoginModal() {
+            elements.loginModal.style.display = 'flex';
+            elements.errorMessage.style.display = 'none';
         }
 
         // ==============================================
@@ -1975,235 +1056,90 @@
         function updateUIForUser(user) {
             elements.loginBtn.style.display = 'none';
             elements.userAvatar.style.display = 'flex';
-            elements.profileLink.style.display = 'block';
+            elements.userAvatar.textContent = user.email.charAt(0).toUpperCase();
+            elements.userAvatar.title = user.email;
             
-            // Configura avatar
-            if (userProfile) {
-                elements.userAvatar.textContent = userProfile.displayName?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase();
-                elements.userAvatar.style.background = `linear-gradient(45deg, ${userProfile.avatarColor || '#6d28d9'}, ${userProfile.bannerColor || '#f59e0b'})`;
-                elements.userAvatar.classList.add('online');
-            } else {
-                elements.userAvatar.textContent = user.email.charAt(0).toUpperCase();
-            }
+            // Ativar chat
+            elements.chatInput.disabled = false;
+            elements.sendMessageBtn.disabled = false;
+            
+            // Avatar click para logout
+            elements.userAvatar.onclick = function() {
+                if (confirm('Deseja sair?')) {
+                    auth.signOut();
+                    showNotification('Até logo!', 'info');
+                }
+            };
         }
 
         function updateUIForGuest() {
             elements.loginBtn.style.display = 'block';
             elements.userAvatar.style.display = 'none';
-            elements.profileLink.style.display = 'none';
             elements.adminPanel.style.display = 'none';
-            elements.chatAdminActions.style.display = 'none';
+            
+            // Desativar chat
+            elements.chatInput.disabled = true;
+            elements.sendMessageBtn.disabled = true;
+            elements.chatInput.placeholder = "Faça login para usar o chat";
         }
 
-        // ==============================================
-        // PROFILE FUNCTIONS
-        // ==============================================
-        async function loadProfile() {
-            if (!currentUser || !userProfile) return;
-            
-            elements.profileName.textContent = userProfile.displayName;
-            elements.profileUsername.textContent = '@' + userProfile.username;
-            elements.profileBio.textContent = userProfile.bio;
-            
-            // Avatar
-            elements.profileAvatar.textContent = userProfile.displayName?.charAt(0).toUpperCase() || 'U';
-            elements.profileAvatar.style.background = `linear-gradient(45deg, ${userProfile.avatarColor}, ${userProfile.bannerColor})`;
-            
-            // Banner
-            elements.profileBanner.style.background = `linear-gradient(135deg, ${userProfile.bannerColor}, ${userProfile.avatarColor})`;
-            
-            // Mostrar botão de editar para dono do perfil
-            const bannerEdit = elements.profileBanner.querySelector('.profile-banner-edit');
-            if (bannerEdit) {
-                bannerEdit.style.display = 'block';
-            }
-        }
-
-        function editProfile() {
-            if (!currentUser) return;
-            
-            document.getElementById('editDisplayName').value = userProfile.displayName || '';
-            document.getElementById('editUsername').value = userProfile.username || '';
-            document.getElementById('editBio').value = userProfile.bio || '';
-            document.getElementById('editAvatarColor').value = userProfile.avatarColor || '#6d28d9';
-            
-            elements.editProfileModal.style.display = 'flex';
-        }
-
-        async function handleEditProfile(e) {
-            e.preventDefault();
-            
-            if (!currentUser) return;
-            
-            const updates = {
-                displayName: document.getElementById('editDisplayName').value.trim(),
-                username: document.getElementById('editUsername').value.trim().toLowerCase(),
-                bio: document.getElementById('editBio').value.trim(),
-                avatarColor: document.getElementById('editAvatarColor').value
-            };
-            
-            // Validação básica
-            if (!updates.displayName || updates.displayName.length < 2) {
-                showNotification('Nome deve ter pelo menos 2 caracteres', 'error');
+        function showChatSection() {
+            if (!currentUser) {
+                showNotification('Faça login para acessar o chat', 'warning');
+                toggleLoginModal();
                 return;
             }
             
-            if (!updates.username || updates.username.length < 3) {
-                showNotification('Username deve ter pelo menos 3 caracteres', 'error');
-                return;
-            }
-            
-            // Verifica se username já existe (se mudou)
-            if (updates.username !== userProfile.username) {
-                const usernameSnapshot = await database.ref('usernames/' + updates.username).once('value');
-                if (usernameSnapshot.exists() && usernameSnapshot.val() !== currentUser.uid) {
-                    showNotification('Username já está em uso', 'error');
-                    return;
-                }
-                
-                // Remove old username, add new one
-                await database.ref('usernames/' + userProfile.username).remove();
-                await database.ref('usernames/' + updates.username).set(currentUser.uid);
-            }
-            
-            // Atualiza perfil
-            await database.ref('users/' + currentUser.uid).update(updates);
-            
-            // Atualiza localmente
-            Object.assign(userProfile, updates);
-            
-            elements.editProfileModal.style.display = 'none';
-            loadProfile();
-            updateUIForUser(currentUser);
-            showNotification('✅ Perfil atualizado com sucesso!', 'success');
-        }
-
-        function editAvatar() {
-            if (!currentUser) return;
-            
-            const color = prompt('Digite uma cor em hex para o avatar (ex: #6d28d9):', userProfile.avatarColor);
-            if (color && /^#[0-9A-F]{6}$/i.test(color)) {
-                database.ref('users/' + currentUser.uid + '/avatarColor').set(color);
-                userProfile.avatarColor = color;
-                loadProfile();
-                updateUIForUser(currentUser);
-                showNotification('✅ Cor do avatar atualizada!', 'success');
-            }
-        }
-
-        function editBanner() {
-            if (!currentUser) return;
-            
-            const color = prompt('Digite uma cor em hex para o banner (ex: #1e293b):', userProfile.bannerColor);
-            if (color && /^#[0-9A-F]{6}$/i.test(color)) {
-                database.ref('users/' + currentUser.uid + '/bannerColor').set(color);
-                userProfile.bannerColor = color;
-                loadProfile();
-                showNotification('✅ Banner atualizado!', 'success');
-            }
-        }
-
-        async function loadUserStats(uid) {
-            // Conta scripts do usuário
-            const scriptsSnapshot = await database.ref('scripts')
-                .orderByChild('authorId')
-                .equalTo(uid)
-                .once('value');
-            
-            const scriptCount = scriptsSnapshot.exists() ? Object.keys(scriptsSnapshot.val()).length : 0;
-            elements.statScripts.textContent = scriptCount;
-            
-            // Conta mensagens do usuário
-            const messagesSnapshot = await database.ref('chat')
-                .orderByChild('userId')
-                .equalTo(uid)
-                .once('value');
-            
-            const messageCount = messagesSnapshot.exists() ? Object.keys(messagesSnapshot.val()).length : 0;
-            elements.statMessages.textContent = messageCount;
-            
-            // Dias desde criação
-            if (userProfile?.createdAt) {
-                const days = Math.floor((Date.now() - userProfile.createdAt) / (1000 * 60 * 60 * 24));
-                elements.statDays.textContent = days;
-            }
-            
-            // Atualiza no perfil
-            await database.ref('users/' + uid).update({
-                scriptCount: scriptCount,
-                messageCount: messageCount
-            });
+            document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+            elements.chatSection.style.display = 'block';
+            elements.chatInput.focus();
         }
 
         // ==============================================
         // SCRIPTS FUNCTIONS
         // ==============================================
-        async function loadScripts() {
-            try {
-                const snapshot = await database.ref('scripts')
-                    .orderByChild('date')
-                    .limitToLast(20)
-                    .once('value');
-                
-                elements.scriptsList.innerHTML = '';
-                
-                if (!snapshot.exists()) {
-                    elements.scriptsList.innerHTML = `
-                        <div class="script-card" style="grid-column: 1/-1; text-align: center; padding: 40px;">
-                            <i class="fas fa-code" style="font-size: 3rem; color: var(--gray); margin-bottom: 20px;"></i>
-                            <h3 style="color: var(--light);">Nenhum script disponível</h3>
-                            <p style="color: var(--gray);">Os administradores ainda não publicaram scripts.</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                const scripts = [];
-                snapshot.forEach(childSnapshot => {
-                    scripts.push({
-                        id: childSnapshot.key,
-                        ...childSnapshot.val()
-                    });
-                });
-                
-                scripts.sort((a, b) => b.date - a.date);
-                
-                scripts.forEach(script => {
-                    if (script.published !== false) {
-                        elements.scriptsList.appendChild(createScriptCard(script, false));
+        function loadScripts() {
+            database.ref('scripts').orderByChild('date').limitToLast(10).once('value')
+                .then((snapshot) => {
+                    elements.scriptsList.innerHTML = '';
+                    
+                    if (!snapshot.exists()) {
+                        elements.scriptsList.innerHTML = `
+                            <div class="script-card" style="text-align: center;">
+                                <p style="color: var(--gray);">Nenhum script disponível ainda.</p>
+                            </div>
+                        `;
+                        return;
                     }
+                    
+                    snapshot.forEach((childSnapshot) => {
+                        const script = childSnapshot.val();
+                        script.id = childSnapshot.key;
+                        
+                        if (script.published !== false) {
+                            elements.scriptsList.appendChild(createScriptCard(script, false));
+                        }
+                    });
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar scripts:", error);
                 });
-            } catch (error) {
-                console.error('Erro ao carregar scripts:', error);
-                showNotification('❌ Erro ao carregar scripts', 'error');
-            }
         }
 
-        async function loadAdminScripts() {
+        function loadAdminScripts() {
             if (!isAdmin) return;
             
-            try {
-                const snapshot = await database.ref('scripts').once('value');
-                elements.adminScriptsList.innerHTML = '';
-                
-                if (!snapshot.exists()) return;
-                
-                const scripts = [];
-                snapshot.forEach(childSnapshot => {
-                    scripts.push({
-                        id: childSnapshot.key,
-                        ...childSnapshot.val()
+            database.ref('scripts').once('value')
+                .then((snapshot) => {
+                    elements.adminScriptsList.innerHTML = '';
+                    
+                    snapshot.forEach((childSnapshot) => {
+                        const script = childSnapshot.val();
+                        script.id = childSnapshot.key;
+                        elements.adminScriptsList.appendChild(createScriptCard(script, true));
                     });
-                });
-                
-                scripts.sort((a, b) => b.date - a.date);
-                
-                scripts.forEach(script => {
-                    elements.adminScriptsList.appendChild(createScriptCard(script, true));
-                });
-            } catch (error) {
-                console.error('Erro ao carregar scripts admin:', error);
-            }
+                })
+                .catch(console.error);
         }
 
         function createScriptCard(script, isAdminView) {
@@ -2217,14 +1153,11 @@
             if (isAdminView) {
                 actions = `
                     <div class="script-actions">
-                        <button class="btn btn-primary btn-sm" onclick="installScript('${script.id}')">
+                        <button class="btn btn-primary btn-sm" onclick="downloadScript('${script.id}')">
                             <i class="fas fa-download"></i>
                         </button>
-                        <button class="btn btn-primary btn-sm" onclick="copyScript('${script.id}')">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                        <button class="btn btn-secondary btn-sm" onclick="togglePublishScript('${script.id}', ${script.published !== false})">
-                            <i class="fas ${script.published !== false ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                        <button class="btn btn-secondary btn-sm" onclick="togglePublish('${script.id}', ${script.published !== false})">
+                            ${script.published !== false ? 'Despublicar' : 'Publicar'}
                         </button>
                         <button class="btn btn-danger btn-sm" onclick="deleteScript('${script.id}')">
                             <i class="fas fa-trash"></i>
@@ -2234,17 +1167,12 @@
             } else {
                 actions = `
                     <div class="script-actions">
-                        <button class="btn btn-primary btn-sm" onclick="installScript('${script.id}')">
-                            <i class="fas fa-download"></i> Instalar
+                        <button class="btn btn-primary btn-sm" onclick="downloadScript('${script.id}')">
+                            <i class="fas fa-download"></i> Baixar
                         </button>
                         <button class="btn btn-primary btn-sm" onclick="copyScript('${script.id}')">
                             <i class="fas fa-copy"></i> Copiar
                         </button>
-                        ${script.url ? `
-                        <button class="btn btn-success btn-sm" onclick="generateLoadstringForScript('${script.url}')">
-                            <i class="fas fa-code"></i> Loadstring
-                        </button>
-                        ` : ''}
                     </div>
                 `;
             }
@@ -2256,192 +1184,135 @@
                 </div>
                 <div class="script-content">${script.description}</div>
                 ${actions}
-                <div style="font-size: 0.9rem; color: var(--gray); margin-top: 10px;">
-                    <i class="fas fa-user"></i> ${script.author || 'Admin'}
-                </div>
             `;
             
             return div;
         }
 
-        async function handleAddScript(e) {
+        function handleAddScript(e) {
             e.preventDefault();
             
-            if (!isAdmin) {
-                showNotification('❌ Apenas administradores podem adicionar scripts', 'error');
-                return;
-            }
+            if (!isAdmin) return;
             
-            const title = document.getElementById('scriptTitle').value.trim();
-            const description = document.getElementById('scriptDescription').value.trim();
-            const code = document.getElementById('scriptCode').value.trim();
-            const url = document.getElementById('scriptURL').value.trim();
-            
-            if (!title || !description || !code) {
-                showNotification('❌ Preencha todos os campos obrigatórios', 'error');
-                return;
-            }
+            const title = document.getElementById('scriptTitle').value;
+            const description = document.getElementById('scriptDescription').value;
+            const code = document.getElementById('scriptCode').value;
             
             const scriptData = {
                 title: title,
                 description: description,
                 code: code,
-                url: url || '',
                 date: Date.now(),
                 published: true,
-                author: userProfile?.displayName || currentUser.email,
-                authorId: currentUser.uid,
-                downloads: 0
+                author: currentUser.email,
+                authorId: currentUser.uid
             };
             
-            try {
-                await database.ref('scripts').push(scriptData);
-                
-                elements.addScriptModal.style.display = 'none';
-                elements.addScriptForm.reset();
-                
-                // Atualiza contador de scripts do usuário
-                if (userProfile) {
-                    const newCount = (userProfile.scriptCount || 0) + 1;
-                    await database.ref('users/' + currentUser.uid + '/scriptCount').set(newCount);
-                    userProfile.scriptCount = newCount;
-                    elements.statScripts.textContent = newCount;
-                }
-                
-                showNotification('✅ Script publicado com sucesso!', 'success');
-                loadScripts();
-                loadAdminScripts();
-            } catch (error) {
-                showNotification('❌ Erro: ' + error.message, 'error');
-            }
+            database.ref('scripts').push(scriptData)
+                .then(() => {
+                    elements.addScriptModal.style.display = 'none';
+                    elements.addScriptForm.reset();
+                    showNotification('Script publicado!', 'success');
+                    loadScripts();
+                    loadAdminScripts();
+                })
+                .catch((error) => {
+                    showNotification('Erro: ' + error.message, 'error');
+                });
         }
 
         // ==============================================
         // SCRIPT ACTIONS
         // ==============================================
-        async function installScript(scriptId) {
+        window.downloadScript = function(scriptId) {
             if (!currentUser) {
-                showNotification('🔒 Faça login para instalar scripts', 'warning');
+                showNotification('Faça login para baixar scripts', 'warning');
                 toggleLoginModal();
                 return;
             }
             
-            try {
-                const snapshot = await database.ref('scripts/' + scriptId).once('value');
-                const script = snapshot.val();
-                
-                if (!script) {
-                    showNotification('❌ Script não encontrado', 'error');
-                    return;
-                }
-                
-                // Incrementa contador de downloads
-                await database.ref('scripts/' + scriptId + '/downloads').transaction(current => (current || 0) + 1);
-                
-                // Cria arquivo para download
-                const blob = new Blob([script.code], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${script.title.replace(/[^\w\s]/gi, '').replace(/\s+/g, '_')}.lua`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                showNotification('📥 Script baixado com sucesso!', 'success');
-            } catch (error) {
-                showNotification('❌ Erro: ' + error.message, 'error');
-            }
-        }
+            database.ref('scripts/' + scriptId).once('value')
+                .then((snapshot) => {
+                    const script = snapshot.val();
+                    const blob = new Blob([script.code], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${script.title.replace(/\s+/g, '_')}.lua`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    showNotification('Download iniciado!', 'success');
+                })
+                .catch(console.error);
+        };
 
-        async function copyScript(scriptId) {
-            try {
-                const snapshot = await database.ref('scripts/' + scriptId).once('value');
-                const script = snapshot.val();
-                
-                if (!script || !script.code) {
-                    showNotification('❌ Script não encontrado', 'error');
-                    return;
-                }
-                
-                await navigator.clipboard.writeText(script.code);
-                showNotification('📋 Código copiado para a área de transferência!', 'success');
-            } catch (error) {
-                showNotification('❌ Erro ao copiar: ' + error.message, 'error');
-            }
-        }
+        window.copyScript = function(scriptId) {
+            database.ref('scripts/' + scriptId).once('value')
+                .then((snapshot) => {
+                    const script = snapshot.val();
+                    navigator.clipboard.writeText(script.code)
+                        .then(() => {
+                            showNotification('Código copiado!', 'success');
+                        })
+                        .catch(() => {
+                            showNotification('Erro ao copiar', 'error');
+                        });
+                })
+                .catch(console.error);
+        };
 
-        async function togglePublishScript(scriptId, currentStatus) {
+        window.togglePublish = function(scriptId, currentStatus) {
             if (!isAdmin) return;
             
-            try {
-                await database.ref('scripts/' + scriptId + '/published').set(!currentStatus);
-                showNotification(`✅ Script ${!currentStatus ? 'publicado' : 'despublicado'}!`, 'success');
-                loadScripts();
-                loadAdminScripts();
-            } catch (error) {
-                showNotification('❌ Erro: ' + error.message, 'error');
-            }
-        }
+            database.ref('scripts/' + scriptId + '/published').set(!currentStatus)
+                .then(() => {
+                    showNotification(`Script ${!currentStatus ? 'publicado' : 'despublicado'}!`, 'success');
+                    loadScripts();
+                    loadAdminScripts();
+                })
+                .catch(console.error);
+        };
 
-        async function deleteScript(scriptId) {
+        window.deleteScript = function(scriptId) {
             if (!isAdmin) return;
             
-            if (!confirm('Tem certeza que deseja excluir este script permanentemente?')) {
-                return;
+            if (confirm('Excluir este script?')) {
+                database.ref('scripts/' + scriptId).remove()
+                    .then(() => {
+                        showNotification('Script excluído!', 'success');
+                        loadScripts();
+                        loadAdminScripts();
+                    })
+                    .catch(console.error);
             }
-            
-            try {
-                await database.ref('scripts/' + scriptId).remove();
-                showNotification('✅ Script excluído com sucesso!', 'success');
-                loadScripts();
-                loadAdminScripts();
-            } catch (error) {
-                showNotification('❌ Erro: ' + error.message, 'error');
-            }
-        }
+        };
 
         // ==============================================
         // LOADSTRING GENERATOR
         // ==============================================
         function generateLoadstring() {
             const url = elements.scriptUrl.value.trim();
-            
             if (!url) {
-                showNotification('❌ Digite uma URL válida', 'error');
+                showNotification('Digite uma URL', 'warning');
                 return;
             }
             
-            if (!url.startsWith('http')) {
-                showNotification('❌ URL deve começar com http:// ou https://', 'error');
-                return;
-            }
-            
-            const loadstring = `loadstring(game:HttpGet("${url}"))()`;
-            const codeElement = document.querySelector('.loadstring-code');
-            codeElement.innerHTML = loadstring + 
-                '<button onclick="copyLoadstring()" class="copy-btn">' +
-                '<i class="fas fa-copy"></i> Copiar</button>';
-            
-            showNotification('✅ Loadstring gerado com sucesso!', 'success');
-        }
-
-        function generateLoadstringForScript(url) {
-            elements.scriptUrl.value = url;
-            generateLoadstring();
+            const loadstring = `loadstring(game:HttpGet("${url}", true))()`;
+            elements.loadstringOutput.textContent = loadstring;
+            showNotification('Loadstring gerado!', 'success');
         }
 
         function copyLoadstring() {
-            const codeElement = document.querySelector('.loadstring-code');
-            const text = codeElement.textContent;
-            
+            const text = elements.loadstringOutput.textContent;
             navigator.clipboard.writeText(text)
                 .then(() => {
-                    showNotification('📋 Loadstring copiado!', 'success');
+                    showNotification('Copiado!', 'success');
                 })
                 .catch(() => {
-                    showNotification('❌ Erro ao copiar', 'error');
+                    showNotification('Erro ao copiar', 'error');
                 });
         }
 
@@ -2449,21 +1320,13 @@
         // CHAT FUNCTIONS
         // ==============================================
         function loadChat() {
-            database.ref('chat').limitToLast(50).on('value', snapshot => {
+            database.ref('chat').limitToLast(20).on('value', (snapshot) => {
                 elements.chatMessages.innerHTML = '';
                 
-                if (!snapshot.exists()) {
-                    elements.chatMessages.innerHTML = `
-                        <div style="text-align: center; padding: 40px; color: var(--gray);">
-                            <i class="fas fa-comments" style="font-size: 2rem; margin-bottom: 15px;"></i>
-                            <p>Seja o primeiro a enviar uma mensagem!</p>
-                        </div>
-                    `;
-                    return;
-                }
+                if (!snapshot.exists()) return;
                 
                 const messages = [];
-                snapshot.forEach(childSnapshot => {
+                snapshot.forEach((childSnapshot) => {
                     messages.push({
                         id: childSnapshot.key,
                         ...childSnapshot.val()
@@ -2472,7 +1335,7 @@
                 
                 messages.sort((a, b) => a.timestamp - b.timestamp);
                 
-                messages.forEach(msg => {
+                messages.forEach((msg) => {
                     const messageElement = createMessageElement(msg);
                     elements.chatMessages.appendChild(messageElement);
                 });
@@ -2483,59 +1346,26 @@
 
         function createMessageElement(message) {
             const isCurrentUser = currentUser && message.userId === currentUser.uid;
-            const isAdminMessage = message.isAdmin || false;
-            const isBanned = message.banned || false;
-            const isReply = message.replyTo;
-            
             const time = new Date(message.timestamp);
             const timeStr = time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
             
             const div = document.createElement('div');
             div.className = 'message';
-            if (isAdminMessage) div.classList.add('admin');
-            if (isBanned) div.classList.add('banned');
-            if (isReply) div.classList.add('reply');
             div.style.justifyContent = isCurrentUser ? 'flex-end' : 'flex-start';
             
-            // Avatar
-            const avatarColor = message.avatarColor || '#6d28d9';
             const avatar = `
-                <div class="message-avatar ${isAdminMessage ? 'admin' : ''}" 
-                     style="background: linear-gradient(45deg, ${avatarColor}, ${isAdminMessage ? '#f59e0b' : '#6d28d9'});"
-                     onclick="showUserInfo('${message.userId}')">
+                <div class="message-avatar">
                     ${message.userName ? message.userName.charAt(0).toUpperCase() : 'U'}
                 </div>
             `;
             
-            // Conteúdo da mensagem
-            let messageContent = message.text;
-            if (message.replyTo) {
-                messageContent = `↳ <strong>${message.replyTo.userName}:</strong> ${message.replyTo.text}<br>${message.text}`;
-            }
-            
             const content = `
-                <div class="message-content ${isAdminMessage ? 'admin' : ''}">
-                    <div class="message-sender ${isAdminMessage ? 'admin' : ''}">
-                        ${message.userName || 'Usuário'} 
-                        ${isAdminMessage ? '👑' : ''}
-                        ${isCurrentUser ? '(Você)' : ''}
+                <div class="message-content">
+                    <div style="font-weight: 600; margin-bottom: 5px; color: ${isCurrentUser ? 'var(--accent)' : 'var(--light)'}">
+                        ${message.userName || 'Usuário'} ${isCurrentUser ? '(Você)' : ''}
                     </div>
-                    <div class="message-text">${messageContent}</div>
-                    <div class="message-time">${timeStr}</div>
-                    
-                    ${isAdmin ? `
-                    <div class="message-actions">
-                        <button class="message-action-btn" onclick="deleteMessage('${message.id}')" title="Excluir">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        <button class="message-action-btn" onclick="banUserFromMessage('${message.userId}', '${message.userName}')" title="Banir">
-                            <i class="fas fa-ban"></i>
-                        </button>
-                        <button class="message-action-btn" onclick="replyToMessage('${message.id}', '${message.userName}', '${message.text}')" title="Responder">
-                            <i class="fas fa-reply"></i>
-                        </button>
-                    </div>
-                    ` : ''}
+                    <div class="message-text">${message.text}</div>
+                    <div style="font-size: 0.8rem; color: var(--gray); margin-top: 5px;">${timeStr}</div>
                 </div>
             `;
             
@@ -2543,214 +1373,39 @@
             return div;
         }
 
-        async function sendMessage() {
-            if (cooldownActive) {
-                showNotification('⏳ Aguarde antes de enviar outra mensagem', 'warning');
-                return;
-            }
-            
+        function sendMessage() {
             const text = elements.chatInput.value.trim();
-            if (!text) return;
+            if (!text || !currentUser) return;
             
-            // Verifica se usuário está mutado
-            if (userProfile?.muteUntil && userProfile.muteUntil > Date.now()) {
-                const remaining = Math.ceil((userProfile.muteUntil - Date.now()) / 60000);
-                showNotification(`🔇 Você está mutado por mais ${remaining} minutos`, 'error');
+            // Verificar cooldown
+            const now = Date.now();
+            if (now - lastMessageTime < COOLDOWN_TIME) {
+                const remaining = Math.ceil((COOLDOWN_TIME - (now - lastMessageTime)) / 1000);
+                elements.cooldownTimer.textContent = `Aguarde ${remaining}s`;
                 return;
             }
             
-            // Verifica se usuário está banido
-            if (userProfile?.isBanned) {
-                showNotification('🚫 Sua conta está banida do chat', 'error');
-                return;
-            }
-            
-            // Prepara mensagem
             const message = {
                 text: text,
-                timestamp: Date.now(),
-                userName: userProfile?.displayName || currentUser.email.split('@')[0],
-                userId: currentUser.uid,
-                avatarColor: userProfile?.avatarColor || '#6d28d9',
-                isAdmin: isAdmin || false
+                timestamp: now,
+                userName: currentUser.email.split('@')[0],
+                userId: currentUser.uid
             };
             
-            // Adiciona reply se existir
-            if (replyingTo) {
-                message.replyTo = replyingTo;
-                replyingTo = null;
-                elements.replyModal.style.display = 'none';
-            }
-            
-            try {
-                await database.ref('chat').push(message);
-                
-                // Atualiza contador de mensagens
-                if (userProfile) {
-                    const newCount = (userProfile.messageCount || 0) + 1;
-                    await database.ref('users/' + currentUser.uid + '/messageCount').set(newCount);
-                    userProfile.messageCount = newCount;
-                    elements.statMessages.textContent = newCount;
-                }
-                
-                // Limpa input e aplica cooldown
-                elements.chatInput.value = '';
-                applyCooldown();
-                
-            } catch (error) {
-                showNotification('❌ Erro ao enviar mensagem: ' + error.message, 'error');
-            }
-        }
-
-        function applyCooldown() {
-            cooldownActive = true;
-            elements.sendMessageBtn.disabled = true;
-            elements.chatInput.disabled = true;
-            elements.cooldownTimer.textContent = 'Aguarde 5 segundos...';
-            elements.cooldownTimer.style.display = 'block';
-            
-            let seconds = 5;
-            const countdown = setInterval(() => {
-                seconds--;
-                elements.cooldownTimer.textContent = `Aguarde ${seconds} segundos...`;
-                
-                if (seconds <= 0) {
-                    clearInterval(countdown);
-                    cooldownActive = false;
-                    elements.sendMessageBtn.disabled = false;
-                    elements.chatInput.disabled = false;
-                    elements.cooldownTimer.style.display = 'none';
-                }
-            }, 1000);
-        }
-
-        function replyToMessage(messageId, userName, messageText) {
-            replyingTo = {
-                messageId: messageId,
-                userName: userName,
-                text: messageText
-            };
-            
-            document.getElementById('replyToUser').textContent = userName;
-            document.getElementById('replyToMessage').textContent = messageText;
-            elements.replyModal.style.display = 'flex';
-            elements.replyMessage.focus();
-        }
-
-        async function handleReply(e) {
-            e.preventDefault();
-            
-            const replyText = document.getElementById('replyMessage').value.trim();
-            if (!replyText || !replyingTo) return;
-            
-            elements.chatInput.value = `@${replyingTo.userName} ${replyText}`;
-            elements.replyModal.style.display = 'none';
-            replyingTo = null;
-            
-            // Foca no chat input
-            elements.chatInput.focus();
-            showNotification('💬 Resposta pronta para enviar!', 'success');
+            database.ref('chat').push(message)
+                .then(() => {
+                    elements.chatInput.value = '';
+                    lastMessageTime = now;
+                    elements.cooldownTimer.textContent = '';
+                })
+                .catch((error) => {
+                    showNotification('Erro: ' + error.message, 'error');
+                });
         }
 
         // ==============================================
-        // ADMIN CHAT FUNCTIONS
+        // ADMIN FUNCTIONS
         // ==============================================
-        async function deleteMessage(messageId) {
-            if (!isAdmin) return;
-            
-            if (!confirm('Excluir esta mensagem?')) return;
-            
-            try {
-                await database.ref('chat/' + messageId).remove();
-                showNotification('✅ Mensagem excluída', 'success');
-            } catch (error) {
-                showNotification('❌ Erro: ' + error.message, 'error');
-            }
-        }
-
-        async function clearChat() {
-            if (!isAdmin) return;
-            
-            if (!confirm('Tem certeza que deseja limpar TODO o chat?\nEsta ação não pode ser desfeita.')) {
-                return;
-            }
-            
-            try {
-                await database.ref('chat').remove();
-                showNotification('✅ Chat limpo com sucesso!', 'success');
-            } catch (error) {
-                showNotification('❌ Erro: ' + error.message, 'error');
-            }
-        }
-
-        async function banUserFromMessage(userId, userName) {
-            if (!isAdmin) return;
-            
-            if (!confirm(`Banir o usuário "${userName}"?`)) return;
-            
-            document.getElementById('banUserId').value = userId;
-            elements.banUserModal.style.display = 'flex';
-        }
-
-        async function handleBanUser(e) {
-            e.preventDefault();
-            
-            if (!isAdmin) return;
-            
-            const userId = document.getElementById('banUserId').value.trim();
-            const reason = document.getElementById('banReason').value;
-            const duration = document.getElementById('banDuration').value;
-            
-            if (!userId) {
-                showNotification('❌ Digite um ID de usuário', 'error');
-                return;
-            }
-            
-            let muteUntil = 0;
-            switch (duration) {
-                case '1h': muteUntil = Date.now() + 3600000; break;
-                case '1d': muteUntil = Date.now() + 86400000; break;
-                case '7d': muteUntil = Date.now() + 604800000; break;
-                case '30d': muteUntil = Date.now() + 2592000000; break;
-                case 'permanent': muteUntil = 9999999999999; break;
-            }
-            
-            try {
-                await database.ref('users/' + userId).update({
-                    isBanned: duration === 'permanent',
-                    muteUntil: muteUntil,
-                    banReason: reason,
-                    bannedAt: Date.now(),
-                    bannedBy: currentUser.uid
-                });
-                
-                // Log da ação
-                await database.ref('moderation_logs').push({
-                    action: 'ban',
-                    userId: userId,
-                    moderatorId: currentUser.uid,
-                    reason: reason,
-                    duration: duration,
-                    timestamp: Date.now()
-                });
-                
-                elements.banUserModal.style.display = 'none';
-                elements.banUserForm.reset();
-                showNotification('✅ Usuário banido com sucesso!', 'success');
-                
-            } catch (error) {
-                showNotification('❌ Erro: ' + error.message, 'error');
-            }
-        }
-
-        function showBanUserModal() {
-            elements.banUserModal.style.display = 'flex';
-        }
-
-        function showTimeoutModal() {
-            alert('Funcionalidade de timeout em desenvolvimento!');
-        }
-
         async function loadUserList() {
             if (!isAdmin) return;
             
@@ -2758,281 +1413,159 @@
                 const snapshot = await database.ref('users').once('value');
                 elements.userList.innerHTML = '';
                 
-                if (!snapshot.exists()) return;
+                if (!snapshot.exists()) {
+                    elements.userList.innerHTML = '<p style="color: var(--gray);">Nenhum usuário</p>';
+                    return;
+                }
                 
                 snapshot.forEach(childSnapshot => {
                     const user = childSnapshot.val();
                     const userItem = document.createElement('div');
                     userItem.className = 'user-item';
+                    userItem.style.cssText = `
+                        background: rgba(15, 23, 42, 0.5);
+                        padding: 10px;
+                        border-radius: 8px;
+                        margin-bottom: 8px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    `;
                     
                     userItem.innerHTML = `
-                        <div class="user-info">
-                            <div style="width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(45deg, ${user.avatarColor || '#6d28d9'}, #f59e0b); 
-                                 display: flex; align-items: center; justify-content: center; font-weight: 600;">
-                                ${user.displayName?.charAt(0) || 'U'}
-                            </div>
-                            <div>
-                                <div style="font-weight: 600;">${user.displayName || 'Usuário'}</div>
-                                <div style="font-size: 0.8rem; color: var(--gray);">@${user.username || 'user'}</div>
-                            </div>
+                        <div>
+                            <div style="font-weight: 600;">${user.displayName || user.email}</div>
+                            <div style="font-size: 0.8rem; color: var(--gray);">${user.email}</div>
                         </div>
                         <div style="display: flex; gap: 5px;">
-                            <button onclick="adminAction('mute', '${childSnapshot.key}')" class="btn btn-sm btn-warning">
+                            <button onclick="adminMuteUser('${childSnapshot.key}')" class="btn btn-sm btn-warning">
                                 <i class="fas fa-volume-mute"></i>
                             </button>
-                            <button onclick="adminAction('ban', '${childSnapshot.key}')" class="btn btn-sm btn-danger">
+                            <button onclick="adminBanUser('${childSnapshot.key}')" class="btn btn-sm btn-danger">
                                 <i class="fas fa-ban"></i>
                             </button>
-                            ${user.isBanned ? `
-                            <button onclick="adminAction('unban', '${childSnapshot.key}')" class="btn btn-sm btn-success">
-                                <i class="fas fa-check"></i>
-                            </button>
-                            ` : ''}
                         </div>
                     `;
                     
                     elements.userList.appendChild(userItem);
                 });
             } catch (error) {
-                console.error('Erro ao carregar lista de usuários:', error);
+                console.error("Erro ao carregar usuários:", error);
             }
         }
 
-        async function adminAction(action, userId) {
+        window.adminMuteUser = function(userId) {
             if (!isAdmin) return;
             
-            switch (action) {
-                case 'mute':
-                    const hours = prompt('Quantas horas de mute?', '1');
-                    if (hours) {
-                        await database.ref('users/' + userId + '/muteUntil').set(Date.now() + (parseInt(hours) * 3600000));
-                        showNotification(`✅ Usuário mutado por ${hours} horas`, 'success');
-                    }
-                    break;
-                    
-                case 'ban':
-                    if (confirm('Banir este usuário permanentemente?')) {
-                        await database.ref('users/' + userId).update({
-                            isBanned: true,
-                            bannedAt: Date.now(),
-                            bannedBy: currentUser.uid
-                        });
-                        showNotification('✅ Usuário banido', 'success');
-                    }
-                    break;
-                    
-                case 'unban':
-                    await database.ref('users/' + userId).update({
-                        isBanned: false,
-                        muteUntil: 0
-                    });
-                    showNotification('✅ Usuário desbanido', 'success');
-                    break;
+            const hours = prompt('Mutar por quantas horas?', '1');
+            if (hours) {
+                const muteUntil = Date.now() + (parseInt(hours) * 3600000);
+                database.ref('users/' + userId + '/muteUntil').set(muteUntil)
+                    .then(() => {
+                        showNotification(`Usuário mutado por ${hours}h`, 'success');
+                    })
+                    .catch(console.error);
             }
+        };
+
+        window.adminBanUser = function(userId) {
+            if (!isAdmin) return;
             
-            loadUserList();
-        }
-
-        // ==============================================
-        // GLOBAL NOTIFICATIONS
-        // ==============================================
-        async function loadGlobalNotification() {
-            try {
-                const snapshot = await database.ref('global_notification').once('value');
-                if (snapshot.exists()) {
-                    const notification = snapshot.val();
-                    if (notification.active && notification.expires > Date.now()) {
-                        showGlobalNotification(notification);
-                    }
-                }
-            } catch (error) {
-                console.error('Erro ao carregar notificação:', error);
+            if (confirm('Banir este usuário?')) {
+                database.ref('users/' + userId + '/isBanned').set(true)
+                    .then(() => {
+                        showNotification('Usuário banido', 'success');
+                    })
+                    .catch(console.error);
             }
-        }
-
-        function showGlobalNotification(notification) {
-            elements.globalNotification.style.display = 'block';
-            elements.globalNotification.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <strong>${notification.title}</strong>
-                        <div style="font-size: 0.9rem; margin-top: 5px;">${notification.message}</div>
-                    </div>
-                    <button onclick="dismissNotification()" style="background: none; border: none; color: white; cursor: pointer;">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            `;
-            
-            elements.globalNotification.style.background = getNotificationColor(notification.type);
-        }
-
-        function getNotificationColor(type) {
-            switch (type) {
-                case 'warning': return 'linear-gradient(90deg, #f59e0b, #d97706)';
-                case 'danger': return 'linear-gradient(90deg, #ef4444, #dc2626)';
-                case 'success': return 'linear-gradient(90deg, #10b981, #059669)';
-                default: return 'linear-gradient(90deg, #6d28d9, #5b21b6)';
-            }
-        }
-
-        function dismissNotification() {
-            elements.globalNotification.style.display = 'none';
-        }
+        };
 
         async function handleNotification(e) {
             e.preventDefault();
             
             if (!isAdmin) return;
             
-            const title = document.getElementById('notificationTitle').value.trim();
-            const message = document.getElementById('notificationMessage').value.trim();
-            const type = document.getElementById('notificationType').value;
+            const title = document.getElementById('notificationTitle').value;
+            const message = document.getElementById('notificationMessage').value;
             
             if (!title || !message) {
-                showNotification('❌ Preencha todos os campos', 'error');
+                showNotification('Preencha todos os campos', 'warning');
                 return;
             }
             
             const notification = {
                 title: title,
                 message: message,
-                type: type,
-                active: true,
-                created: Date.now(),
-                expires: Date.now() + (7 * 24 * 60 * 60 * 1000), // 7 dias
-                createdBy: currentUser.uid
+                timestamp: Date.now(),
+                author: currentUser.email
             };
             
             try {
-                await database.ref('global_notification').set(notification);
+                await database.ref('notifications').push(notification);
                 elements.notificationForm.reset();
-                showNotification('✅ Notificação global enviada!', 'success');
-                showGlobalNotification(notification);
+                showNotification('Notificação enviada!', 'success');
             } catch (error) {
-                showNotification('❌ Erro: ' + error.message, 'error');
+                showNotification('Erro: ' + error.message, 'error');
             }
         }
 
         // ==============================================
-        // UTILITY FUNCTIONS
+        // NOTIFICATIONS
         // ==============================================
-        function toggleLoginModal() {
-            elements.loginModal.style.display = 'flex';
-            elements.errorMessage.style.display = 'none';
-        }
-
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
             notification.style.cssText = `
                 position: fixed;
                 top: 100px;
                 right: 20px;
-                padding: 15px 25px;
-                border-radius: 10px;
+                padding: 12px 20px;
+                border-radius: 8px;
                 color: white;
                 font-weight: 500;
                 z-index: 3000;
-                animation: slideInRight 0.3s ease;
                 background: ${type === 'success' ? 'var(--success)' : 
                            type === 'error' ? 'var(--danger)' : 
                            type === 'warning' ? 'var(--accent)' : 'var(--primary)'};
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                display: flex;
-                align-items: center;
-                gap: 10px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
                 max-width: 300px;
+                word-break: break-word;
             `;
             
-            notification.innerHTML = `
-                <i class="fas ${type === 'success' ? 'fa-check-circle' : 
-                               type === 'error' ? 'fa-exclamation-circle' : 
-                               type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
-                <span>${message}</span>
-            `;
-            
+            notification.textContent = message;
             document.body.appendChild(notification);
             
             setTimeout(() => {
-                notification.style.animation = 'slideOutRight 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }, 4000);
-            
-            // Adiciona estilos de animação se não existirem
-            if (!document.querySelector('#notification-styles')) {
-                const style = document.createElement('style');
-                style.id = 'notification-styles';
-                style.textContent = `
-                    @keyframes slideInRight {
-                        from { transform: translateX(100%); opacity: 0; }
-                        to { transform: translateX(0); opacity: 1; }
-                    }
-                    @keyframes slideOutRight {
-                        from { transform: translateX(0); opacity: 1; }
-                        to { transform: translateX(100%); opacity: 0; }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-        }
-
-        function showUserInfo(userId) {
-            if (!isAdmin) return;
-            
-            alert('Informações do usuário carregadas (em desenvolvimento)');
+                notification.remove();
+            }, 3000);
         }
 
         // ==============================================
-        // FIREBASE RULES SUGGESTION
+        // REGRAS DO FIREBASE (IMPORTANTE!)
         // ==============================================
         /*
-        REGRAS DO FIREBASE QUE VOCÊ DEVE CONFIGURAR:
-        
-        Vá em: Firebase Console → Realtime Database → Regras
-        
-        Cole estas regras:
+        COLE ESTAS REGRAS NO FIREBASE CONSOLE:
         
         {
           "rules": {
             "chat": {
               ".read": true,
-              ".write": true,
-              "$messageId": {
-                ".validate": "newData.hasChildren(['text', 'timestamp', 'userName', 'userId'])"
-              }
+              ".write": true
             },
             "scripts": {
               ".read": true,
-              ".write": "auth != null && (auth.token.email == 'guizinbzsk@gmail.com' || root.child('admins').child(auth.uid).val() === true)",
-              "$scriptId": {
-                ".validate": "newData.hasChildren(['title', 'description', 'code', 'date', 'author'])"
-              }
+              ".write": "auth != null && (auth.token.email == 'guizinbzsk@gmail.com' || root.child('admins').child(auth.uid).val() === true)"
             },
             "users": {
-              "$userId": {
-                ".read": "auth != null && (auth.uid == $userId || root.child('admins').child(auth.uid).val() === true)",
-                ".write": "auth != null && auth.uid == $userId || root.child('admins').child(auth.uid).val() === true"
-              }
+              ".read": "auth != null",
+              ".write": "auth != null && auth.uid == $userId"
             },
             "admins": {
               ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
               ".write": "auth != null && auth.token.email == 'guizinbzsk@gmail.com'"
             },
-            "global_notification": {
+            "notifications": {
               ".read": true,
               ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
-            },
-            "usernames": {
-              ".read": true,
-              ".write": "auth != null"
-            },
-            "moderation_logs": {
-              ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
-              ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
-            },
-            "security_logs": {
-              ".read": "auth != null && auth.token.email == 'guizinbzsk@gmail.com'",
-              ".write": true
             }
           }
         }
