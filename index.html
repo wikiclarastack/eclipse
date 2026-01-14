@@ -9,8 +9,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
     <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌌</text></svg>">
 </head>
 <body>
     <!-- Loading Screen -->
@@ -21,37 +29,48 @@
             <div class="planet"></div>
         </div>
         <h2>EclipseXploits</h2>
-        <p>Inicializando sistema...</p>
+        <p>Inicializando sistema de segurança...</p>
     </div>
 
     <!-- Particles Background -->
     <div id="particles-js"></div>
+
+    <!-- Anti DevTools Warning -->
+    <div id="devtools-detected" class="devtools-warning">
+        <div class="warning-content">
+            <h2><i class="fas fa-skull-crossbones"></i> ACESSO NEGADO</h2>
+            <p>Ferramentas de desenvolvimento detectadas</p>
+            <button onclick="document.getElementById('devtools-detected').style.display='none'" class="btn btn-danger">
+                <i class="fas fa-times"></i> FECHAR
+            </button>
+        </div>
+    </div>
 
     <!-- Header -->
     <header class="header">
         <div class="container">
             <nav class="navbar">
                 <!-- Logo -->
-                <a href="#home" class="logo">
+                <a href="#home" class="logo" onclick="showSection('home')">
                     <i class="fas fa-meteor logo-icon"></i>
                     <span class="logo-text">Eclipse<span class="logo-accent">Xploits</span></span>
                 </a>
 
                 <!-- Menu Principal -->
                 <div class="nav-menu">
-                    <a href="#home" class="nav-link active" data-section="home">
+                    <a href="#home" class="nav-link active" onclick="showSection('home')">
                         <i class="fas fa-home"></i> Home
                     </a>
-                    <a href="#scripts" class="nav-link" data-section="scripts">
+                    <a href="#scripts" class="nav-link" onclick="showSection('scripts')">
                         <i class="fas fa-code"></i> Scripts
                     </a>
-                    <a href="#features" class="nav-link" data-section="features">
+                    <a href="#features" class="nav-link" onclick="showSection('features')">
                         <i class="fas fa-star"></i> Recursos
                     </a>
-                    <a href="#ranking" class="nav-link" data-section="ranking">
+                    <a href="#ranking" class="nav-link" onclick="showSection('ranking')">
                         <i class="fas fa-trophy"></i> Ranking
                     </a>
-                    <a href="#chat" class="nav-link" data-section="chat">
+                    <a href="#chat" class="nav-link" onclick="showSection('chat')">
                         <i class="fas fa-comments"></i> Chat
                     </a>
                 </div>
@@ -97,7 +116,7 @@
                     </div>
 
                     <!-- Botão de Login -->
-                    <button class="btn btn-login" id="loginBtn">
+                    <button class="btn btn-login" id="loginBtn" onclick="showLoginModal()">
                         <i class="fas fa-sign-in-alt"></i> Login
                     </button>
                 </div>
@@ -113,19 +132,19 @@
     <!-- Menu Mobile -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="mobile-menu-content">
-            <a href="#home" class="mobile-nav-link active" data-section="home">
+            <a href="#home" class="mobile-nav-link active" onclick="showSection('home')">
                 <i class="fas fa-home"></i> Home
             </a>
-            <a href="#scripts" class="mobile-nav-link" data-section="scripts">
+            <a href="#scripts" class="mobile-nav-link" onclick="showSection('scripts')">
                 <i class="fas fa-code"></i> Scripts
             </a>
-            <a href="#features" class="mobile-nav-link" data-section="features">
+            <a href="#features" class="mobile-nav-link" onclick="showSection('features')">
                 <i class="fas fa-star"></i> Recursos
             </a>
-            <a href="#ranking" class="mobile-nav-link" data-section="ranking">
+            <a href="#ranking" class="mobile-nav-link" onclick="showSection('ranking')">
                 <i class="fas fa-trophy"></i> Ranking
             </a>
-            <a href="#chat" class="mobile-nav-link" data-section="chat">
+            <a href="#chat" class="mobile-nav-link" onclick="showSection('chat')">
                 <i class="fas fa-comments"></i> Chat
             </a>
         </div>
@@ -422,6 +441,9 @@
                             <div class="message-count">
                                 <span id="totalMessages">0</span> mensagens
                             </div>
+                            <button class="btn btn-icon" id="closeChat" title="Fechar Chat">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -433,6 +455,15 @@
                     <!-- Input de Chat -->
                     <div class="chat-input-container">
                         <div class="chat-input-wrapper">
+                            <div id="replyPreview" class="reply-preview" style="display: none;">
+                                <div class="reply-content">
+                                    <strong>Respondendo a:</strong>
+                                    <span id="replyText"></span>
+                                    <button class="btn-icon reply-cancel" onclick="cancelReply()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
                             <input type="text" 
                                    class="chat-input" 
                                    id="chatInput" 
@@ -455,7 +486,7 @@
                     <!-- Dicas do Chat -->
                     <div class="chat-tips">
                         <i class="fas fa-info-circle"></i>
-                        <span>Pressione Enter para enviar • Shift+Enter para nova linha</span>
+                        <span>Pressione Enter para enviar • Shift+Enter para nova linha • Clique em uma mensagem para responder</span>
                     </div>
                 </div>
             </div>
@@ -494,11 +525,11 @@
                 <!-- Coluna 2: Links Rápidos -->
                 <div class="footer-column">
                     <h4 class="footer-title">Links Rápidos</h4>
-                    <a href="#home" class="footer-link">Home</a>
-                    <a href="#scripts" class="footer-link">Scripts</a>
-                    <a href="#features" class="footer-link">Recursos</a>
-                    <a href="#ranking" class="footer-link">Ranking</a>
-                    <a href="#chat" class="footer-link">Chat</a>
+                    <a href="#home" class="footer-link" onclick="showSection('home')">Home</a>
+                    <a href="#scripts" class="footer-link" onclick="showSection('scripts')">Scripts</a>
+                    <a href="#features" class="footer-link" onclick="showSection('features')">Recursos</a>
+                    <a href="#ranking" class="footer-link" onclick="showSection('ranking')">Ranking</a>
+                    <a href="#chat" class="footer-link" onclick="showSection('chat')">Chat</a>
                 </div>
 
                 <!-- Coluna 3: Suporte -->
@@ -573,7 +604,7 @@
                             <i class="fas fa-envelope"></i> Email
                         </label>
                         <input type="email" 
-                               id="email" 
+                               id="loginEmail" 
                                class="form-input" 
                                placeholder="seu@email.com" 
                                required>
@@ -585,11 +616,11 @@
                         </label>
                         <div class="password-input-wrapper">
                             <input type="password" 
-                                   id="password" 
+                                   id="loginPassword" 
                                    class="form-input" 
                                    placeholder="••••••••" 
                                    required>
-                            <button type="button" class="password-toggle" id="togglePassword">
+                            <button type="button" class="password-toggle" id="toggleLoginPassword">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -731,6 +762,9 @@
                             <span class="badge badge-member" id="profileBadge">
                                 <i class="fas fa-user"></i> Membro
                             </span>
+                            <span class="badge badge-online" id="profileStatus">
+                                <i class="fas fa-circle"></i> Online
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -779,6 +813,12 @@
                         <div class="stat-value" id="profileScore">0</div>
                         <div class="stat-label">Pontos</div>
                     </div>
+                </div>
+                
+                <!-- Data de Criação -->
+                <div class="profile-created">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Membro desde: <strong id="profileCreatedAt">-</strong></span>
                 </div>
             </div>
         </div>
@@ -865,6 +905,14 @@
                                 <span class="toggle-slider"></span>
                             </div>
                         </div>
+                        
+                        <div class="form-group">
+                            <label>Animações</label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="animationsToggle" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- Privacidade -->
@@ -881,6 +929,14 @@
                             <label>Mostrar Status Online</label>
                             <div class="toggle-switch">
                                 <input type="checkbox" id="showOnline" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Mostrar Último Login</label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="showLastLogin" checked>
                                 <span class="toggle-slider"></span>
                             </div>
                         </div>
@@ -940,11 +996,11 @@
                 
                 <div class="admin-stat-card">
                     <div class="admin-stat-icon">
-                        <i class="fas fa-signal"></i>
+                        <i class="fas fa-ban"></i>
                     </div>
                     <div class="admin-stat-info">
-                        <div class="admin-stat-value" id="adminOnlineNow">0</div>
-                        <div class="admin-stat-label">Online</div>
+                        <div class="admin-stat-value" id="adminBannedUsers">0</div>
+                        <div class="admin-stat-label">Banidos</div>
                     </div>
                 </div>
             </div>
@@ -963,6 +1019,9 @@
                 <button class="admin-tab" data-tab="security">
                     <i class="fas fa-shield-alt"></i> Segurança
                 </button>
+                <button class="admin-tab" data-tab="bans">
+                    <i class="fas fa-ban"></i> Banimentos
+                </button>
                 <button class="admin-tab" data-tab="logs">
                     <i class="fas fa-clipboard-list"></i> Logs
                 </button>
@@ -979,9 +1038,14 @@
                                    class="search-input" 
                                    id="adminUserSearch" 
                                    placeholder="Buscar por email ou nome...">
+                            <button class="btn btn-icon" onclick="refreshUsersList()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="users-list" id="adminUsersList"></div>
+                    <div class="users-list" id="adminUsersList">
+                        <!-- Usuários carregados dinamicamente -->
+                    </div>
                 </div>
                 
                 <!-- Painel Chat -->
@@ -997,32 +1061,148 @@
                             </button>
                         </div>
                     </div>
-                    <div class="admin-chat-messages" id="adminChatMessages"></div>
+                    <div class="admin-chat-messages" id="adminChatMessages">
+                        <!-- Mensagens do chat para admin -->
+                    </div>
                 </div>
                 
                 <!-- Painel Scripts -->
                 <div class="admin-panel-content" id="scriptsPanel">
                     <div class="panel-header">
                         <h4>Gerenciar Scripts</h4>
-                        <button class="btn btn-primary" onclick="showAddScriptModal()">
-                            <i class="fas fa-plus"></i> Adicionar Script
-                        </button>
+                        <div class="panel-actions">
+                            <button class="btn btn-primary" onclick="showAddScriptModal()">
+                                <i class="fas fa-plus"></i> Adicionar Script
+                            </button>
+                            <button class="btn btn-secondary" onclick="refreshScriptsAdmin()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="admin-scripts-list" id="adminScriptsList"></div>
+                    <div class="admin-scripts-list" id="adminScriptsList">
+                        <!-- Scripts para admin -->
+                    </div>
                 </div>
                 
                 <!-- Painel Segurança -->
                 <div class="admin-panel-content" id="securityPanel">
                     <div class="panel-header">
-                        <h4>Segurança</h4>
+                        <h4>Segurança do Sistema</h4>
                         <div class="panel-actions">
                             <button class="btn btn-danger" onclick="banAllFakeAdmins()">
                                 <i class="fas fa-ban"></i> Banir Falsos Admins
                             </button>
+                            <button class="btn btn-warning" onclick="scanForThreats()">
+                                <i class="fas fa-search"></i> Verificar Ameaças
+                            </button>
                         </div>
                     </div>
+                    
                     <div class="security-monitor">
-                        <!-- Monitor de segurança -->
+                        <div class="security-stats">
+                            <div class="security-stat">
+                                <div class="stat-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="securityThreats">0</div>
+                                    <div class="stat-label">Ameaças</div>
+                                </div>
+                            </div>
+                            
+                            <div class="security-stat">
+                                <div class="stat-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="securityWarnings">0</div>
+                                    <div class="stat-label">Alertas</div>
+                                </div>
+                            </div>
+                            
+                            <div class="security-stat">
+                                <div class="stat-icon">
+                                    <i class="fas fa-user-secret"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="securitySuspicious">0</div>
+                                    <div class="stat-label">Suspeitos</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="security-actions">
+                            <h5>Ações Rápidas</h5>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-danger" onclick="banByIP()">
+                                    <i class="fas fa-network-wired"></i> Banir por IP
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="muteByIP()">
+                                    <i class="fas fa-volume-mute"></i> Mutar por IP
+                                </button>
+                                <button class="btn btn-sm btn-info" onclick="viewIPLogs()">
+                                    <i class="fas fa-eye"></i> Ver Logs de IP
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="security-logs" id="securityLogs">
+                            <!-- Logs de segurança -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Painel Banimentos -->
+                <div class="admin-panel-content" id="bansPanel">
+                    <div class="panel-header">
+                        <h4>Gerenciar Banimentos</h4>
+                        <div class="panel-search">
+                            <input type="text" 
+                                   class="search-input" 
+                                   id="banSearch" 
+                                   placeholder="Buscar por IP, email ou motivo...">
+                        </div>
+                    </div>
+                    
+                    <div class="ban-filters">
+                        <button class="btn btn-sm btn-outline active" data-ban-filter="all">Todos</button>
+                        <button class="btn btn-sm btn-outline" data-ban-filter="ip">Por IP</button>
+                        <button class="btn btn-sm btn-outline" data-ban-filter="account">Por Conta</button>
+                        <button class="btn btn-sm btn-outline" data-ban-filter="permanent">Permanentes</button>
+                        <button class="btn btn-sm btn-outline" data-ban-filter="temporary">Temporários</button>
+                    </div>
+                    
+                    <div class="bans-list" id="adminBansList">
+                        <!-- Lista de banimentos -->
+                    </div>
+                    
+                    <div class="ban-actions">
+                        <h5>Banir por IP</h5>
+                        <div class="form-group">
+                            <input type="text" 
+                                   class="form-input" 
+                                   id="banIPInput" 
+                                   placeholder="Digite o IP (ex: 192.168.1.1)">
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-textarea" 
+                                      id="banReasonInput" 
+                                      rows="2" 
+                                      placeholder="Motivo do banimento..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Duração:</label>
+                            <select class="form-select" id="banDuration">
+                                <option value="3600000">1 Hora</option>
+                                <option value="86400000">1 Dia</option>
+                                <option value="604800000">1 Semana</option>
+                                <option value="2592000000">1 Mês</option>
+                                <option value="0">Permanente</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-danger" onclick="banByIPAdmin()">
+                            <i class="fas fa-ban"></i> Banir IP
+                        </button>
                     </div>
                 </div>
                 
@@ -1030,11 +1210,74 @@
                 <div class="admin-panel-content" id="logsPanel">
                     <div class="panel-header">
                         <h4>Logs do Sistema</h4>
-                        <button class="btn btn-secondary" onclick="refreshLogs()">
-                            <i class="fas fa-sync-alt"></i> Atualizar
-                        </button>
+                        <div class="panel-actions">
+                            <button class="btn btn-secondary" onclick="refreshLogs()">
+                                <i class="fas fa-sync-alt"></i> Atualizar
+                            </button>
+                            <button class="btn btn-danger" onclick="clearAllLogs()">
+                                <i class="fas fa-trash"></i> Limpar Logs
+                            </button>
+                        </div>
                     </div>
-                    <div class="admin-logs" id="adminLogs"></div>
+                    
+                    <div class="log-filters">
+                        <button class="btn btn-sm btn-outline active" data-log-type="all">Todos</button>
+                        <button class="btn btn-sm btn-outline" data-log-type="security">Segurança</button>
+                        <button class="btn btn-sm btn-outline" data-log-type="chat">Chat</button>
+                        <button class="btn btn-sm btn-outline" data-log-type="admin">Admin</button>
+                        <button class="btn btn-sm btn-outline" data-log-type="error">Erros</button>
+                    </div>
+                    
+                    <div class="admin-logs" id="adminLogs">
+                        <!-- Logs do sistema -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Delete Message -->
+    <div class="modal" id="deleteMessageModal">
+        <div class="modal-overlay" onclick="closeModal('deleteMessageModal')"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-trash"></i> EXCLUIR MENSAGEM
+                </h3>
+                <button class="modal-close" onclick="closeModal('deleteMessageModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-content">
+                <p>Tem certeza que deseja excluir esta mensagem?</p>
+                <div class="form-group">
+                    <label>Motivo:</label>
+                    <select class="form-select" id="deleteReason">
+                        <option value="">Selecione um motivo...</option>
+                        <option value="Spam ou flood">Spam ou flood</option>
+                        <option value="Conteúdo ofensivo">Conteúdo ofensivo</option>
+                        <option value="Divulgação indevida">Divulgação indevida</option>
+                        <option value="Assédio ou bullying">Assédio ou bullying</option>
+                        <option value="Conteúdo inapropriado">Conteúdo inapropriado</option>
+                        <option value="Auto-promoção">Auto-promoção</option>
+                        <option value="Discussão política">Discussão política</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="customReasonGroup" style="display: none;">
+                    <label>Outro motivo:</label>
+                    <input type="text" class="form-input" id="customReason" placeholder="Digite o motivo...">
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeModal('deleteMessageModal')">
+                        Cancelar
+                    </button>
+                    <button class="btn btn-danger" onclick="confirmDeleteMessage()">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
                 </div>
             </div>
         </div>
