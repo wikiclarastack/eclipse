@@ -8,7 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     
-    <!-- Firebase será configurado via JS -->
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body>
     <!-- Anti DevTools Warning -->
@@ -34,8 +37,15 @@
                 </div>
                 <div class="user-section">
                     <button id="loginBtn" class="btn btn-secondary">Login</button>
-                    <div id="userAvatar" class="user-avatar" style="display: none;"></div>
+                    <div id="userAvatar" class="user-avatar" style="display: none;">
+                        <button id="logoutBtn" class="profile-menu-item" style="display: none;">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </button>
+                    </div>
                 </div>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
             </nav>
         </div>
     </header>
@@ -64,7 +74,7 @@
                 <h2 class="section-title">CHAT</h2>
                 <div class="chat-section">
                     <div class="chat-header">
-                        Chat Global
+                        Chat Global <span id="onlineCount">0 online</span>
                     </div>
                     <div id="chatMessages" class="chat-messages"></div>
                     <div class="chat-input-container">
@@ -88,7 +98,7 @@
     <!-- Login Modal -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <span onclick="closeModal('loginModal')" class="close-modal">&times;</span>
+            <span class="close-modal">&times;</span>
             <h2>LOGIN</h2>
             <form id="loginForm">
                 <div class="form-group">
@@ -102,6 +112,30 @@
                     <a href="#" onclick="showRegister()">Criar conta</a>
                 </p>
             </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Panel -->
+    <div id="dashboardPanel" class="dashboard-panel">
+        <div class="close-modal" id="closeDashboard">&times;</div>
+        <h2>DASHBOARD ADMIN</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalScripts">0</div>
+                <div>Scripts Totais</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalMessages">0</div>
+                <div>Mensagens</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="dailyVisits">0</div>
+                <div>Visitas Hoje</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="onlineUsers">0</div>
+                <div>Usuários Online</div>
+            </div>
         </div>
     </div>
 
