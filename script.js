@@ -4,14 +4,14 @@
 
 // Configuração básica do Firebase (em produção, carregue do backend)
 const firebaseConfig = {
-    // Em produção, pegue essas credenciais do seu backend
-    apiKey: "AIzaSyCeAkDlLb3cAnYQvpo2BwHSB8qktUq7Zbg",
-    authDomain: "eclipsexploits.firebaseapp.com",
-    databaseURL: "https://eclipsexploits-default-rtdb.firebaseio.com",
-    projectId: "eclipsexploits",
-    storageBucket: "eclipsexploits.firebasestorage.app",
-    messagingSenderId: "126850895726",
-    appId: "1:126850895726:web:94e544d9f2d373671abb7f"
+  apiKey: "AIzaSyCeAkDlLb3cAnYQvpo2BwHSB8qktUq7Zbg",
+  authDomain: "eclipsexploits.firebaseapp.com",
+  databaseURL: "https://eclipsexploits-default-rtdb.firebaseio.com",
+  projectId: "eclipsexploits",
+  storageBucket: "eclipsexploits.firebasestorage.app",
+  messagingSenderId: "126850895726",
+  appId: "1:126850895726:web:94e544d9f2d373671abb7f",
+  measurementId: "G-LH6C7CXH10"
 };
 
 // Inicializar Firebase
