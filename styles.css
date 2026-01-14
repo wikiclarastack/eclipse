@@ -780,6 +780,20 @@ footer::before {
         z-index: 1001;
         display: none;
     }
+
+    /* Adicione esta classe no final do seu CSS */
+.user-avatar.online::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 10px;
+    height: 10px;
+    background: linear-gradient(45deg, var(--success), #34d399);
+    border-radius: 50%;
+    border: 2px solid var(--dark);
+    animation: pulse 2s infinite;
+}
     
     .nav-links.active {
         display: flex;
