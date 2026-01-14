@@ -5,258 +5,457 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EclipseXploits Studio</title>
     
-    <!-- Fontes e Ícones -->
+    <!-- Fontes -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
     <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Particles Background -->
-    <div id="particles-js"></div>
-    
-    <!-- Anti DevTools Warning -->
-    <div id="devtools-detected" class="devtools-warning">
-        <div class="warning-content">
-            <h2><i class="fas fa-skull-crossbones"></i> ACESSO NEGADO</h2>
-            <p>Ferramentas de desenvolvimento detectadas</p>
-            <button onclick="document.getElementById('devtools-detected').style.display='none'" class="btn btn-danger">
-                <i class="fas fa-times"></i> FECHAR
-            </button>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader">
+            <div class="orbit"></div>
+            <div class="moon"></div>
+            <div class="planet"></div>
         </div>
+        <h2>EclipseXploits</h2>
+        <p>Inicializando sistema...</p>
     </div>
 
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
+
     <!-- Header -->
-    <header>
+    <header class="header">
         <div class="container">
-            <nav>
+            <nav class="navbar">
+                <!-- Logo -->
                 <a href="#home" class="logo">
-                    <i class="fas fa-meteor"></i> Eclipse<span>Xploits</span>
+                    <i class="fas fa-meteor logo-icon"></i>
+                    <span class="logo-text">Eclipse<span class="logo-accent">Xploits</span></span>
                 </a>
-                <div class="nav-links">
-                    <a href="#home" class="nav-link">Home</a>
-                    <a href="#scripts" class="nav-link">Scripts</a>
-                    <a href="#features" class="nav-link">Recursos</a>
-                    <a href="#ranking" class="nav-link">Ranking</a>
-                    <a href="#chat" class="nav-link">Chat</a>
+
+                <!-- Menu Principal -->
+                <div class="nav-menu">
+                    <a href="#home" class="nav-link active" data-section="home">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="#scripts" class="nav-link" data-section="scripts">
+                        <i class="fas fa-code"></i> Scripts
+                    </a>
+                    <a href="#features" class="nav-link" data-section="features">
+                        <i class="fas fa-star"></i> Recursos
+                    </a>
+                    <a href="#ranking" class="nav-link" data-section="ranking">
+                        <i class="fas fa-trophy"></i> Ranking
+                    </a>
+                    <a href="#chat" class="nav-link" data-section="chat">
+                        <i class="fas fa-comments"></i> Chat
+                    </a>
                 </div>
-                <div class="user-section">
-                    <button id="musicToggle" class="btn-icon" title="Música">
+
+                <!-- Controles do Usuário -->
+                <div class="user-controls">
+                    <button class="control-btn music-toggle" id="musicToggle" title="Música">
                         <i class="fas fa-volume-up"></i>
                     </button>
-                    <button id="themeToggle" class="btn-icon" title="Tema">
+                    <button class="control-btn theme-toggle" id="themeToggle" title="Tema">
                         <i class="fas fa-moon"></i>
                     </button>
-                    <button id="loginBtn" class="btn btn-secondary">Login</button>
-                    <div id="userAvatar" class="user-avatar" style="display: none;">
-                        <div class="avatar-initial">U</div>
-                        <!-- Menu de Perfil -->
-                        <div class="profile-menu">
-                            <a href="#" onclick="showProfileModal()"><i class="fas fa-user"></i> Meu Perfil</a>
-                            <a href="#" onclick="showSettingsModal()"><i class="fas fa-cog"></i> Configurações</a>
-                            <a href="#" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Sair</a>
+                    
+                    <!-- Avatar do Usuário -->
+                    <div class="user-avatar-container" id="userAvatarContainer" style="display: none;">
+                        <div class="user-avatar" id="userAvatar">
+                            <div class="avatar-initial">U</div>
+                            <div class="online-indicator"></div>
+                        </div>
+                        
+                        <!-- Menu Dropdown do Perfil -->
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <div class="dropdown-header">
+                                <div class="dropdown-avatar">
+                                    <div class="avatar-initial-small">U</div>
+                                </div>
+                                <div class="dropdown-user-info">
+                                    <strong id="dropdownUsername">Usuário</strong>
+                                    <small id="dropdownEmail">email@exemplo.com</small>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item" onclick="showProfileModal()">
+                                <i class="fas fa-user"></i> Meu Perfil
+                            </a>
+                            <a href="#" class="dropdown-item" onclick="showSettingsModal()">
+                                <i class="fas fa-cog"></i> Configurações
+                            </a>
+                            <a href="#" class="dropdown-item" onclick="logoutUser()">
+                                <i class="fas fa-sign-out-alt"></i> Sair
+                            </a>
                         </div>
                     </div>
+
+                    <!-- Botão de Login -->
+                    <button class="btn btn-login" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
                 </div>
-                <button class="mobile-menu-btn">
+
+                <!-- Menu Mobile -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
                     <i class="fas fa-bars"></i>
                 </button>
             </nav>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main>
-        <!-- Home Section -->
-        <section id="home" class="hero">
+    <!-- Menu Mobile -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <a href="#home" class="mobile-nav-link active" data-section="home">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="#scripts" class="mobile-nav-link" data-section="scripts">
+                <i class="fas fa-code"></i> Scripts
+            </a>
+            <a href="#features" class="mobile-nav-link" data-section="features">
+                <i class="fas fa-star"></i> Recursos
+            </a>
+            <a href="#ranking" class="mobile-nav-link" data-section="ranking">
+                <i class="fas fa-trophy"></i> Ranking
+            </a>
+            <a href="#chat" class="mobile-nav-link" data-section="chat">
+                <i class="fas fa-comments"></i> Chat
+            </a>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Seção Home -->
+        <section id="home" class="section active">
             <div class="container">
-                <div class="hero-content">
-                    <h1 class="hero-title">
-                        <span class="eclipse-text">ECLIPSE</span>
-                        <span class="xploits-text">XPLOITS</span>
-                        <span class="studio-text">STUDIO</span>
-                    </h1>
-                    <p class="hero-subtitle">Scripts premium para Roblox • Hack avançado • Suporte 24/7</p>
-                    
-                    <div class="hero-stats">
-                        <div class="stat">
-                            <div class="stat-icon">
-                                <i class="fas fa-code"></i>
+                <div class="hero">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            <span class="title-line">ECLIPSE</span>
+                            <span class="title-line accent">XPLOITS</span>
+                            <span class="title-line">STUDIO</span>
+                        </h1>
+                        
+                        <p class="hero-subtitle">
+                            Scripts premium para Roblox • Hack avançado • Suporte 24/7
+                        </p>
+
+                        <!-- Estatísticas em Tempo Real -->
+                        <div class="hero-stats">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-number" id="totalScripts">150+</div>
+                                    <div class="stat-label">Scripts</div>
+                                </div>
                             </div>
-                            <div class="stat-content">
-                                <div class="stat-number" id="totalScriptsCount">150+</div>
-                                <div class="stat-label">Scripts</div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-number" id="onlineUsers">0</div>
+                                    <div class="stat-label">Online</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-download"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-number" id="totalDownloads">10K+</div>
+                                    <div class="stat-label">Downloads</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-number">4.9</div>
+                                    <div class="stat-label">Avaliação</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="stat">
-                            <div class="stat-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-number" id="onlineUsersCount">0</div>
-                                <div class="stat-label">Online</div>
-                            </div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-icon">
-                                <i class="fas fa-download"></i>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-number" id="totalDownloads">10K+</div>
-                                <div class="stat-label">Downloads</div>
-                            </div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-icon">
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-number">4.9</div>
-                                <div class="stat-label">Avaliação</div>
-                            </div>
+
+                        <!-- Botões de Ação -->
+                        <div class="hero-actions">
+                            <button class="btn btn-primary btn-lg" onclick="showSection('scripts')">
+                                <i class="fas fa-rocket"></i> Explorar Scripts
+                            </button>
+                            <button class="btn btn-outline btn-lg" onclick="showSection('chat')">
+                                <i class="fas fa-comments"></i> Entrar no Chat
+                            </button>
                         </div>
                     </div>
-                    
-                    <div class="hero-buttons">
-                        <button onclick="scrollToSection('scripts')" class="btn btn-primary btn-explore">
-                            <i class="fas fa-rocket"></i> EXPLORAR SCRIPTS
-                        </button>
-                        <button onclick="showSection('chat')" class="btn btn-chat">
-                            <i class="fas fa-comments"></i> ENTRAR NO CHAT
-                        </button>
+
+                    <!-- Ilustração/Animação -->
+                    <div class="hero-animation">
+                        <div class="floating-elements">
+                            <div class="floating-element element-1">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="floating-element element-2">
+                                <i class="fas fa-gamepad"></i>
+                            </div>
+                            <div class="floating-element element-3">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Scripts Section -->
+        <!-- Seção Scripts -->
         <section id="scripts" class="section">
             <div class="container">
                 <div class="section-header">
-                    <h2 class="section-title">SCRIPTS PREMIUM</h2>
-                    <p class="section-subtitle">Seleção exclusiva de scripts para diversos jogos</p>
-                    
-                    <div class="search-filter">
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="scriptSearch" placeholder="Buscar scripts..." class="search-input">
+                    <h2 class="section-title">
+                        <i class="fas fa-code"></i> SCRIPTS PREMIUM
+                    </h2>
+                    <p class="section-subtitle">
+                        Seleção exclusiva de scripts para diversos jogos
+                    </p>
+
+                    <!-- Barra de Busca e Filtros -->
+                    <div class="search-container">
+                        <div class="search-bar">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" 
+                                   class="search-input" 
+                                   id="scriptSearch" 
+                                   placeholder="Buscar scripts por nome, jogo ou descrição...">
+                            <button class="search-clear" id="clearSearch">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
-                        <select id="gameFilter" class="filter-select">
-                            <option value="">Todos os Jogos</option>
-                            <option value="blox fruits">Blox Fruits</option>
-                            <option value="pet simulator">Pet Simulator</option>
-                            <option value="arsenal">Arsenal</option>
-                            <option value="bedwars">BedWars</option>
-                        </select>
-                        <button id="refreshScripts" class="btn-icon" title="Atualizar">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
+                        
+                        <div class="filters">
+                            <select class="filter-select" id="gameFilter">
+                                <option value="">Todos os Jogos</option>
+                                <option value="blox-fruits">Blox Fruits</option>
+                                <option value="pet-simulator">Pet Simulator</option>
+                                <option value="arsenal">Arsenal</option>
+                                <option value="bedwars">BedWars</option>
+                                <option value="murder-mystery">Murder Mystery</option>
+                            </select>
+                            
+                            <select class="filter-select" id="sortFilter">
+                                <option value="newest">Mais Recentes</option>
+                                <option value="popular">Mais Populares</option>
+                                <option value="downloads">Mais Baixados</option>
+                            </select>
+                            
+                            <button class="btn btn-icon" id="refreshScripts" title="Atualizar">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                
-                <div id="scriptsList" class="scripts-grid"></div>
+
+                <!-- Grid de Scripts -->
+                <div class="scripts-grid" id="scriptsGrid">
+                    <!-- Scripts carregados dinamicamente -->
+                </div>
+
+                <!-- Loader -->
+                <div class="loader-container" id="scriptsLoader">
+                    <div class="loader-spinner"></div>
+                    <p>Carregando scripts...</p>
+                </div>
             </div>
         </section>
 
-        <!-- Features Section -->
-        <section id="features" class="section bg-dark">
+        <!-- Seção Recursos -->
+        <section id="features" class="section">
             <div class="container">
-                <h2 class="section-title">RECURSOS EXCLUSIVOS</h2>
-                <p class="section-subtitle">Tudo o que você precisa para dominar o Roblox</p>
-                
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-star"></i> RECURSOS EXCLUSIVOS
+                    </h2>
+                    <p class="section-subtitle">
+                        Tudo o que você precisa para dominar o Roblox
+                    </p>
+                </div>
+
                 <div class="features-grid">
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-shield-alt"></i>
                         </div>
-                        <h3>Anti-Ban</h3>
-                        <p>Sistema avançado de proteção contra detecção</p>
+                        <h3 class="feature-title">Anti-Ban</h3>
+                        <p class="feature-description">
+                            Sistema avançado de proteção contra detecção
+                        </p>
                     </div>
-                    
+
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-bolt"></i>
                         </div>
-                        <h3>Atualizações Diárias</h3>
-                        <p>Scripts atualizados constantemente</p>
+                        <h3 class="feature-title">Atualizações Diárias</h3>
+                        <p class="feature-description">
+                            Scripts atualizados constantemente
+                        </p>
                     </div>
-                    
+
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-headset"></i>
                         </div>
-                        <h3>Suporte VIP</h3>
-                        <p>Atendimento prioritário 24/7</p>
+                        <h3 class="feature-title">Suporte VIP</h3>
+                        <p class="feature-description">
+                            Atendimento prioritário 24/7
+                        </p>
                     </div>
-                    
+
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-code-branch"></i>
                         </div>
-                        <h3>Multi-Hack</h3>
-                        <p>Funções ilimitadas em um só script</p>
+                        <h3 class="feature-title">Multi-Hack</h3>
+                        <p class="feature-description">
+                            Funções ilimitadas em um só script
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <h3 class="feature-title">Modo Fantasma</h3>
+                        <p class="feature-description">
+                            Execução invisível
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Mobile Support</h3>
+                        <p class="feature-description">
+                            Compatível com Android/iOS
+                        </p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Ranking Section -->
+        <!-- Seção Ranking -->
         <section id="ranking" class="section">
             <div class="container">
-                <h2 class="section-title">RANKING DE USUÁRIOS</h2>
-                <p class="section-subtitle">Os mais ativos da comunidade</p>
-                
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-trophy"></i> RANKING DE USUÁRIOS
+                    </h2>
+                    <p class="section-subtitle">
+                        Os mais ativos da comunidade
+                    </p>
+                </div>
+
                 <div class="ranking-container">
-                    <div class="ranking-header">
-                        <div class="ranking-tabs">
-                            <button class="ranking-tab active" data-tab="weekly">Semanal</button>
-                            <button class="ranking-tab" data-tab="monthly">Mensal</button>
-                            <button class="ranking-tab" data-tab="alltime">Geral</button>
+                    <!-- Tabs do Ranking -->
+                    <div class="ranking-tabs">
+                        <button class="ranking-tab active" data-period="weekly">
+                            <i class="fas fa-calendar-week"></i> Semanal
+                        </button>
+                        <button class="ranking-tab" data-period="monthly">
+                            <i class="fas fa-calendar-alt"></i> Mensal
+                        </button>
+                        <button class="ranking-tab" data-period="alltime">
+                            <i class="fas fa-award"></i> Geral
+                        </button>
+                    </div>
+
+                    <!-- Estatísticas do Ranking -->
+                    <div class="ranking-stats">
+                        <div class="ranking-stat">
+                            <i class="fas fa-users"></i>
+                            <span>Total: <strong id="totalRankingUsers">0</strong></span>
                         </div>
-                        <div class="ranking-stats">
-                            <span><i class="fas fa-user"></i> Total: <span id="totalUsers">0</span></span>
-                            <span><i class="fas fa-crown"></i> Top: <span id="topUser">-</span></span>
+                        <div class="ranking-stat">
+                            <i class="fas fa-crown"></i>
+                            <span>Top: <strong id="topRankingUser">-</strong></span>
                         </div>
                     </div>
-                    
-                    <div class="ranking-list" id="rankingList"></div>
+
+                    <!-- Lista do Ranking -->
+                    <div class="ranking-list" id="rankingList">
+                        <!-- Ranking carregado dinamicamente -->
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Chat Section -->
-        <section id="chat" class="section chat-section" style="display: none;">
+        <!-- Seção Chat -->
+        <section id="chat" class="section">
             <div class="container">
-                <div class="chat-header-bar">
-                    <button onclick="showSection('home')" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-arrow-left"></i> Voltar
-                    </button>
-                    <h2 class="chat-title">Chat Global</h2>
-                    <div class="chat-stats">
-                        <span class="online-indicator"></span>
-                        <span id="onlineCount">0 online</span>
-                    </div>
-                </div>
-                
                 <div class="chat-container">
-                    <div id="chatMessages" class="chat-messages"></div>
-                    
+                    <!-- Cabeçalho do Chat -->
+                    <div class="chat-header">
+                        <div class="chat-header-left">
+                            <button class="btn btn-icon btn-back" onclick="showSection('home')">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h2 class="chat-title">
+                                <i class="fas fa-comments"></i> CHAT GLOBAL
+                            </h2>
+                        </div>
+                        
+                        <div class="chat-header-right">
+                            <div class="chat-stats">
+                                <div class="online-indicator"></div>
+                                <span id="chatOnlineCount">0</span> online
+                            </div>
+                            <div class="message-count">
+                                <span id="totalMessages">0</span> mensagens
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Área de Mensagens -->
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Mensagens carregadas dinamicamente -->
+                    </div>
+
+                    <!-- Input de Chat -->
                     <div class="chat-input-container">
                         <div class="chat-input-wrapper">
-                            <input type="text" id="chatInput" class="chat-input" placeholder="Faça login para usar o chat" disabled>
-                            <button id="emojiBtn" class="btn-icon" disabled title="Emoji">
-                                <i class="fas fa-smile"></i>
-                            </button>
+                            <input type="text" 
+                                   class="chat-input" 
+                                   id="chatInput" 
+                                   placeholder="Digite sua mensagem..." 
+                                   disabled>
+                            <div class="chat-input-actions">
+                                <button class="btn-icon chat-action-btn" id="emojiBtn" disabled>
+                                    <i class="fas fa-smile"></i>
+                                </button>
+                                <button class="btn-icon chat-action-btn" id="attachBtn" disabled>
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                            </div>
                         </div>
-                        <button id="sendMessageBtn" class="btn btn-primary send-btn" disabled>
+                        <button class="btn btn-primary chat-send-btn" id="sendMessageBtn" disabled>
                             <i class="fas fa-paper-plane"></i>
                         </button>
+                    </div>
+
+                    <!-- Dicas do Chat -->
+                    <div class="chat-tips">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Pressione Enter para enviar • Shift+Enter para nova linha</span>
                     </div>
                 </div>
             </div>
@@ -264,186 +463,320 @@
     </main>
 
     <!-- Footer -->
-    <footer>
+    <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-section">
-                    <h3><i class="fas fa-meteor"></i> EclipseXploits</h3>
-                    <p>Comunidade premium de scripts para Roblox</p>
+                <!-- Coluna 1: Logo e Sobre -->
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <i class="fas fa-meteor"></i>
+                        <span>EclipseXploits</span>
+                    </div>
+                    <p class="footer-description">
+                        Comunidade premium de scripts para Roblox
+                    </p>
                     <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
                     </div>
                 </div>
-                
-                <div class="footer-section">
-                    <h4>Links Rápidos</h4>
-                    <a href="#home">Home</a>
-                    <a href="#scripts">Scripts</a>
-                    <a href="#features">Recursos</a>
-                    <a href="#ranking">Ranking</a>
-                    <a href="#chat">Chat</a>
+
+                <!-- Coluna 2: Links Rápidos -->
+                <div class="footer-column">
+                    <h4 class="footer-title">Links Rápidos</h4>
+                    <a href="#home" class="footer-link">Home</a>
+                    <a href="#scripts" class="footer-link">Scripts</a>
+                    <a href="#features" class="footer-link">Recursos</a>
+                    <a href="#ranking" class="footer-link">Ranking</a>
+                    <a href="#chat" class="footer-link">Chat</a>
                 </div>
-                
-                <div class="footer-section">
-                    <h4>Suporte</h4>
-                    <a href="#" onclick="showSupportModal()">Reportar Bug</a>
-                    <a href="#" onclick="showSupportModal()">Sugestões</a>
+
+                <!-- Coluna 3: Suporte -->
+                <div class="footer-column">
+                    <h4 class="footer-title">Suporte</h4>
+                    <a href="#" class="footer-link" onclick="showSupportModal()">Reportar Bug</a>
+                    <a href="#" class="footer-link" onclick="showSupportModal()">Sugestões</a>
+                    <a href="#" class="footer-link" onclick="showSupportModal()">Contato</a>
+                </div>
+
+                <!-- Coluna 4: Estatísticas -->
+                <div class="footer-column">
+                    <h4 class="footer-title">Estatísticas</h4>
+                    <div class="footer-stats">
+                        <div class="footer-stat">
+                            <i class="fas fa-users"></i>
+                            <span>Online: <strong id="footerOnline">0</strong></span>
+                        </div>
+                        <div class="footer-stat">
+                            <i class="fas fa-code"></i>
+                            <span>Scripts: <strong id="footerScripts">0</strong></span>
+                        </div>
+                        <div class="footer-stat">
+                            <i class="fas fa-server"></i>
+                            <span>Uptime: <strong>99.9%</strong></span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
-                <p>© 2026 EclipseXploits Studio • <span id="serverTime">--:--:--</span></p>
-                <p class="warning-text">
-                    <i class="fas fa-exclamation-triangle"></i> Apenas para fins educacionais
-                </p>
+                <div class="footer-bottom-content">
+                    <p class="copyright">
+                        © 2026 EclipseXploits Studio • 
+                        <span id="serverTime">--:--:--</span>
+                    </p>
+                    <p class="warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Apenas para fins educacionais
+                    </p>
+                </div>
             </div>
         </div>
     </footer>
 
-    <!-- MODALS -->
+    <!-- Botão Admin (Flutuante) -->
+    <button class="admin-float-btn" id="adminFloatBtn" style="display: none;">
+        <i class="fas fa-crown"></i>
+    </button>
 
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
+    <!-- ==============================================
+         MODALS
+    ============================================== -->
+
+    <!-- Modal de Login -->
+    <div class="modal" id="loginModal">
+        <div class="modal-overlay" onclick="closeModal('loginModal')"></div>
+        <div class="modal-container">
             <div class="modal-header">
-                <h2><i class="fas fa-sign-in-alt"></i> LOGIN</h2>
-                <p>Acesso exclusivo à comunidade</p>
+                <h3 class="modal-title">
+                    <i class="fas fa-sign-in-alt"></i> LOGIN
+                </h3>
+                <button class="modal-close" onclick="closeModal('loginModal')">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="loginEmail"><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" id="loginEmail" class="form-control" placeholder="seu@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword"><i class="fas fa-lock"></i> Senha</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
-                        <div class="password-toggle">
-                            <i class="fas fa-eye" id="toggleLoginPassword"></i>
+            <div class="modal-content">
+                <form class="auth-form" id="loginForm">
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        <input type="email" 
+                               id="email" 
+                               class="form-input" 
+                               placeholder="seu@email.com" 
+                               required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock"></i> Senha
+                        </label>
+                        <div class="password-input-wrapper">
+                            <input type="password" 
+                                   id="password" 
+                                   class="form-input" 
+                                   placeholder="••••••••" 
+                                   required>
+                            <button type="button" class="password-toggle" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
                     </div>
-                </div>
-                
-                <div class="form-options">
-                    <label class="checkbox">
-                        <input type="checkbox" id="rememberMe">
-                        <span>Lembrar-me</span>
-                    </label>
-                </div>
-                
-                <button type="submit" class="btn btn-primary btn-block">
-                    <i class="fas fa-sign-in-alt"></i> ENTRAR
-                </button>
-                
-                <div class="divider">
-                    <span>OU</span>
-                </div>
-                
-                <button type="button" onclick="showRegisterModal()" class="btn btn-outline btn-block">
-                    <i class="fas fa-user-plus"></i> CRIAR CONTA
-                </button>
-            </form>
+                    
+                    <div class="form-options">
+                        <label class="checkbox">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="checkbox-label">Lembrar-me</span>
+                        </label>
+                        <a href="#" class="forgot-link" onclick="showForgotPassword()">
+                            Esqueci a senha
+                        </a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-sign-in-alt"></i> ENTRAR
+                    </button>
+                    
+                    <div class="auth-divider">
+                        <span>ou</span>
+                    </div>
+                    
+                    <button type="button" class="btn btn-outline btn-block" onclick="showRegisterModal()">
+                        <i class="fas fa-user-plus"></i> CRIAR CONTA
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- Register Modal -->
-    <div id="registerModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
+    <!-- Modal de Registro -->
+    <div class="modal" id="registerModal">
+        <div class="modal-overlay" onclick="closeModal('registerModal')"></div>
+        <div class="modal-container">
             <div class="modal-header">
-                <h2><i class="fas fa-user-plus"></i> REGISTRO</h2>
-                <p>Crie sua conta na comunidade</p>
+                <h3 class="modal-title">
+                    <i class="fas fa-user-plus"></i> REGISTRO
+                </h3>
+                <button class="modal-close" onclick="closeModal('registerModal')">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="regUsername"><i class="fas fa-user"></i> Nome de Usuário</label>
-                    <input type="text" id="regUsername" class="form-control" placeholder="Escolha um nome" required>
-                </div>
-                <div class="form-group">
-                    <label for="regEmail"><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" id="regEmail" class="form-control" placeholder="seu@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="regPassword"><i class="fas fa-lock"></i> Senha</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="regPassword" class="form-control" placeholder="••••••••" required>
-                        <div class="password-toggle">
-                            <i class="fas fa-eye" id="toggleRegPassword"></i>
+            <div class="modal-content">
+                <form class="auth-form" id="registerForm">
+                    <div class="form-group">
+                        <label for="regUsername" class="form-label">
+                            <i class="fas fa-user"></i> Nome de Usuário
+                        </label>
+                        <input type="text" 
+                               id="regUsername" 
+                               class="form-input" 
+                               placeholder="Escolha um nome" 
+                               required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regEmail" class="form-label">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        <input type="email" 
+                               id="regEmail" 
+                               class="form-input" 
+                               placeholder="seu@email.com" 
+                               required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regPassword" class="form-label">
+                            <i class="fas fa-lock"></i> Senha
+                        </label>
+                        <div class="password-input-wrapper">
+                            <input type="password" 
+                                   id="regPassword" 
+                                   class="form-input" 
+                                   placeholder="••••••••" 
+                                   required>
+                            <button type="button" class="password-toggle" id="toggleRegPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
                     </div>
-                </div>
-                
-                <button type="submit" class="btn btn-primary btn-block">
-                    <i class="fas fa-user-plus"></i> CRIAR CONTA
-                </button>
-                
-                <div class="divider">
-                    <span>OU</span>
-                </div>
-                
-                <button type="button" onclick="showLoginModal()" class="btn btn-outline btn-block">
-                    <i class="fas fa-sign-in-alt"></i> JÁ TENHO CONTA
-                </button>
-            </form>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-user-plus"></i> CRIAR CONTA
+                    </button>
+                    
+                    <div class="auth-divider">
+                        <span>ou</span>
+                    </div>
+                    
+                    <button type="button" class="btn btn-outline btn-block" onclick="showLoginModal()">
+                        <i class="fas fa-sign-in-alt"></i> JÁ TENHO CONTA
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- Profile Modal -->
-    <div id="profileModal" class="modal">
-        <div class="modal-content profile-modal">
-            <span class="close-modal">&times;</span>
+    <!-- Modal de Perfil -->
+    <div class="modal" id="profileModal">
+        <div class="modal-overlay" onclick="closeModal('profileModal')"></div>
+        <div class="modal-container profile-modal">
             <div class="modal-header">
-                <h2><i class="fas fa-user"></i> MEU PERFIL</h2>
+                <h3 class="modal-title">
+                    <i class="fas fa-user"></i> MEU PERFIL
+                </h3>
+                <button class="modal-close" onclick="closeModal('profileModal')">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             
-            <div class="profile-content">
+            <div class="modal-content">
+                <!-- Banner do Perfil -->
                 <div class="profile-banner" id="profileBanner">
-                    <div class="banner-overlay"></div>
+                    <div class="banner-overlay">
+                        <button class="btn-banner-edit" onclick="editBanner()">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
                 </div>
                 
+                <!-- Informações do Perfil -->
                 <div class="profile-info">
-                    <div class="profile-avatar" id="profileAvatar">
-                        <div class="avatar-initial-large">U</div>
-                        <div class="avatar-upload">
-                            <i class="fas fa-camera"></i>
+                    <div class="profile-avatar-container">
+                        <div class="profile-avatar" id="profileAvatar">
+                            <div class="avatar-initial-large">U</div>
+                            <button class="btn-avatar-edit" onclick="editAvatar()">
+                                <i class="fas fa-camera"></i>
+                            </button>
                         </div>
                     </div>
                     
                     <div class="profile-details">
-                        <h3 id="profileUsername">Usuário</h3>
-                        <p id="profileEmail">email@exemplo.com</p>
-                        <div class="profile-badge" id="profileBadge">Membro</div>
+                        <h4 class="profile-name" id="profileName">Usuário</h4>
+                        <p class="profile-email" id="profileEmailText">email@exemplo.com</p>
+                        <div class="profile-badges">
+                            <span class="badge badge-member" id="profileBadge">
+                                <i class="fas fa-user"></i> Membro
+                            </span>
+                        </div>
                     </div>
                 </div>
                 
+                <!-- Bio -->
                 <div class="profile-bio">
-                    <h4><i class="fas fa-quote-left"></i> Bio</h4>
-                    <p id="profileBioText">Nenhuma bio definida.</p>
-                    <button onclick="editBio()" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-edit"></i> Editar Bio
-                    </button>
+                    <div class="bio-header">
+                        <h5><i class="fas fa-quote-left"></i> Bio</h5>
+                        <button class="btn-bio-edit" onclick="editBio()">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    <p class="bio-content" id="profileBio">Nenhuma bio definida.</p>
                 </div>
                 
+                <!-- Estatísticas do Perfil -->
                 <div class="profile-stats">
-                    <div class="stat-item">
-                        <div class="stat-number" id="profileMessages">0</div>
+                    <div class="profile-stat">
+                        <div class="stat-icon">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <div class="stat-value" id="profileMessagesCount">0</div>
                         <div class="stat-label">Mensagens</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="profileDownloads">0</div>
+                    
+                    <div class="profile-stat">
+                        <div class="stat-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="stat-value" id="profileDownloadsCount">0</div>
                         <div class="stat-label">Downloads</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="profileLogins">0</div>
+                    
+                    <div class="profile-stat">
+                        <div class="stat-icon">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <div class="stat-value" id="profileLoginsCount">0</div>
                         <div class="stat-label">Logins</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="profileScore">0</div>
+                    
+                    <div class="profile-stat">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-value" id="profileScore">0</div>
                         <div class="stat-label">Pontos</div>
                     </div>
                 </div>
@@ -451,89 +784,105 @@
         </div>
     </div>
 
-    <!-- Settings Modal -->
-    <div id="settingsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
+    <!-- Modal de Configurações -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-overlay" onclick="closeModal('settingsModal')"></div>
+        <div class="modal-container">
             <div class="modal-header">
-                <h2><i class="fas fa-cog"></i> CONFIGURAÇÕES</h2>
+                <h3 class="modal-title">
+                    <i class="fas fa-cog"></i> CONFIGURAÇÕES
+                </h3>
+                <button class="modal-close" onclick="closeModal('settingsModal')">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             
-            <div class="settings-tabs">
-                <button class="settings-tab active" data-tab="account">Conta</button>
-                <button class="settings-tab" data-tab="appearance">Aparência</button>
-                <button class="settings-tab" data-tab="privacy">Privacidade</button>
-            </div>
-            
-            <div class="settings-content">
-                <!-- Account Settings -->
-                <div class="settings-panel active" id="accountPanel">
-                    <h3>Configurações da Conta</h3>
-                    <div class="form-group">
-                        <label>Foto de Perfil</label>
-                        <div class="avatar-upload-section">
-                            <div class="current-avatar">
-                                <div class="avatar-preview" id="avatarPreview">U</div>
-                            </div>
-                            <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
-                            <button onclick="document.getElementById('avatarUpload').click()" class="btn btn-secondary">
-                                <i class="fas fa-upload"></i> Alterar Foto
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Banner de Perfil</label>
-                        <input type="file" id="bannerUpload" accept="image/*" class="form-control-file">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Bio</label>
-                        <textarea id="bioInput" class="form-control" rows="3" placeholder="Escreva algo sobre você..."></textarea>
-                    </div>
-                    
-                    <button onclick="saveProfileSettings()" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Salvar Alterações
+            <div class="modal-content">
+                <div class="settings-tabs">
+                    <button class="settings-tab active" data-tab="account">
+                        <i class="fas fa-user-cog"></i> Conta
+                    </button>
+                    <button class="settings-tab" data-tab="appearance">
+                        <i class="fas fa-palette"></i> Aparência
+                    </button>
+                    <button class="settings-tab" data-tab="privacy">
+                        <i class="fas fa-shield-alt"></i> Privacidade
                     </button>
                 </div>
                 
-                <!-- Appearance Settings -->
-                <div class="settings-panel" id="appearancePanel">
-                    <h3>Aparência</h3>
-                    <div class="form-group">
-                        <label>Tema</label>
-                        <select id="themeSelect" class="form-control">
-                            <option value="dark">Escuro</option>
-                            <option value="light">Claro</option>
-                            <option value="auto">Automático</option>
-                        </select>
+                <div class="settings-content">
+                    <!-- Conta -->
+                    <div class="settings-panel active" id="accountPanel">
+                        <div class="form-group">
+                            <label>Foto de Perfil</label>
+                            <div class="avatar-upload">
+                                <div class="avatar-preview" id="avatarPreview">
+                                    <div class="avatar-initial-preview">U</div>
+                                </div>
+                                <button class="btn btn-secondary" onclick="uploadAvatar()">
+                                    <i class="fas fa-upload"></i> Alterar Foto
+                                </button>
+                                <input type="file" id="avatarFile" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Banner</label>
+                            <button class="btn btn-secondary" onclick="uploadBanner()">
+                                <i class="fas fa-image"></i> Alterar Banner
+                            </button>
+                            <input type="file" id="bannerFile" accept="image/*" style="display: none;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Bio</label>
+                            <textarea class="form-textarea" 
+                                      id="settingsBio" 
+                                      rows="3" 
+                                      placeholder="Escreva algo sobre você..."></textarea>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="saveProfileSettings()">
+                            <i class="fas fa-save"></i> Salvar Alterações
+                        </button>
                     </div>
                     
-                    <div class="form-group">
-                        <label>Música de Fundo</label>
-                        <div class="checkbox">
-                            <input type="checkbox" id="musicToggleSetting" checked>
-                            <span>Ativar música de fundo</span>
+                    <!-- Aparência -->
+                    <div class="settings-panel" id="appearancePanel">
+                        <div class="form-group">
+                            <label>Tema</label>
+                            <select class="form-select" id="themeSelect">
+                                <option value="dark">Escuro</option>
+                                <option value="light">Claro</option>
+                                <option value="auto">Automático</option>
+                            </select>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Privacy Settings -->
-                <div class="settings-panel" id="privacyPanel">
-                    <h3>Privacidade</h3>
-                    <div class="form-group">
-                        <label>Perfil Público</label>
-                        <div class="checkbox">
-                            <input type="checkbox" id="publicProfile" checked>
-                            <span>Tornar perfil público</span>
+                        
+                        <div class="form-group">
+                            <label>Música de Fundo</label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="musicToggleSetting" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label>Mostrar Online</label>
-                        <div class="checkbox">
-                            <input type="checkbox" id="showOnline" checked>
-                            <span>Mostrar status online</span>
+                    <!-- Privacidade -->
+                    <div class="settings-panel" id="privacyPanel">
+                        <div class="form-group">
+                            <label>Perfil Público</label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="publicProfile" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Mostrar Status Online</label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="showOnline" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -541,87 +890,151 @@
         </div>
     </div>
 
-    <!-- Admin Dashboard Button -->
-    <button id="adminDashboardBtn" class="admin-btn" style="display: none;">
-        <i class="fas fa-crown"></i>
-    </button>
-
-    <!-- Admin Dashboard -->
-    <div id="adminDashboard" class="admin-dashboard">
-        <div class="dashboard-header">
-            <h2><i class="fas fa-crown"></i> PAINEL ADMIN</h2>
-            <div class="admin-info">
-                <span id="adminEmail"></span>
-                <span class="admin-badge">ADMIN</span>
+    <!-- Painel Admin -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <div class="admin-header-left">
+                <h3><i class="fas fa-crown"></i> PAINEL ADMIN</h3>
+                <div class="admin-info">
+                    <span id="adminEmailDisplay"></span>
+                    <span class="admin-badge">ADMIN</span>
+                </div>
             </div>
-            <button class="close-admin" onclick="closeAdminDashboard()">&times;</button>
+            <button class="admin-close" onclick="closeAdminPanel()">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         
-        <div class="dashboard-content">
+        <div class="admin-content">
+            <!-- Estatísticas Admin -->
             <div class="admin-stats">
-                <div class="admin-stat">
-                    <div class="stat-value" id="adminTotalUsers">0</div>
-                    <div class="stat-label">Usuários</div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="admin-stat-info">
+                        <div class="admin-stat-value" id="adminTotalUsers">0</div>
+                        <div class="admin-stat-label">Usuários</div>
+                    </div>
                 </div>
-                <div class="admin-stat">
-                    <div class="stat-value" id="adminTotalMessages">0</div>
-                    <div class="stat-label">Mensagens</div>
+                
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">
+                        <i class="fas fa-comment"></i>
+                    </div>
+                    <div class="admin-stat-info">
+                        <div class="admin-stat-value" id="adminTotalMessages">0</div>
+                        <div class="admin-stat-label">Mensagens</div>
+                    </div>
                 </div>
-                <div class="admin-stat">
-                    <div class="stat-value" id="adminTotalScripts">0</div>
-                    <div class="stat-label">Scripts</div>
+                
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="admin-stat-info">
+                        <div class="admin-stat-value" id="adminTotalScripts">0</div>
+                        <div class="admin-stat-label">Scripts</div>
+                    </div>
                 </div>
-                <div class="admin-stat">
-                    <div class="stat-value" id="adminOnlineNow">0</div>
-                    <div class="stat-label">Online</div>
+                
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">
+                        <i class="fas fa-signal"></i>
+                    </div>
+                    <div class="admin-stat-info">
+                        <div class="admin-stat-value" id="adminOnlineNow">0</div>
+                        <div class="admin-stat-label">Online</div>
+                    </div>
                 </div>
             </div>
             
+            <!-- Tabs Admin -->
             <div class="admin-tabs">
-                <button class="admin-tab active" data-tab="users">Usuários</button>
-                <button class="admin-tab" data-tab="chat">Chat</button>
-                <button class="admin-tab" data-tab="scripts">Scripts</button>
-                <button class="admin-tab" data-tab="security">Segurança</button>
+                <button class="admin-tab active" data-tab="users">
+                    <i class="fas fa-users"></i> Usuários
+                </button>
+                <button class="admin-tab" data-tab="chat">
+                    <i class="fas fa-comments"></i> Chat
+                </button>
+                <button class="admin-tab" data-tab="scripts">
+                    <i class="fas fa-code"></i> Scripts
+                </button>
+                <button class="admin-tab" data-tab="security">
+                    <i class="fas fa-shield-alt"></i> Segurança
+                </button>
+                <button class="admin-tab" data-tab="logs">
+                    <i class="fas fa-clipboard-list"></i> Logs
+                </button>
             </div>
             
+            <!-- Conteúdo Admin -->
             <div class="admin-panels">
-                <!-- Users Panel -->
-                <div class="admin-panel active" id="usersPanel">
+                <!-- Painel Usuários -->
+                <div class="admin-panel-content active" id="usersPanel">
                     <div class="panel-header">
-                        <h3>Gerenciar Usuários</h3>
-                        <input type="text" id="userSearch" placeholder="Buscar usuários..." class="search-input">
+                        <h4>Gerenciar Usuários</h4>
+                        <div class="panel-search">
+                            <input type="text" 
+                                   class="search-input" 
+                                   id="adminUserSearch" 
+                                   placeholder="Buscar por email ou nome...">
+                        </div>
                     </div>
-                    <div class="users-list" id="usersList"></div>
+                    <div class="users-list" id="adminUsersList"></div>
                 </div>
                 
-                <!-- Chat Panel -->
-                <div class="admin-panel" id="chatPanel">
+                <!-- Painel Chat -->
+                <div class="admin-panel-content" id="chatPanel">
                     <div class="panel-header">
-                        <h3>Gerenciar Chat</h3>
-                        <button onclick="clearAllChat()" class="btn btn-danger">
-                            <i class="fas fa-trash"></i> Limpar Chat
-                        </button>
+                        <h4>Gerenciar Chat</h4>
+                        <div class="panel-actions">
+                            <button class="btn btn-danger" onclick="clearAllChat()">
+                                <i class="fas fa-trash"></i> Limpar Chat
+                            </button>
+                            <button class="btn btn-warning" onclick="muteAllUsers()">
+                                <i class="fas fa-volume-mute"></i> Mutar Todos
+                            </button>
+                        </div>
                     </div>
-                    <div class="chat-messages-admin" id="chatMessagesAdmin"></div>
+                    <div class="admin-chat-messages" id="adminChatMessages"></div>
                 </div>
                 
-                <!-- Scripts Panel -->
-                <div class="admin-panel" id="scriptsPanel">
+                <!-- Painel Scripts -->
+                <div class="admin-panel-content" id="scriptsPanel">
                     <div class="panel-header">
-                        <h3>Gerenciar Scripts</h3>
-                        <button onclick="showAddScriptModal()" class="btn btn-primary">
+                        <h4>Gerenciar Scripts</h4>
+                        <button class="btn btn-primary" onclick="showAddScriptModal()">
                             <i class="fas fa-plus"></i> Adicionar Script
                         </button>
                     </div>
-                    <div class="scripts-list-admin" id="scriptsListAdmin"></div>
+                    <div class="admin-scripts-list" id="adminScriptsList"></div>
                 </div>
                 
-                <!-- Security Panel -->
-                <div class="admin-panel" id="securityPanel">
+                <!-- Painel Segurança -->
+                <div class="admin-panel-content" id="securityPanel">
                     <div class="panel-header">
-                        <h3>Segurança</h3>
+                        <h4>Segurança</h4>
+                        <div class="panel-actions">
+                            <button class="btn btn-danger" onclick="banAllFakeAdmins()">
+                                <i class="fas fa-ban"></i> Banir Falsos Admins
+                            </button>
+                        </div>
                     </div>
-                    <div class="security-logs" id="securityLogs"></div>
+                    <div class="security-monitor">
+                        <!-- Monitor de segurança -->
+                    </div>
+                </div>
+                
+                <!-- Painel Logs -->
+                <div class="admin-panel-content" id="logsPanel">
+                    <div class="panel-header">
+                        <h4>Logs do Sistema</h4>
+                        <button class="btn btn-secondary" onclick="refreshLogs()">
+                            <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                    </div>
+                    <div class="admin-logs" id="adminLogs"></div>
                 </div>
             </div>
         </div>
