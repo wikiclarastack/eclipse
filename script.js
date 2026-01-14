@@ -18,37 +18,171 @@ const auth = firebase.auth();
 const database = firebase.database();
 
 // ==============================================
+// CONFIGURAÇÃO ADMIN EXCLUSIVA
+// ==============================================
+const ADMIN_EMAIL = "guizinbzsk@gmail.com";
+let isAdminUser = false;
+
+// ==============================================
 // VARIÁVEIS GLOBAIS
 // ==============================================
 let currentUser = null;
-let isAdmin = false;
 let onlineUsers = new Map();
 let messageCooldown = false;
-const COOLDOWN_TIME = 5000;
+const COOLDOWN_TIME = 3000;
 let lastMessageTime = 0;
 let devToolsOpened = false;
+let isDarkTheme = true;
+let isMusicPlaying = false;
+let notifications = [];
 
 // ==============================================
 // ELEMENTOS DOM
 // ==============================================
 const elements = {
-    devtoolsDetected: document.getElementById('devtools-detected'),
-    dashboardPanel: document.getElementById('dashboardPanel'),
-    closeDashboard: document.getElementById('closeDashboard'),
+    // Core
+    loadingScreen: document.getElementById('loadingScreen'),
+    loadingProgress: document.getElementById('loadingProgress'),
+    
+    // Music & Theme
+    backgroundMusic: document.getElementById('backgroundMusic'),
+    musicToggle: document.getElementById('musicToggle'),
+    themeToggle: document.getElementById('themeToggle'),
+    
+    // Auth
     loginBtn: document.getElementById('loginBtn'),
     userAvatar: document.getElementById('userAvatar'),
     loginModal: document.getElementById('loginModal'),
     loginForm: document.getElementById('loginForm'),
+    
+    // Scripts
     scriptsList: document.getElementById('scriptsList'),
+    scriptSearch: document.getElementById('scriptSearch'),
+    gameFilter: document.getElementById('gameFilter'),
+    refreshScripts: document.getElementById('refreshScripts'),
+    scriptsLoading: document.getElementById('scriptsLoading'),
+    
+    // Chat
     chatSection: document.getElementById('chat'),
     chatMessages: document.getElementById('chatMessages'),
     chatInput: document.getElementById('chatInput'),
     sendMessageBtn: document.getElementById('sendMessageBtn'),
     onlineCount: document.getElementById('onlineCount'),
+    messageCount: document.getElementById('messageCount'),
+    emojiBtn: document.getElementById('emojiBtn'),
+    
+    // Stats
+    totalScriptsCount: document.getElementById('totalScriptsCount'),
+    onlineUsersCount: document.getElementById('onlineUsersCount'),
+    totalDownloads: document.getElementById('totalDownloads'),
+    footerOnline: document.getElementById('footerOnline'),
+    footerScripts: document.getElementById('footerScripts'),
+    serverTime: document.getElementById('serverTime'),
+    
+    // Ranking
+    rankingList: document.getElementById('rankingList'),
+    totalUsers: document.getElementById('totalUsers'),
+    topUser: document.getElementById('topUser'),
+    
+    // Navigation
     navLinks: document.querySelector('.nav-links'),
     mobileMenuBtn: document.querySelector('.mobile-menu-btn'),
-    logoutBtn: document.getElementById('logoutBtn')
+    
+    // Admin
+    adminDashboardBtn: document.getElementById('adminDashboardBtn'),
+    adminDashboard: document.getElementById('adminDashboard'),
+    adminEmail: document.getElementById('adminEmail'),
+    adminTotalUsers: document.getElementById('adminTotalUsers'),
+    adminTotalMessages: document.getElementById('adminTotalMessages'),
+    adminTotalScripts: document.getElementById('adminTotalScripts'),
+    adminOnlineNow: document.getElementById('adminOnlineNow'),
+    adminLogs: document.getElementById('adminLogs'),
+    
+    // Notifications
+    notificationCenter: document.getElementById('notificationCenter'),
+    notificationList: document.getElementById('notificationList'),
+    clearNotifications: document.getElementById('clearNotifications'),
+    
+    // Modals
+    supportModal: document.getElementById('supportModal'),
+    devtoolsDetected: document.getElementById('devtools-detected')
 };
+
+// ==============================================
+// INICIALIZAÇÃO
+// ==============================================
+document.addEventListener('DOMContentLoaded', async () => {
+    // Simular carregamento
+    simulateLoading();
+    
+    // Inicializar sistemas
+    await initSystems();
+    
+    // Setup event listeners
+    setupEventListeners();
+    
+    // Inicializar tema e música
+    initThemeAndMusic();
+    
+    // Iniciar relógio
+    updateServerTime();
+    setInterval(updateServerTime, 1000);
+    
+    // Iniciar animações
+    startAnimations();
+    
+    console.log("🚀 EclipseXploits Studio Iniciado!");
+});
+
+async function initSystems() {
+    try {
+        // Verificar autenticação
+        await checkAuthState();
+        
+        // Carregar scripts
+        await loadScripts();
+        
+        // Setup chat
+        setupChat();
+        
+        // Setup anti-devtools
+        setupAntiDevTools();
+        
+        // Setup online users
+        setupOnlineUsers();
+        
+        // Carregar ranking
+        await loadRanking();
+        
+        // Inicializar particles
+        initParticles();
+        
+        // Esconder loading screen
+        setTimeout(() => {
+            elements.loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                elements.loadingScreen.style.display = 'none';
+            }, 500);
+        }, 1500);
+        
+    } catch (error) {
+        console.error("❌ Erro na inicialização:", error);
+        addNotification("Erro ao carregar sistema", "error");
+    }
+}
+
+function simulateLoading() {
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.random() * 20;
+        if (progress > 100) progress = 100;
+        elements.loadingProgress.style.width = `${progress}%`;
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+        }
+    }, 200);
+}
 
 // ==============================================
 // FUNÇÕES AUXILIARES
@@ -67,37 +201,22 @@ function closeModal(modalId) {
     }
 }
 
-// ==============================================
-// INICIALIZAÇÃO
-// ==============================================
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("🚀 EclipseXploits Studio Iniciando...");
-    
-    // Setup event listeners
-    setupEventListeners();
-    
-    // Verificar estado de autenticação
-    checkAuthState();
-    
-    // Carregar scripts
-    loadScripts();
-    
-    // Setup chat
-    setupChat();
-    
-    // Setup anti-devtools
-    setupAntiDevTools();
-    
-    // Setup online users
-    setupOnlineUsers();
-    
-    console.log("✅ Sistema inicializado!");
-});
+function updateServerTime() {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('pt-BR');
+    elements.serverTime.textContent = timeStr;
+}
 
 // ==============================================
 // EVENT LISTENERS
 // ==============================================
 function setupEventListeners() {
+    // Music toggle
+    elements.musicToggle.addEventListener('click', toggleMusic);
+    
+    // Theme toggle
+    elements.themeToggle.addEventListener('click', toggleTheme);
+    
     // Login button
     elements.loginBtn.addEventListener('click', () => {
         elements.loginModal.style.display = 'flex';
@@ -106,11 +225,8 @@ function setupEventListeners() {
     // Close buttons
     document.querySelectorAll('.close-modal').forEach(closeBtn => {
         closeBtn.addEventListener('click', (e) => {
-            if (e.target.id === 'closeDashboard') {
-                elements.dashboardPanel.style.display = 'none';
-            } else {
-                elements.loginModal.style.display = 'none';
-            }
+            const modal = e.target.closest('.modal');
+            if (modal) modal.style.display = 'none';
         });
     });
     
@@ -125,11 +241,6 @@ function setupEventListeners() {
             sendMessage();
         }
     });
-    
-    // Logout
-    if (elements.logoutBtn) {
-        elements.logoutBtn.addEventListener('click', logoutUser);
-    }
     
     // Mobile menu
     if (elements.mobileMenuBtn) {
@@ -147,76 +258,282 @@ function setupEventListeners() {
             if (target === '#chat') {
                 showChatSection();
             } else {
-                // Esconder todas as sections
-                document.querySelectorAll('section').forEach(section => {
-                    section.style.display = 'none';
-                });
-                
-                // Mostrar section alvo
-                const targetSection = document.querySelector(target);
-                if (targetSection) {
-                    targetSection.style.display = 'block';
-                    targetSection.scrollIntoView({ behavior: 'smooth' });
-                }
-                
-                // Fechar mobile menu
-                if (window.innerWidth <= 768) {
-                    elements.navLinks.classList.remove('active');
-                }
+                scrollToSection(target.substring(1));
+            }
+            
+            // Fechar mobile menu
+            if (window.innerWidth <= 768) {
+                elements.navLinks.classList.remove('active');
             }
         });
     });
     
+    // Script search
+    if (elements.scriptSearch) {
+        elements.scriptSearch.addEventListener('input', filterScripts);
+    }
+    
+    // Game filter
+    if (elements.gameFilter) {
+        elements.gameFilter.addEventListener('change', filterScripts);
+    }
+    
+    // Refresh scripts
+    if (elements.refreshScripts) {
+        elements.refreshScripts.addEventListener('click', loadScripts);
+    }
+    
+    // Admin dashboard button
+    if (elements.adminDashboardBtn) {
+        elements.adminDashboardBtn.addEventListener('click', () => {
+            elements.adminDashboard.classList.toggle('active');
+        });
+    }
+    
+    // Clear notifications
+    if (elements.clearNotifications) {
+        elements.clearNotifications.addEventListener('click', clearAllNotifications);
+    }
+    
+    // Ranking tabs
+    document.querySelectorAll('.ranking-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.ranking-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            loadRanking(this.dataset.tab);
+        });
+    });
+    
+    // Password toggle
+    const togglePassword = document.getElementById('togglePassword');
+    if (togglePassword) {
+        togglePassword.addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    }
+    
     // Close modals on outside click
     window.addEventListener('click', (e) => {
-        if (e.target === elements.loginModal) {
-            elements.loginModal.style.display = 'none';
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
         }
-        if (e.target === elements.dashboardPanel) {
-            elements.dashboardPanel.style.display = 'none';
+        if (!e.target.closest('.admin-dashboard') && !e.target.closest('#adminDashboardBtn')) {
+            elements.adminDashboard.classList.remove('active');
         }
     });
 }
 
 // ==============================================
-// AUTENTICAÇÃO
+// TEMA E MÚSICA
+// ==============================================
+function initThemeAndMusic() {
+    // Carregar preferências salvas
+    const savedTheme = localStorage.getItem('theme');
+    const savedMusic = localStorage.getItem('music');
+    
+    if (savedTheme === 'light') {
+        toggleTheme();
+    }
+    
+    if (savedMusic === 'on') {
+        toggleMusic();
+    }
+}
+
+function toggleTheme() {
+    isDarkTheme = !isDarkTheme;
+    document.body.classList.toggle('light-theme');
+    
+    const icon = elements.themeToggle.querySelector('i');
+    icon.classList.toggle('fa-moon');
+    icon.classList.toggle('fa-sun');
+    
+    localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+}
+
+function toggleMusic() {
+    isMusicPlaying = !isMusicPlaying;
+    
+    const icon = elements.musicToggle.querySelector('i');
+    icon.classList.toggle('fa-volume-up');
+    icon.classList.toggle('fa-volume-mute');
+    
+    if (isMusicPlaying) {
+        elements.backgroundMusic.volume = 0.3;
+        elements.backgroundMusic.play().catch(() => {
+            addNotification("Clique em qualquer lugar para habilitar áudio", "info");
+        });
+    } else {
+        elements.backgroundMusic.pause();
+    }
+    
+    localStorage.setItem('music', isMusicPlaying ? 'on' : 'off');
+}
+
+// ==============================================
+// ANIMAÇÕES E PARTÍCULAS
+// ==============================================
+function startAnimations() {
+    // Animar elementos flutuantes
+    const floaters = document.querySelectorAll('.floating-element');
+    floaters.forEach((floater, index) => {
+        floater.style.animationDelay = `${index * 0.5}s`;
+    });
+    
+    // Intersection Observer para animações
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.feature-card, .script-card').forEach(card => {
+        observer.observe(card);
+    });
+}
+
+function initParticles() {
+    particlesJS("particles-js", {
+        particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: "#6d28d9" },
+            shape: { type: "circle" },
+            opacity: { value: 0.5, random: true },
+            size: { value: 3, random: true },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: "#6d28d9",
+                opacity: 0.4,
+                width: 1
+            },
+            move: {
+                enable: true,
+                speed: 2,
+                direction: "none",
+                random: true,
+                straight: false,
+                out_mode: "out",
+                bounce: false
+            }
+        },
+        interactivity: {
+            detect_on: "canvas",
+            events: {
+                onhover: { enable: true, mode: "repulse" },
+                onclick: { enable: true, mode: "push" }
+            }
+        }
+    });
+}
+
+// ==============================================
+// AUTENTICAÇÃO (APENAS 1 ADMIN)
 // ==============================================
 function checkAuthState() {
-    auth.onAuthStateChanged(async (user) => {
-        if (user) {
-            console.log("✅ Usuário autenticado:", user.email);
-            currentUser = user;
-            
-            // Verificar se é admin
-            await checkAdminStatus(user.uid);
-            
-            // Atualizar UI
-            updateUIForLoggedInUser(user);
-            
-            // Setup user presence
-            setupUserPresence(user.uid);
-            
-        } else {
-            console.log("🚪 Usuário não autenticado");
-            currentUser = null;
-            isAdmin = false;
-            updateUIForGuest();
-        }
+    return new Promise((resolve) => {
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                console.log("✅ Usuário autenticado:", user.email);
+                currentUser = user;
+                
+                // VERIFICAR SE É O ADMIN EXCLUSIVO
+                isAdminUser = user.email === ADMIN_EMAIL;
+                
+                if (isAdminUser) {
+                    console.log("👑 USUÁRIO É O ADMIN EXCLUSIVO");
+                    await setupAdminUser();
+                }
+                
+                // Atualizar UI
+                updateUIForLoggedInUser(user);
+                
+                // Setup user presence
+                setupUserPresence(user.uid);
+                
+                // Registrar login
+                await registerUserLogin(user);
+                
+            } else {
+                console.log("🚪 Usuário não autenticado");
+                currentUser = null;
+                isAdminUser = false;
+                updateUIForGuest();
+            }
+            resolve();
+        });
     });
 }
 
-async function checkAdminStatus(userId) {
+async function setupAdminUser() {
+    // Garantir que apenas este email seja admin
     try {
-        const snapshot = await database.ref('admins/' + userId).once('value');
-        isAdmin = snapshot.exists() && snapshot.val() === true;
+        await database.ref('admins').set({
+            [currentUser.uid]: true
+        });
         
-        if (isAdmin) {
-            console.log("👑 Usuário é admin");
-            showDashboard();
-        }
+        // Mostrar botão do dashboard
+        elements.adminDashboardBtn.style.display = 'flex';
+        elements.adminEmail.textContent = currentUser.email;
+        
+        // Carregar stats admin
+        loadAdminStats();
+        
+        // Carregar logs
+        loadAdminLogs();
+        
+        addNotification("Painel Admin habilitado", "success");
+        
     } catch (error) {
-        console.error("❌ Erro ao verificar admin:", error);
-        isAdmin = false;
+        console.error("❌ Erro ao configurar admin:", error);
+    }
+}
+
+async function registerUserLogin(user) {
+    try {
+        const userRef = database.ref('users/' + user.uid);
+        const snapshot = await userRef.once('value');
+        
+        if (!snapshot.exists()) {
+            // Novo usuário
+            await userRef.set({
+                email: user.email,
+                username: user.email.split('@')[0],
+                displayName: user.email.split('@')[0],
+                createdAt: Date.now(),
+                isBanned: false,
+                isMuted: false,
+                isAdmin: isAdminUser,
+                lastLogin: Date.now(),
+                totalLogins: 1,
+                messagesSent: 0,
+                scriptsDownloaded: 0,
+                level: 1,
+                xp: 0
+            });
+            
+            addNotification("Bem-vindo à comunidade!", "success");
+            
+        } else {
+            // Atualizar último login
+            await userRef.update({
+                lastLogin: Date.now(),
+                totalLogins: snapshot.val().totalLogins + 1 || 1
+            });
+            
+            if (isAdminUser) {
+                addNotification("Bem-vindo de volta, Admin!", "success");
+            }
+        }
+        
+    } catch (error) {
+        console.error("❌ Erro ao registrar login:", error);
     }
 }
 
@@ -227,14 +544,14 @@ function handleLoginSubmit(e) {
     const password = document.getElementById('password').value;
     
     if (!email || !password) {
-        showNotification('Preencha todos os campos', 'error');
+        addNotification('Preencha todos os campos', 'error');
         return;
     }
     
-    // Rate limiting básico
+    // Rate limiting
     const attempts = parseInt(localStorage.getItem(`login_attempts_${email}`) || '0');
     if (attempts > 5) {
-        showNotification('Muitas tentativas. Tente novamente mais tarde.', 'error');
+        addNotification('Muitas tentativas. Tente novamente em 15 minutos.', 'error');
         return;
     }
     
@@ -242,11 +559,13 @@ function handleLoginSubmit(e) {
         .then((userCredential) => {
             console.log("✅ Login bem-sucedido");
             elements.loginModal.style.display = 'none';
-            showNotification('Login realizado com sucesso!', 'success');
-            elements.loginForm.reset();
             
             // Limpar tentativas
             localStorage.removeItem(`login_attempts_${email}`);
+            
+            // Limpar formulário
+            elements.loginForm.reset();
+            
         })
         .catch((error) => {
             console.error("❌ Erro no login:", error);
@@ -255,7 +574,7 @@ function handleLoginSubmit(e) {
             const attempts = parseInt(localStorage.getItem(`login_attempts_${email}`) || '0') + 1;
             localStorage.setItem(`login_attempts_${email}`, attempts.toString());
             
-            let errorMessage = '';
+            let errorMessage = 'Erro ao fazer login';
             switch(error.code) {
                 case 'auth/invalid-email':
                     errorMessage = 'Email inválido';
@@ -266,11 +585,12 @@ function handleLoginSubmit(e) {
                 case 'auth/wrong-password':
                     errorMessage = 'Senha incorreta';
                     break;
-                default:
-                    errorMessage = error.message;
+                case 'auth/too-many-requests':
+                    errorMessage = 'Muitas tentativas. Tente mais tarde.';
+                    break;
             }
             
-            showNotification('Erro: ' + errorMessage, 'error');
+            addNotification(errorMessage, 'error');
         });
 }
 
@@ -282,24 +602,29 @@ function updateUIForLoggedInUser(user) {
     elements.loginBtn.style.display = 'none';
     elements.userAvatar.style.display = 'flex';
     
-    // Set avatar initial
+    // Set avatar
     const initial = user.email ? user.email.charAt(0).toUpperCase() : 'U';
     elements.userAvatar.textContent = initial;
     elements.userAvatar.title = user.email;
     
-    // Show logout button
-    if (elements.logoutBtn) {
-        elements.logoutBtn.style.display = 'block';
+    // Add admin badge se for admin
+    if (isAdminUser) {
+        elements.userAvatar.innerHTML += '<span class="admin-badge">A</span>';
     }
-    
-    // Add online indicator
-    elements.userAvatar.classList.add('online');
     
     // Habilitar chat
     if (elements.chatInput) {
         elements.chatInput.disabled = false;
         elements.chatInput.placeholder = "Digite sua mensagem... (Enter para enviar)";
         elements.sendMessageBtn.disabled = false;
+        elements.emojiBtn.disabled = false;
+    }
+    
+    // Notificação de boas-vindas
+    if (isAdminUser) {
+        addNotification(`Bem-vindo, Admin ${user.email.split('@')[0]}!`, 'success');
+    } else {
+        addNotification(`Bem-vindo, ${user.email.split('@')[0]}!`, 'success');
     }
 }
 
@@ -308,25 +633,22 @@ function updateUIForGuest() {
     elements.loginBtn.style.display = 'block';
     elements.userAvatar.style.display = 'none';
     
-    // Hide logout button
-    if (elements.logoutBtn) {
-        elements.logoutBtn.style.display = 'none';
-    }
+    // Esconder dashboard admin
+    elements.adminDashboardBtn.style.display = 'none';
+    elements.adminDashboard.classList.remove('active');
     
     // Desabilitar chat
     if (elements.chatInput) {
         elements.chatInput.disabled = true;
         elements.chatInput.placeholder = "Faça login para usar o chat";
         elements.sendMessageBtn.disabled = true;
+        elements.emojiBtn.disabled = true;
     }
-    
-    // Remover online indicator
-    elements.userAvatar.classList.remove('online');
 }
 
 function showChatSection() {
     if (!currentUser) {
-        showNotification('Faça login para acessar o chat', 'warning');
+        addNotification('Faça login para acessar o chat', 'warning');
         elements.loginModal.style.display = 'flex';
         return;
     }
@@ -341,7 +663,9 @@ function showChatSection() {
     
     // Focus no input
     if (elements.chatInput) {
-        elements.chatInput.focus();
+        setTimeout(() => {
+            elements.chatInput.focus();
+        }, 100);
     }
 }
 
@@ -350,17 +674,20 @@ function showChatSection() {
 // ==============================================
 async function loadScripts() {
     try {
+        elements.scriptsLoading.style.display = 'flex';
+        
         console.log("📥 Carregando scripts...");
-        const snapshot = await database.ref('scripts').orderByChild('date').limitToLast(20).once('value');
+        const snapshot = await database.ref('scripts').orderByChild('date').limitToLast(50).once('value');
         
         if (!elements.scriptsList) return;
         elements.scriptsList.innerHTML = '';
         
         if (!snapshot.exists()) {
             elements.scriptsList.innerHTML = `
-                <div style="text-align: center; padding: 50px; color: var(--gray);">
+                <div class="empty-state">
                     <i class="fas fa-code" style="font-size: 3rem; margin-bottom: 20px;"></i>
                     <h3>Nenhum script disponível</h3>
+                    <p>Seja o primeiro a adicionar um script!</p>
                 </div>
             `;
             return;
@@ -383,17 +710,55 @@ async function loadScripts() {
             elements.scriptsList.appendChild(scriptCard);
         });
         
+        // Atualizar contador
+        elements.totalScriptsCount.textContent = scripts.length;
+        elements.footerScripts.textContent = scripts.length;
+        
         console.log(`✅ ${scripts.length} scripts carregados`);
         
     } catch (error) {
         console.error("❌ Erro ao carregar scripts:", error);
         if (elements.scriptsList) {
             elements.scriptsList.innerHTML = `
-                <div style="text-align: center; padding: 50px; color: var(--danger);">
+                <div class="empty-state error">
                     <i class="fas fa-exclamation-triangle" style="font-size: 3rem;"></i>
                     <p>Erro ao carregar scripts</p>
                 </div>
             `;
+        }
+    } finally {
+        elements.scriptsLoading.style.display = 'none';
+    }
+}
+
+function filterScripts() {
+    const searchTerm = elements.scriptSearch.value.toLowerCase();
+    const gameFilter = elements.gameFilter.value.toLowerCase();
+    
+    const scriptCards = document.querySelectorAll('.script-card');
+    let visibleCount = 0;
+    
+    scriptCards.forEach(card => {
+        const title = card.querySelector('.script-title').textContent.toLowerCase();
+        const description = card.querySelector('.script-content').textContent.toLowerCase();
+        const game = card.dataset.game || '';
+        
+        const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+        const matchesGame = !gameFilter || game.includes(gameFilter);
+        
+        if (matchesSearch && matchesGame) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Mostrar mensagem se não houver resultados
+    if (visibleCount === 0) {
+        const emptyState = document.querySelector('.empty-state') || createEmptyState();
+        if (!document.querySelector('.empty-state')) {
+            elements.scriptsList.appendChild(emptyState);
         }
     }
 }
@@ -401,6 +766,7 @@ async function loadScripts() {
 function createScriptCard(script) {
     const div = document.createElement('div');
     div.className = 'script-card';
+    div.dataset.game = script.game ? script.game.toLowerCase() : '';
     
     const date = new Date(script.date || Date.now());
     const dateStr = date.toLocaleDateString('pt-BR', {
@@ -409,19 +775,38 @@ function createScriptCard(script) {
         year: 'numeric'
     });
     
+    const downloads = script.downloads || 0;
+    const rating = script.rating || 5.0;
+    
     div.innerHTML = `
         <div class="script-header">
             <div class="script-title">${script.title || 'Script sem título'}</div>
-            <div class="script-date">${dateStr}</div>
+            <div class="script-meta">
+                <span class="script-game">${script.game || 'Geral'}</span>
+                <span class="script-date">${dateStr}</span>
+            </div>
         </div>
         <div class="script-content">${script.description || 'Sem descrição'}</div>
+        <div class="script-stats">
+            <span class="stat"><i class="fas fa-download"></i> ${downloads}</span>
+            <span class="stat"><i class="fas fa-star"></i> ${rating.toFixed(1)}</span>
+            <span class="stat"><i class="fas fa-user"></i> ${script.author || 'Admin'}</span>
+        </div>
         <div class="script-actions">
-            <button onclick="downloadScript('${script.id}')" class="btn btn-primary btn-sm">
+            <button onclick="downloadScript('${script.id}')" class="btn btn-primary">
                 <i class="fas fa-download"></i> Baixar
             </button>
-            <button onclick="copyScript('${script.id}')" class="btn btn-secondary btn-sm">
+            <button onclick="copyScript('${script.id}')" class="btn btn-secondary">
                 <i class="fas fa-copy"></i> Copiar
             </button>
+            ${isAdminUser ? `
+                <button onclick="adminEditScript('${script.id}')" class="btn btn-warning">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button onclick="adminDeleteScript('${script.id}')" class="btn btn-danger">
+                    <i class="fas fa-trash"></i>
+                </button>
+            ` : ''}
         </div>
     `;
     
@@ -433,7 +818,7 @@ function createScriptCard(script) {
 // ==============================================
 window.downloadScript = async function(scriptId) {
     if (!currentUser) {
-        showNotification('Faça login para baixar scripts', 'warning');
+        addNotification('Faça login para baixar scripts', 'warning');
         elements.loginModal.style.display = 'flex';
         return;
     }
@@ -443,7 +828,7 @@ window.downloadScript = async function(scriptId) {
         const script = snapshot.val();
         
         if (!script) {
-            showNotification('Script não encontrado', 'error');
+            addNotification('Script não encontrado', 'error');
             return;
         }
         
@@ -458,16 +843,23 @@ window.downloadScript = async function(scriptId) {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        showNotification('Download iniciado!', 'success');
+        addNotification('Download iniciado!', 'success');
         
         // Incrementar contador de downloads
         database.ref('scripts/' + scriptId + '/downloads').transaction((current) => {
             return (current || 0) + 1;
         });
         
+        // Registrar download do usuário
+        if (currentUser) {
+            database.ref('users/' + currentUser.uid + '/scriptsDownloaded').transaction((current) => {
+                return (current || 0) + 1;
+            });
+        }
+        
     } catch (error) {
         console.error("❌ Erro ao baixar script:", error);
-        showNotification('Erro ao baixar script', 'error');
+        addNotification('Erro ao baixar script', 'error');
     }
 };
 
@@ -477,15 +869,15 @@ window.copyScript = async function(scriptId) {
         const script = snapshot.val();
         
         if (!script || !script.code) {
-            showNotification('Script não encontrado', 'error');
+            addNotification('Script não encontrado', 'error');
             return;
         }
         
         await navigator.clipboard.writeText(script.code);
-        showNotification('Código copiado para a área de transferência!', 'success');
+        addNotification('Código copiado para a área de transferência!', 'success');
         
     } catch (error) {
-        showNotification('Erro ao copiar script', 'error');
+        addNotification('Erro ao copiar script', 'error');
     }
 };
 
@@ -501,6 +893,7 @@ function setupChat() {
         const message = snapshot.val();
         message.id = snapshot.key;
         addMessageToChat(message);
+        updateMessageCount();
     });
 }
 
@@ -513,11 +906,13 @@ async function loadChatMessages() {
         
         if (!snapshot.exists()) {
             elements.chatMessages.innerHTML = `
-                <div style="text-align: center; padding: 50px; color: var(--gray);">
+                <div class="empty-chat">
                     <i class="fas fa-comments"></i>
                     <p>Nenhuma mensagem ainda</p>
+                    <small>Seja o primeiro a enviar uma mensagem!</small>
                 </div>
             `;
+            updateMessageCount();
             return;
         }
         
@@ -539,6 +934,7 @@ async function loadChatMessages() {
         
         // Scroll para baixo
         scrollChatToBottom();
+        updateMessageCount();
         
     } catch (error) {
         console.error("❌ Erro ao carregar chat:", error);
@@ -549,7 +945,7 @@ function addMessageToChat(message) {
     if (!elements.chatMessages) return;
     
     // Remover placeholder se existir
-    const placeholder = elements.chatMessages.querySelector('div[style*="text-align: center"]');
+    const placeholder = elements.chatMessages.querySelector('.empty-chat');
     if (placeholder) {
         placeholder.remove();
     }
@@ -571,21 +967,24 @@ function createMessageElement(message) {
     const timeStr = time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     
     const div = document.createElement('div');
-    div.className = `message ${isCurrentUser ? 'self' : ''}`;
+    div.className = `message ${isCurrentUser ? 'self' : ''} ${message.isAdmin ? 'admin' : ''}`;
     
     const avatarHTML = `
         <div class="message-avatar">
             ${userName.charAt(0).toUpperCase()}
+            ${message.isAdmin ? '<span class="admin-badge">A</span>' : ''}
         </div>
     `;
     
     const contentHTML = `
         <div class="message-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <div style="font-weight: 700; color: ${isCurrentUser ? 'var(--accent)' : 'var(--light)'}">
-                    ${userName} ${isCurrentUser ? '(Você)' : ''}
+            <div class="message-header">
+                <div class="message-user">
+                    <strong>${userName}</strong>
+                    ${isCurrentUser ? '<span class="you-badge">Você</span>' : ''}
+                    ${message.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
                 </div>
-                <div style="font-size: 0.85rem; color: var(--gray);">${timeStr}</div>
+                <div class="message-time">${timeStr}</div>
             </div>
             <div class="message-text">${message.text}</div>
         </div>
@@ -602,14 +1001,14 @@ function createMessageElement(message) {
 
 async function sendMessage() {
     if (!currentUser) {
-        showNotification('Faça login para enviar mensagens', 'warning');
+        addNotification('Faça login para enviar mensagens', 'warning');
         elements.loginModal.style.display = 'flex';
         return;
     }
     
     const text = elements.chatInput.value.trim();
     if (!text) {
-        showNotification('Digite uma mensagem', 'warning');
+        addNotification('Digite uma mensagem', 'warning');
         return;
     }
     
@@ -617,7 +1016,7 @@ async function sendMessage() {
     const now = Date.now();
     if (messageCooldown && now - lastMessageTime < COOLDOWN_TIME) {
         const remaining = Math.ceil((COOLDOWN_TIME - (now - lastMessageTime)) / 1000);
-        showNotification(`Aguarde ${remaining} segundos para enviar outra mensagem`, 'warning');
+        addNotification(`Aguarde ${remaining} segundos para enviar outra mensagem`, 'warning');
         return;
     }
     
@@ -627,12 +1026,12 @@ async function sendMessage() {
         const userData = snapshot.val();
         
         if (userData && userData.isBanned) {
-            showNotification('Você está banido do chat', 'error');
+            addNotification('Você está banido do chat', 'error');
             return;
         }
         
         if (userData && userData.isMuted) {
-            showNotification('Você está mutado do chat', 'warning');
+            addNotification('Você está mutado do chat', 'warning');
             return;
         }
         
@@ -642,7 +1041,7 @@ async function sendMessage() {
             timestamp: now,
             userId: currentUser.uid,
             userName: currentUser.email.split('@')[0],
-            isAdmin: isAdmin
+            isAdmin: isAdminUser
         };
         
         await database.ref('chat').push(messageData);
@@ -654,6 +1053,11 @@ async function sendMessage() {
         lastMessageTime = now;
         messageCooldown = true;
         
+        // Registrar mensagem do usuário
+        database.ref('users/' + currentUser.uid + '/messagesSent').transaction((current) => {
+            return (current || 0) + 1;
+        });
+        
         // Limpar cooldown após tempo
         setTimeout(() => {
             messageCooldown = false;
@@ -661,7 +1065,7 @@ async function sendMessage() {
         
     } catch (error) {
         console.error("❌ Erro ao enviar mensagem:", error);
-        showNotification('Erro ao enviar mensagem', 'error');
+        addNotification('Erro ao enviar mensagem', 'error');
     }
 }
 
@@ -671,6 +1075,11 @@ function scrollChatToBottom() {
             elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
         }, 100);
     }
+}
+
+function updateMessageCount() {
+    const messageCount = elements.chatMessages.children.length;
+    elements.messageCount.textContent = `${messageCount} mensagens`;
 }
 
 // ==============================================
@@ -692,11 +1101,14 @@ function setupOnlineUsers() {
             if (elements.onlineCount) {
                 elements.onlineCount.textContent = `${onlineCount} online`;
             }
-            
-            // Update dashboard
-            const onlineUsersElement = document.getElementById('onlineUsers');
-            if (onlineUsersElement) {
-                onlineUsersElement.textContent = onlineCount;
+            if (elements.onlineUsersCount) {
+                elements.onlineUsersCount.textContent = onlineCount;
+            }
+            if (elements.footerOnline) {
+                elements.footerOnline.textContent = onlineCount;
+            }
+            if (elements.adminOnlineNow && isAdminUser) {
+                elements.adminOnlineNow.textContent = onlineCount;
             }
         }
     });
@@ -714,7 +1126,7 @@ function setupUserPresence(userId) {
         name: currentUser.displayName || currentUser.email.split('@')[0],
         lastSeen: Date.now(),
         online: true,
-        isAdmin: isAdmin
+        isAdmin: isAdminUser
     });
     
     // Update lastSeen periodically
@@ -733,36 +1145,431 @@ function setupUserPresence(userId) {
 }
 
 // ==============================================
+// RANKING SYSTEM
+// ==============================================
+async function loadRanking(period = 'weekly') {
+    try {
+        const snapshot = await database.ref('users').once('value');
+        
+        if (!snapshot.exists()) {
+            elements.rankingList.innerHTML = `
+                <div class="empty-ranking">
+                    <i class="fas fa-trophy"></i>
+                    <p>Nenhum usuário ainda</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const users = [];
+        snapshot.forEach((childSnapshot) => {
+            const user = childSnapshot.val();
+            user.id = childSnapshot.key;
+            
+            // Calcular score baseado em atividade
+            const score = (user.messagesSent || 0) * 10 + 
+                         (user.scriptsDownloaded || 0) * 50 +
+                         (user.totalLogins || 0) * 5;
+            
+            users.push({
+                ...user,
+                score: score
+            });
+        });
+        
+        // Ordenar por score
+        users.sort((a, b) => b.score - a.score);
+        
+        // Atualizar total de usuários
+        elements.totalUsers.textContent = users.length;
+        
+        // Atualizar top user
+        if (users.length > 0) {
+            elements.topUser.textContent = users[0].username || users[0].email.split('@')[0];
+        }
+        
+        // Mostrar ranking
+        elements.rankingList.innerHTML = '';
+        users.slice(0, 10).forEach((user, index) => {
+            const rankElement = createRankElement(user, index + 1);
+            elements.rankingList.appendChild(rankElement);
+        });
+        
+    } catch (error) {
+        console.error("❌ Erro ao carregar ranking:", error);
+    }
+}
+
+function createRankElement(user, position) {
+    const div = document.createElement('div');
+    div.className = 'rank-item';
+    
+    const medal = position <= 3 ? ['🥇', '🥈', '🥉'][position - 1] : position;
+    
+    div.innerHTML = `
+        <div class="rank-position">${medal}</div>
+        <div class="rank-user">
+            <div class="rank-avatar">${user.username?.charAt(0) || user.email?.charAt(0) || 'U'}</div>
+            <div class="rank-info">
+                <div class="rank-name">${user.username || user.email.split('@')[0]}</div>
+                <div class="rank-stats">
+                    <span><i class="fas fa-comment"></i> ${user.messagesSent || 0}</span>
+                    <span><i class="fas fa-download"></i> ${user.scriptsDownloaded || 0}</span>
+                    <span><i class="fas fa-sign-in-alt"></i> ${user.totalLogins || 1}</span>
+                </div>
+            </div>
+        </div>
+        <div class="rank-score">${user.score || 0} pts</div>
+    `;
+    
+    return div;
+}
+
+// ==============================================
+// ADMIN FUNCTIONS (APENAS PARA guizinbzsk@gmail.com)
+// ==============================================
+async function loadAdminStats() {
+    if (!isAdminUser) return;
+    
+    try {
+        // Total users
+        const usersSnapshot = await database.ref('users').once('value');
+        elements.adminTotalUsers.textContent = usersSnapshot.numChildren() || 0;
+        
+        // Total messages
+        const messagesSnapshot = await database.ref('chat').once('value');
+        elements.adminTotalMessages.textContent = messagesSnapshot.numChildren() || 0;
+        
+        // Total scripts
+        const scriptsSnapshot = await database.ref('scripts').once('value');
+        elements.adminTotalScripts.textContent = scriptsSnapshot.numChildren() || 0;
+        
+    } catch (error) {
+        console.error("❌ Erro ao carregar stats admin:", error);
+    }
+}
+
+async function loadAdminLogs() {
+    if (!isAdminUser) return;
+    
+    try {
+        const snapshot = await database.ref('admin_logs').limitToLast(20).once('value');
+        elements.adminLogs.innerHTML = '';
+        
+        if (!snapshot.exists()) {
+            elements.adminLogs.innerHTML = '<div class="empty-logs">Nenhum log encontrado</div>';
+            return;
+        }
+        
+        const logs = [];
+        snapshot.forEach((childSnapshot) => {
+            logs.push({
+                id: childSnapshot.key,
+                ...childSnapshot.val()
+            });
+        });
+        
+        // Ordenar por data
+        logs.sort((a, b) => b.timestamp - a.timestamp);
+        
+        // Mostrar logs
+        logs.forEach(log => {
+            const logElement = createLogElement(log);
+            elements.adminLogs.appendChild(logElement);
+        });
+        
+    } catch (error) {
+        console.error("❌ Erro ao carregar logs:", error);
+    }
+}
+
+function createLogElement(log) {
+    const div = document.createElement('div');
+    div.className = 'log-item';
+    
+    const time = new Date(log.timestamp);
+    const timeStr = time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    
+    div.innerHTML = `
+        <div class="log-content">
+            <div class="log-action">${log.action || 'Ação desconhecida'}</div>
+            <div class="log-details">${log.details || ''}</div>
+        </div>
+        <div class="log-time">${timeStr}</div>
+    `;
+    
+    return div;
+}
+
+async function addAdminLog(action, details) {
+    if (!isAdminUser) return;
+    
+    try {
+        await database.ref('admin_logs').push({
+            action: action,
+            details: details,
+            timestamp: Date.now(),
+            admin: currentUser.email
+        });
+        
+        // Recarregar logs
+        loadAdminLogs();
+        
+    } catch (error) {
+        console.error("❌ Erro ao adicionar log:", error);
+    }
+}
+
+// Funções de controle admin
+window.adminBanUser = async function() {
+    if (!isAdminUser) return;
+    
+    const userId = prompt("Digite o ID do usuário para banir:");
+    if (!userId) return;
+    
+    const reason = prompt("Motivo do banimento:");
+    
+    try {
+        await database.ref('users/' + userId).update({
+            isBanned: true,
+            banReason: reason,
+            bannedAt: Date.now(),
+            bannedBy: currentUser.email
+        });
+        
+        addNotification(`Usuário ${userId} banido`, 'success');
+        addAdminLog('Banir Usuário', `Banido: ${userId} | Motivo: ${reason}`);
+        
+    } catch (error) {
+        console.error("❌ Erro ao banir usuário:", error);
+        addNotification('Erro ao banir usuário', 'error');
+    }
+};
+
+window.adminAddScript = async function() {
+    if (!isAdminUser) return;
+    
+    const title = prompt("Título do script:");
+    if (!title) return;
+    
+    const description = prompt("Descrição:");
+    const game = prompt("Jogo:");
+    const code = prompt("Código do script:");
+    
+    try {
+        await database.ref('scripts').push({
+            title: title,
+            description: description,
+            game: game,
+            code: code,
+            author: currentUser.email,
+            date: Date.now(),
+            downloads: 0,
+            rating: 5.0
+        });
+        
+        addNotification('Script adicionado com sucesso!', 'success');
+        addAdminLog('Adicionar Script', `Script: ${title} | Jogo: ${game}`);
+        
+        // Recarregar scripts
+        loadScripts();
+        
+    } catch (error) {
+        console.error("❌ Erro ao adicionar script:", error);
+        addNotification('Erro ao adicionar script', 'error');
+    }
+};
+
+window.adminClearChat = async function() {
+    if (!isAdminUser) return;
+    
+    if (confirm("Tem certeza que deseja limpar todo o chat?")) {
+        try {
+            await database.ref('chat').remove();
+            addNotification('Chat limpo com sucesso!', 'success');
+            addAdminLog('Limpar Chat', 'Todas as mensagens foram removidas');
+            
+        } catch (error) {
+            console.error("❌ Erro ao limpar chat:", error);
+            addNotification('Erro ao limpar chat', 'error');
+        }
+    }
+};
+
+window.adminBroadcast = async function() {
+    if (!isAdminUser) return;
+    
+    const message = prompt("Mensagem de anúncio:");
+    if (!message) return;
+    
+    try {
+        await database.ref('chat').push({
+            text: `📢 ANÚNCIO: ${message}`,
+            timestamp: Date.now(),
+            userId: 'system',
+            userName: 'Sistema',
+            isAdmin: true,
+            isSystem: true
+        });
+        
+        addNotification('Anúncio enviado!', 'success');
+        addAdminLog('Enviar Anúncio', `Mensagem: ${message}`);
+        
+    } catch (error) {
+        console.error("❌ Erro ao enviar anúncio:", error);
+        addNotification('Erro ao enviar anúncio', 'error');
+    }
+};
+
+window.adminEditScript = async function(scriptId) {
+    if (!isAdminUser) return;
+    
+    // Implementar edição de script
+    addNotification('Edição de script em desenvolvimento', 'info');
+};
+
+window.adminDeleteScript = async function(scriptId) {
+    if (!isAdminUser) return;
+    
+    if (confirm("Tem certeza que deseja excluir este script?")) {
+        try {
+            await database.ref('scripts/' + scriptId).remove();
+            addNotification('Script excluído!', 'success');
+            addAdminLog('Excluir Script', `Script ID: ${scriptId}`);
+            
+            // Recarregar scripts
+            loadScripts();
+            
+        } catch (error) {
+            console.error("❌ Erro ao excluir script:", error);
+            addNotification('Erro ao excluir script', 'error');
+        }
+    }
+};
+
+// ==============================================
 // NOTIFICATION SYSTEM
 // ==============================================
-function showNotification(message, type = 'info') {
-    // Remover notificações existentes
-    const existing = document.querySelectorAll('.notification-toast');
-    existing.forEach(n => n.remove());
+function addNotification(message, type = 'info') {
+    const notification = {
+        id: Date.now(),
+        message: message,
+        type: type,
+        time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+        read: false
+    };
     
-    const notification = document.createElement('div');
-    notification.className = `notification-toast ${type}`;
+    notifications.unshift(notification);
+    updateNotificationCenter();
+    showNotificationToast(message, type);
+    
+    // Salvar notificações
+    saveNotifications();
+}
+
+function showNotificationToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `notification-toast ${type}`;
     
     const icon = type === 'success' ? 'check-circle' :
                 type === 'error' ? 'exclamation-circle' :
                 type === 'warning' ? 'exclamation-triangle' : 'info-circle';
     
-    notification.innerHTML = `
-        <i class="fas fa-${icon}" style="font-size: 1.5rem;"></i>
-        <div>${message}</div>
+    toast.innerHTML = `
+        <i class="fas fa-${icon}"></i>
+        <span>${message}</span>
     `;
     
-    document.body.appendChild(notification);
+    document.body.appendChild(toast);
     
-    // Auto remover após 5 segundos
+    // Remover após 5 segundos
     setTimeout(() => {
-        notification.style.animation = 'notificationSlide 0.5s cubic-bezier(0.4, 0, 0.2, 1) reverse';
+        toast.style.animation = 'slideOutRight 0.3s ease forwards';
         setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
+            if (toast.parentNode) {
+                toast.remove();
             }
-        }, 500);
+        }, 300);
     }, 5000);
+}
+
+function updateNotificationCenter() {
+    if (!elements.notificationList) return;
+    
+    elements.notificationList.innerHTML = '';
+    
+    if (notifications.length === 0) {
+        elements.notificationList.innerHTML = `
+            <div class="empty-notifications">
+                <i class="fas fa-bell-slash"></i>
+                <p>Nenhuma notificação</p>
+            </div>
+        `;
+        return;
+    }
+    
+    notifications.slice(0, 10).forEach(notification => {
+        const notificationElement = createNotificationElement(notification);
+        elements.notificationList.appendChild(notificationElement);
+    });
+}
+
+function createNotificationElement(notification) {
+    const div = document.createElement('div');
+    div.className = `notification-item ${notification.type} ${notification.read ? 'read' : 'unread'}`;
+    
+    const icon = notification.type === 'success' ? 'check-circle' :
+                notification.type === 'error' ? 'exclamation-circle' :
+                notification.type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+    
+    div.innerHTML = `
+        <div class="notification-icon">
+            <i class="fas fa-${icon}"></i>
+        </div>
+        <div class="notification-content">
+            <div class="notification-message">${notification.message}</div>
+            <div class="notification-time">${notification.time}</div>
+        </div>
+        <button class="notification-close" onclick="removeNotification(${notification.id})">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    div.addEventListener('click', () => {
+        notification.read = true;
+        updateNotificationCenter();
+        saveNotifications();
+    });
+    
+    return div;
+}
+
+window.removeNotification = function(id) {
+    notifications = notifications.filter(n => n.id !== id);
+    updateNotificationCenter();
+    saveNotifications();
+};
+
+window.clearAllNotifications = function() {
+    notifications = [];
+    updateNotificationCenter();
+    saveNotifications();
+};
+
+function saveNotifications() {
+    if (currentUser) {
+        localStorage.setItem(`notifications_${currentUser.uid}`, JSON.stringify(notifications));
+    }
+}
+
+function loadNotifications() {
+    if (currentUser) {
+        const saved = localStorage.getItem(`notifications_${currentUser.uid}`);
+        if (saved) {
+            notifications = JSON.parse(saved);
+            updateNotificationCenter();
+        }
+    }
 }
 
 // ==============================================
@@ -773,7 +1580,9 @@ function setupAntiDevTools() {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'F12' || 
             (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-            (e.ctrlKey && e.shiftKey && e.key === 'J')) {
+            (e.ctrlKey && e.shiftKey && e.key === 'J') ||
+            (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+            (e.ctrlKey && e.shiftKey && e.key === 'U')) {
             e.preventDefault();
             triggerDevToolsDetection();
         }
@@ -800,9 +1609,40 @@ function triggerDevToolsDetection() {
     // Mostrar warning
     elements.devtoolsDetected.style.display = 'flex';
     
-    // Tentar fechar/redirecionar após 3 segundos
+    // Log admin
+    if (isAdminUser) {
+        addAdminLog('DevTools Detectado', 'Tentativa de abrir ferramentas de desenvolvimento');
+    }
+    
+    // Tentar fechar/redirecionar após 5 segundos
     setTimeout(() => {
         try {
+            // Bloquear site
+            document.body.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: black;
+                    color: red;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 2rem;
+                    text-align: center;
+                    z-index: 99999;
+                ">
+                    <div>
+                        <i class="fas fa-skull-crossbones" style="font-size: 4rem;"></i>
+                        <h1>ACESSO BLOQUEADO</h1>
+                        <p>Violou as regras de segurança</p>
+                    </div>
+                </div>
+            `;
+            
+            // Tentar fechar a janela
             window.open('', '_self').close();
         } catch (e) {
             // Se não conseguir fechar, redirecionar
@@ -810,162 +1650,60 @@ function triggerDevToolsDetection() {
                 window.location.href = 'about:blank';
             }, 1000);
         }
-    }, 3000);
+    }, 5000);
 }
 
 // ==============================================
-// ADMIN FUNCTIONS (SÓ PARA ADMINS)
+// FUNÇÕES EXTRAS
 // ==============================================
-function showDashboard() {
-    if (!isAdmin) return;
-    
-    elements.dashboardPanel.style.display = 'block';
-    loadDashboardStats();
-}
+window.showSupportModal = function() {
+    elements.supportModal.style.display = 'flex';
+};
 
-async function loadDashboardStats() {
-    if (!isAdmin) return;
-    
-    try {
-        // Total scripts
-        const scriptsSnapshot = await database.ref('scripts').once('value');
-        const totalScripts = document.getElementById('totalScripts');
-        if (totalScripts) {
-            totalScripts.textContent = scriptsSnapshot.numChildren() || 0;
-        }
-        
-        // Total messages
-        const messagesSnapshot = await database.ref('chat').once('value');
-        const totalMessages = document.getElementById('totalMessages');
-        if (totalMessages) {
-            totalMessages.textContent = messagesSnapshot.numChildren() || 0;
-        }
-        
-        // Daily visits
-        const today = new Date().toDateString();
-        const visitsSnapshot = await database.ref('daily_visits/' + today).once('value');
-        const dailyVisits = document.getElementById('dailyVisits');
-        if (dailyVisits) {
-            dailyVisits.textContent = visitsSnapshot.val() || 0;
-        }
-        
-    } catch (error) {
-        console.error("❌ Erro ao carregar stats:", error);
-    }
-}
+window.showForgotPassword = function() {
+    addNotification('Entre em contato com o admin para redefinir a senha', 'info');
+};
 
-// ==============================================
-// HELPER FUNCTIONS
-// ==============================================
-function registerVisit() {
-    const today = new Date().toDateString();
-    
-    // Registrar visita diária
-    database.ref('daily_visits/' + today).transaction((current) => {
-        return (current || 0) + 1;
-    }).catch(console.error);
-}
-
-// Registrar primeira visita
-registerVisit();
-
-// Função para mostrar/registrar usuários
 window.showRegister = function() {
-    const loginForm = document.getElementById('loginForm');
-    if (!loginForm) return;
+    const email = prompt("Digite seu email para registro:");
+    if (!email) return;
     
-    if (!document.getElementById('registerForm')) {
-        const registerHTML = `
-            <div id="registerForm">
-                <div class="form-group">
-                    <input type="text" id="regUsername" class="form-control" placeholder="Nome de usuário" required>
-                </div>
-                <div class="form-group">
-                    <input type="email" id="regEmail" class="form-control" placeholder="Email" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="regPassword" class="form-control" placeholder="Senha" required>
-                </div>
-                <button type="button" onclick="registerUser()" class="btn btn-primary">CRIAR CONTA</button>
-                <p style="margin-top: 15px; text-align: center;">
-                    <a href="#" onclick="showLoginForm()" style="color: var(--primary);">Já tem conta? Login</a>
-                </p>
-            </div>
-        `;
-        
-        loginForm.insertAdjacentHTML('afterend', registerHTML);
-    }
+    const password = prompt("Digite uma senha:");
+    if (!password) return;
     
-    loginForm.style.display = 'none';
-    document.getElementById('registerForm').style.display = 'block';
-};
-
-window.showLoginForm = function() {
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
+    const username = prompt("Digite um nome de usuário:");
     
-    if (loginForm) loginForm.style.display = 'block';
-    if (registerForm) registerForm.style.display = 'none';
-};
-
-window.registerUser = async function() {
-    const email = document.getElementById('regEmail')?.value.trim();
-    const password = document.getElementById('regPassword')?.value;
-    const username = document.getElementById('regUsername')?.value.trim();
-    
-    if (!email || !password || !username) {
-        showNotification('Preencha todos os campos', 'error');
+    // Verificar se é tentativa de criar outro admin
+    if (email === ADMIN_EMAIL) {
+        addNotification('Este email é reservado para o administrador', 'error');
         return;
     }
     
-    try {
-        // Criar usuário no Firebase Auth
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        
-        // Salvar dados do usuário no Realtime Database
-        await database.ref('users/' + userCredential.user.uid).set({
-            email: email,
-            username: username,
-            displayName: username,
-            createdAt: Date.now(),
-            isAdmin: false,
-            isBanned: false,
-            isMuted: false,
-            avatar: null,
-            bio: ''
+    auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            addNotification('Conta criada com sucesso!', 'success');
+            
+            // Fazer login automaticamente
+            auth.signInWithEmailAndPassword(email, password);
+            
+        })
+        .catch((error) => {
+            let errorMessage = 'Erro ao criar conta';
+            switch(error.code) {
+                case 'auth/email-already-in-use':
+                    errorMessage = 'Email já cadastrado';
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = 'Email inválido';
+                    break;
+                case 'auth/weak-password':
+                    errorMessage = 'Senha muito fraca';
+                    break;
+            }
+            addNotification(errorMessage, 'error');
         });
-        
-        showNotification('Conta criada com sucesso!', 'success');
-        showLoginForm();
-        
-        // Limpar formulário
-        document.getElementById('regEmail').value = '';
-        document.getElementById('regPassword').value = '';
-        document.getElementById('regUsername').value = '';
-        
-    } catch (error) {
-        console.error("❌ Erro ao criar conta:", error);
-        
-        let errorMessage = '';
-        switch(error.code) {
-            case 'auth/email-already-in-use':
-                errorMessage = 'Email já cadastrado';
-                break;
-            case 'auth/invalid-email':
-                errorMessage = 'Email inválido';
-                break;
-            case 'auth/weak-password':
-                errorMessage = 'Senha muito fraca';
-                break;
-            default:
-                errorMessage = error.message;
-        }
-        
-        showNotification('Erro: ' + errorMessage, 'error');
-    }
 };
 
-// Logout function
 window.logoutUser = async function() {
     try {
         // Remover da lista de online users
@@ -975,12 +1713,25 @@ window.logoutUser = async function() {
         
         // Fazer logout
         await auth.signOut();
-        showNotification('Logout realizado!', 'info');
+        addNotification('Logout realizado!', 'info');
         
     } catch (error) {
         console.error("❌ Erro ao fazer logout:", error);
-        showNotification('Erro ao fazer logout', 'error');
+        addNotification('Erro ao fazer logout', 'error');
     }
 };
 
-console.log("🎉 EclipseXploits Studio carregado com todas as funcionalidades!");
+// ==============================================
+// INICIALIZAÇÃO COMPLETA
+// ==============================================
+console.log("🎉 EclipseXploits Studio - Sistema Premium Carregado!");
+console.log("👑 Admin Exclusivo: guizinbzsk@gmail.com");
+console.log("🔒 Sistema Restrito: Apenas 1 Admin");
+
+// Habilitar áudio após interação do usuário
+document.addEventListener('click', function initAudio() {
+    if (isMusicPlaying && elements.backgroundMusic.paused) {
+        elements.backgroundMusic.play().catch(console.error);
+    }
+    document.removeEventListener('click', initAudio);
+}, { once: true });
