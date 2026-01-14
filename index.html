@@ -6,7 +6,6 @@
     <title>EclipseXploits Studio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="styles.css">
     
     <!-- Firebase SDK -->
@@ -24,7 +23,7 @@
     </audio>
     
     <!-- Anti DevTools Warning -->
-    <div id="devtools-detected" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; color: white; z-index: 9999; padding: 50px; text-align: center;">
+    <div id="devtools-detected" class="devtools-warning">
         <h2><i class="fas fa-skull-crossbones"></i> ACESSO NEGADO</h2>
         <p>Ferramentas de desenvolvimento detectadas</p>
         <button onclick="document.getElementById('devtools-detected').style.display='none'" class="btn btn-danger">
@@ -37,7 +36,7 @@
         <div class="container">
             <nav>
                 <a href="#" class="logo">
-                    <i class="fas fa-meteor"></i> EclipseXploits
+                    <i class="fas fa-meteor"></i> Eclipse<span>Xploits</span>
                 </a>
                 <div class="nav-links">
                     <a href="#home" class="nav-link">Home</a>
@@ -54,7 +53,12 @@
                         <i class="fas fa-moon"></i>
                     </button>
                     <button id="loginBtn" class="btn btn-secondary">Login</button>
-                    <div id="userAvatar" class="user-avatar" style="display: none;"></div>
+                    <div id="userAvatar" class="user-avatar" style="display: none;">
+                        <div class="avatar-initial">U</div>
+                        <button id="logoutBtn" class="logout-btn" style="display: none;">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
                 </div>
                 <button class="mobile-menu-btn">
                     <i class="fas fa-bars"></i>
@@ -68,51 +72,59 @@
         <section id="home" class="hero">
             <div class="container">
                 <div class="hero-content">
-                    <h1 class="animate__animated animate__fadeInDown">ECLIPSE<span class="gradient-text">XPLOITS</span> STUDIO</h1>
-                    <p class="hero-subtitle animate__animated animate__fadeInUp">Scripts premium para Roblox • Hack avançado • Suporte 24/7</p>
+                    <h1 class="hero-title">
+                        <span class="eclipse-text">ECLIPSE</span>
+                        <span class="xploits-text">XPLOITS</span>
+                        <span class="studio-text">STUDIO</span>
+                    </h1>
+                    <p class="hero-subtitle">Scripts premium para Roblox • Hack avançado • Suporte 24/7</p>
                     
-                    <div class="hero-stats animate__animated animate__fadeInUp">
+                    <div class="hero-stats">
                         <div class="stat">
-                            <i class="fas fa-code"></i>
-                            <span id="totalScriptsCount">150+</span>
-                            <small>Scripts</small>
+                            <div class="stat-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="totalScriptsCount">150+</div>
+                                <div class="stat-label">Scripts</div>
+                            </div>
                         </div>
                         <div class="stat">
-                            <i class="fas fa-users"></i>
-                            <span id="onlineUsersCount">0</span>
-                            <small>Online</small>
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="onlineUsersCount">0</div>
+                                <div class="stat-label">Online</div>
+                            </div>
                         </div>
                         <div class="stat">
-                            <i class="fas fa-download"></i>
-                            <span id="totalDownloads">10K+</span>
-                            <small>Downloads</small>
+                            <div class="stat-icon">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="totalDownloads">10K+</div>
+                                <div class="stat-label">Downloads</div>
+                            </div>
                         </div>
                         <div class="stat">
-                            <i class="fas fa-star"></i>
-                            <span>4.9</span>
-                            <small>Avaliação</small>
+                            <div class="stat-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number">4.9</div>
+                                <div class="stat-label">Avaliação</div>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="hero-buttons animate__animated animate__fadeInUp">
-                        <button onclick="scrollToSection('scripts')" class="btn btn-primary btn-glow">
+                    <div class="hero-buttons">
+                        <button onclick="scrollToSection('scripts')" class="btn btn-primary btn-explore">
                             <i class="fas fa-rocket"></i> EXPLORAR SCRIPTS
                         </button>
-                        <button onclick="showChatSection()" class="btn btn-outline">
+                        <button onclick="showChatSection()" class="btn btn-chat">
                             <i class="fas fa-comments"></i> ENTRAR NO CHAT
                         </button>
-                    </div>
-                </div>
-                
-                <div class="hero-animation">
-                    <div class="floating-element">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div class="floating-element delay-1">
-                        <i class="fas fa-gamepad"></i>
-                    </div>
-                    <div class="floating-element delay-2">
-                        <i class="fas fa-bolt"></i>
                     </div>
                 </div>
             </div>
@@ -125,7 +137,10 @@
                     <p class="section-subtitle">Seleção exclusiva de scripts para diversos jogos</p>
                     
                     <div class="search-filter">
-                        <input type="text" id="scriptSearch" placeholder="Buscar scripts..." class="search-input">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="scriptSearch" placeholder="Buscar scripts..." class="search-input">
+                        </div>
                         <select id="gameFilter" class="filter-select">
                             <option value="">Todos os Jogos</option>
                             <option value="blox fruits">Blox Fruits</option>
@@ -142,7 +157,7 @@
                 
                 <div id="scriptsList" class="scripts-grid"></div>
                 
-                <div class="loading-spinner" id="scriptsLoading">
+                <div class="loading-spinner" id="scriptsLoading" style="display: none;">
                     <i class="fas fa-spinner fa-spin"></i>
                 </div>
             </div>
@@ -151,6 +166,7 @@
         <section id="features" class="section bg-dark">
             <div class="container">
                 <h2 class="section-title">RECURSOS EXCLUSIVOS</h2>
+                <p class="section-subtitle">Tudo o que você precisa para dominar o Roblox</p>
                 
                 <div class="features-grid">
                     <div class="feature-card">
@@ -207,6 +223,7 @@
         <section id="ranking" class="section">
             <div class="container">
                 <h2 class="section-title">RANKING DE USUÁRIOS</h2>
+                <p class="section-subtitle">Os mais ativos da comunidade</p>
                 
                 <div class="ranking-container">
                     <div class="ranking-header">
@@ -222,13 +239,16 @@
                     </div>
                     
                     <div class="ranking-list" id="rankingList">
-                        <!-- Ranking será carregado aqui -->
+                        <div class="empty-ranking">
+                            <i class="fas fa-trophy"></i>
+                            <p>Carregando ranking...</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="chat" class="section" style="display: none;">
+        <section id="chat" class="section chat-section" style="display: none;">
             <div class="container">
                 <div class="chat-container">
                     <div class="chat-header">
@@ -244,22 +264,28 @@
                     </div>
                     
                     <div class="chat-messages-container">
-                        <div id="chatMessages" class="chat-messages"></div>
+                        <div id="chatMessages" class="chat-messages">
+                            <div class="empty-chat">
+                                <i class="fas fa-comments"></i>
+                                <p>Nenhuma mensagem ainda</p>
+                                <small>Seja o primeiro a enviar uma mensagem!</small>
+                            </div>
+                        </div>
                         <div class="chat-tips">
                             <p><i class="fas fa-info-circle"></i> Dica: Pressione Enter para enviar, Shift+Enter para nova linha</p>
                         </div>
                     </div>
                     
                     <div class="chat-input-container">
-                        <input type="text" id="chatInput" class="chat-input" placeholder="Digite sua mensagem..." disabled>
-                        <div class="chat-actions">
+                        <div class="chat-input-wrapper">
+                            <input type="text" id="chatInput" class="chat-input" placeholder="Faça login para usar o chat" disabled>
                             <button id="emojiBtn" class="btn-icon" disabled>
                                 <i class="fas fa-smile"></i>
                             </button>
-                            <button id="sendMessageBtn" class="btn btn-primary" disabled>
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
                         </div>
+                        <button id="sendMessageBtn" class="btn btn-primary send-btn" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -283,6 +309,7 @@
                 
                 <div class="footer-section">
                     <h4>Links Rápidos</h4>
+                    <a href="#home">Home</a>
                     <a href="#scripts">Scripts</a>
                     <a href="#features">Recursos</a>
                     <a href="#ranking">Ranking</a>
@@ -331,9 +358,11 @@
                 </div>
                 <div class="form-group">
                     <label for="password"><i class="fas fa-lock"></i> Senha</label>
-                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
-                    <div class="password-toggle">
-                        <i class="fas fa-eye" id="togglePassword"></i>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                        <div class="password-toggle">
+                            <i class="fas fa-eye" id="togglePassword"></i>
+                        </div>
                     </div>
                 </div>
                 
@@ -436,7 +465,7 @@
             </div>
             
             <div class="admin-logs" id="adminLogs">
-                <!-- Logs serão exibidos aqui -->
+                <div class="empty-logs">Nenhum log encontrado</div>
             </div>
         </div>
     </div>
@@ -450,22 +479,9 @@
             </button>
         </div>
         <div class="notification-list" id="notificationList">
-            <!-- Notificações serão exibidas aqui -->
-        </div>
-    </div>
-
-    <!-- Loading Screen -->
-    <div id="loadingScreen" class="loading-screen">
-        <div class="loader-content">
-            <div class="loader">
-                <div class="orbit"></div>
-                <div class="moon"></div>
-                <div class="planet"></div>
-            </div>
-            <h2>EclipseXploits Studio</h2>
-            <p>Carregando universo de scripts...</p>
-            <div class="loader-progress">
-                <div class="progress-bar" id="loadingProgress"></div>
+            <div class="empty-notifications">
+                <i class="fas fa-bell-slash"></i>
+                <p>Nenhuma notificação</p>
             </div>
         </div>
     </div>
