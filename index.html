@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EclipseXploits Studio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="styles.css">
     
     <!-- Firebase SDK -->
@@ -14,6 +15,14 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body>
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
+    
+    <!-- Audio -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3" type="audio/mpeg">
+    </audio>
+    
     <!-- Anti DevTools Warning -->
     <div id="devtools-detected" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; color: white; z-index: 9999; padding: 50px; text-align: center;">
         <h2><i class="fas fa-skull-crossbones"></i> ACESSO NEGADO</h2>
@@ -33,15 +42,19 @@
                 <div class="nav-links">
                     <a href="#home" class="nav-link">Home</a>
                     <a href="#scripts" class="nav-link">Scripts</a>
+                    <a href="#features" class="nav-link">Recursos</a>
+                    <a href="#ranking" class="nav-link">Ranking</a>
                     <a href="#chat" class="nav-link">Chat</a>
                 </div>
                 <div class="user-section">
+                    <button id="musicToggle" class="btn-icon">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <button id="themeToggle" class="btn-icon">
+                        <i class="fas fa-moon"></i>
+                    </button>
                     <button id="loginBtn" class="btn btn-secondary">Login</button>
-                    <div id="userAvatar" class="user-avatar" style="display: none;">
-                        <button id="logoutBtn" class="profile-menu-item" style="display: none;">
-                            <i class="fas fa-sign-out-alt"></i> Sair
-                        </button>
-                    </div>
+                    <div id="userAvatar" class="user-avatar" style="display: none;"></div>
                 </div>
                 <button class="mobile-menu-btn">
                     <i class="fas fa-bars"></i>
@@ -54,34 +67,199 @@
     <main>
         <section id="home" class="hero">
             <div class="container">
-                <h1>ECLIPSEXPLOITS STUDIO</h1>
-                <p>Scripts premium para Roblox</p>
-                <button onclick="scrollToSection('scripts')" class="btn btn-primary">
-                    <i class="fas fa-rocket"></i> COMEÇAR
-                </button>
+                <div class="hero-content">
+                    <h1 class="animate__animated animate__fadeInDown">ECLIPSE<span class="gradient-text">XPLOITS</span> STUDIO</h1>
+                    <p class="hero-subtitle animate__animated animate__fadeInUp">Scripts premium para Roblox • Hack avançado • Suporte 24/7</p>
+                    
+                    <div class="hero-stats animate__animated animate__fadeInUp">
+                        <div class="stat">
+                            <i class="fas fa-code"></i>
+                            <span id="totalScriptsCount">150+</span>
+                            <small>Scripts</small>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-users"></i>
+                            <span id="onlineUsersCount">0</span>
+                            <small>Online</small>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-download"></i>
+                            <span id="totalDownloads">10K+</span>
+                            <small>Downloads</small>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-star"></i>
+                            <span>4.9</span>
+                            <small>Avaliação</small>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-buttons animate__animated animate__fadeInUp">
+                        <button onclick="scrollToSection('scripts')" class="btn btn-primary btn-glow">
+                            <i class="fas fa-rocket"></i> EXPLORAR SCRIPTS
+                        </button>
+                        <button onclick="showChatSection()" class="btn btn-outline">
+                            <i class="fas fa-comments"></i> ENTRAR NO CHAT
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="hero-animation">
+                    <div class="floating-element">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="floating-element delay-1">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="floating-element delay-2">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                </div>
             </div>
         </section>
 
         <section id="scripts" class="section">
             <div class="container">
-                <h2 class="section-title">SCRIPTS</h2>
+                <div class="section-header">
+                    <h2 class="section-title">SCRIPTS PREMIUM</h2>
+                    <p class="section-subtitle">Seleção exclusiva de scripts para diversos jogos</p>
+                    
+                    <div class="search-filter">
+                        <input type="text" id="scriptSearch" placeholder="Buscar scripts..." class="search-input">
+                        <select id="gameFilter" class="filter-select">
+                            <option value="">Todos os Jogos</option>
+                            <option value="blox fruits">Blox Fruits</option>
+                            <option value="pet simulator">Pet Simulator</option>
+                            <option value="arsenal">Arsenal</option>
+                            <option value="bedwars">BedWars</option>
+                            <option value="murder mystery">Murder Mystery</option>
+                        </select>
+                        <button id="refreshScripts" class="btn-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                
                 <div id="scriptsList" class="scripts-grid"></div>
+                
+                <div class="loading-spinner" id="scriptsLoading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="section bg-dark">
+            <div class="container">
+                <h2 class="section-title">RECURSOS EXCLUSIVOS</h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Anti-Ban</h3>
+                        <p>Sistema avançado de proteção contra detecção</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Atualizações Diárias</h3>
+                        <p>Scripts atualizados constantemente</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3>Suporte VIP</h3>
+                        <p>Atendimento prioritário 24/7</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                        <h3>Multi-Hack</h3>
+                        <p>Funções ilimitadas em um só script</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <h3>Modo Fantasma</h3>
+                        <p>Execução invisível</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Mobile Support</h3>
+                        <p>Compatível com Android/iOS</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ranking" class="section">
+            <div class="container">
+                <h2 class="section-title">RANKING DE USUÁRIOS</h2>
+                
+                <div class="ranking-container">
+                    <div class="ranking-header">
+                        <div class="ranking-tabs">
+                            <button class="ranking-tab active" data-tab="weekly">Semanal</button>
+                            <button class="ranking-tab" data-tab="monthly">Mensal</button>
+                            <button class="ranking-tab" data-tab="alltime">Geral</button>
+                        </div>
+                        <div class="ranking-stats">
+                            <span><i class="fas fa-user"></i> Total: <span id="totalUsers">0</span></span>
+                            <span><i class="fas fa-crown"></i> Top: <span id="topUser">-</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="ranking-list" id="rankingList">
+                        <!-- Ranking será carregado aqui -->
+                    </div>
+                </div>
             </div>
         </section>
 
         <section id="chat" class="section" style="display: none;">
             <div class="container">
-                <h2 class="section-title">CHAT</h2>
-                <div class="chat-section">
+                <div class="chat-container">
                     <div class="chat-header">
-                        Chat Global <span id="onlineCount">0 online</span>
+                        <div class="chat-title">
+                            <i class="fas fa-comments"></i>
+                            <h2>CHAT GLOBAL</h2>
+                        </div>
+                        <div class="chat-info">
+                            <span class="online-indicator"></span>
+                            <span id="onlineCount">0 online</span>
+                            <span class="message-count" id="messageCount">0 mensagens</span>
+                        </div>
                     </div>
-                    <div id="chatMessages" class="chat-messages"></div>
+                    
+                    <div class="chat-messages-container">
+                        <div id="chatMessages" class="chat-messages"></div>
+                        <div class="chat-tips">
+                            <p><i class="fas fa-info-circle"></i> Dica: Pressione Enter para enviar, Shift+Enter para nova linha</p>
+                        </div>
+                    </div>
+                    
                     <div class="chat-input-container">
-                        <input type="text" id="chatInput" class="chat-input" placeholder="Digite sua mensagem...">
-                        <button id="sendMessageBtn" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
+                        <input type="text" id="chatInput" class="chat-input" placeholder="Digite sua mensagem..." disabled>
+                        <div class="chat-actions">
+                            <button id="emojiBtn" class="btn-icon" disabled>
+                                <i class="fas fa-smile"></i>
+                            </button>
+                            <button id="sendMessageBtn" class="btn btn-primary" disabled>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -91,7 +269,49 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p>© 2026 EclipseXploits Studio</p>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-meteor"></i> EclipseXploits</h3>
+                    <p>Comunidade premium de scripts para Roblox</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Links Rápidos</h4>
+                    <a href="#scripts">Scripts</a>
+                    <a href="#features">Recursos</a>
+                    <a href="#ranking">Ranking</a>
+                    <a href="#chat">Chat</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Suporte</h4>
+                    <a href="#" onclick="showSupportModal()">Reportar Bug</a>
+                    <a href="#" onclick="showSupportModal()">Sugestões</a>
+                    <a href="#" onclick="showSupportModal()">Contato</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Estatísticas</h4>
+                    <div class="footer-stats">
+                        <span>Online: <strong id="footerOnline">0</strong></span>
+                        <span>Scripts: <strong id="footerScripts">0</strong></span>
+                        <span>Uptime: <strong>99.9%</strong></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2026 EclipseXploits Studio • <span id="serverTime">--:--:--</span></p>
+                <p class="warning-text">
+                    <i class="fas fa-exclamation-triangle"></i> Apenas para fins educacionais
+                </p>
+            </div>
         </div>
     </footer>
 
@@ -99,46 +319,158 @@
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            <h2>LOGIN</h2>
+            <div class="modal-header">
+                <h2><i class="fas fa-sign-in-alt"></i> LOGIN</h2>
+                <p>Acesso exclusivo à comunidade</p>
+            </div>
+            
             <form id="loginForm">
                 <div class="form-group">
-                    <input type="email" id="email" class="form-control" placeholder="Email" required>
+                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="seu@email.com" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="password" class="form-control" placeholder="Senha" required>
+                    <label for="password"><i class="fas fa-lock"></i> Senha</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                    <div class="password-toggle">
+                        <i class="fas fa-eye" id="togglePassword"></i>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">ENTRAR</button>
-                <p style="margin-top: 15px; text-align: center;">
-                    <a href="#" onclick="showRegister()">Criar conta</a>
-                </p>
+                
+                <div class="form-options">
+                    <label class="checkbox">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Lembrar-me</span>
+                    </label>
+                    <a href="#" onclick="showForgotPassword()">Esqueci a senha</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-sign-in-alt"></i> ENTRAR
+                </button>
+                
+                <div class="divider">
+                    <span>OU</span>
+                </div>
+                
+                <button type="button" onclick="showRegister()" class="btn btn-outline btn-block">
+                    <i class="fas fa-user-plus"></i> CRIAR CONTA
+                </button>
             </form>
         </div>
     </div>
 
-    <!-- Dashboard Panel -->
-    <div id="dashboardPanel" class="dashboard-panel">
-        <div class="close-modal" id="closeDashboard">&times;</div>
-        <h2>DASHBOARD ADMIN</h2>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number" id="totalScripts">0</div>
-                <div>Scripts Totais</div>
+    <!-- Support Modal -->
+    <div id="supportModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2><i class="fas fa-headset"></i> SUPORTE</h2>
+            <form id="supportForm">
+                <div class="form-group">
+                    <label>Assunto</label>
+                    <select class="form-control" required>
+                        <option value="">Selecione...</option>
+                        <option>Reportar Bug</option>
+                        <option>Sugestão</option>
+                        <option>Dúvida</option>
+                        <option>Outro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mensagem</label>
+                    <textarea class="form-control" rows="5" placeholder="Descreva seu problema..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">ENVIAR</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Button (Apenas para admin) -->
+    <button id="adminDashboardBtn" class="admin-btn" style="display: none;">
+        <i class="fas fa-crown"></i>
+    </button>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="admin-dashboard">
+        <div class="dashboard-header">
+            <h2><i class="fas fa-crown"></i> PAINEL ADMIN</h2>
+            <div class="admin-info">
+                <span id="adminEmail"></span>
+                <span class="admin-badge">ADMIN</span>
             </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalMessages">0</div>
-                <div>Mensagens</div>
+        </div>
+        
+        <div class="dashboard-content">
+            <div class="dashboard-stats">
+                <div class="admin-stat">
+                    <div class="stat-value" id="adminTotalUsers">0</div>
+                    <div class="stat-label">Usuários</div>
+                </div>
+                <div class="admin-stat">
+                    <div class="stat-value" id="adminTotalMessages">0</div>
+                    <div class="stat-label">Mensagens</div>
+                </div>
+                <div class="admin-stat">
+                    <div class="stat-value" id="adminTotalScripts">0</div>
+                    <div class="stat-label">Scripts</div>
+                </div>
+                <div class="admin-stat">
+                    <div class="stat-value" id="adminOnlineNow">0</div>
+                    <div class="stat-label">Online Agora</div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-number" id="dailyVisits">0</div>
-                <div>Visitas Hoje</div>
+            
+            <div class="dashboard-controls">
+                <button class="admin-control" onclick="adminBanUser()">
+                    <i class="fas fa-ban"></i> Banir Usuário
+                </button>
+                <button class="admin-control" onclick="adminAddScript()">
+                    <i class="fas fa-plus"></i> Adicionar Script
+                </button>
+                <button class="admin-control" onclick="adminClearChat()">
+                    <i class="fas fa-trash"></i> Limpar Chat
+                </button>
+                <button class="admin-control" onclick="adminBroadcast()">
+                    <i class="fas fa-bullhorn"></i> Anúncio
+                </button>
             </div>
-            <div class="stat-card">
-                <div class="stat-number" id="onlineUsers">0</div>
-                <div>Usuários Online</div>
+            
+            <div class="admin-logs" id="adminLogs">
+                <!-- Logs serão exibidos aqui -->
             </div>
         </div>
     </div>
 
+    <!-- Notification Center -->
+    <div id="notificationCenter" class="notification-center">
+        <div class="notification-header">
+            <h3><i class="fas fa-bell"></i> Notificações</h3>
+            <button id="clearNotifications" class="btn-icon">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="notification-list" id="notificationList">
+            <!-- Notificações serão exibidas aqui -->
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loader-content">
+            <div class="loader">
+                <div class="orbit"></div>
+                <div class="moon"></div>
+                <div class="planet"></div>
+            </div>
+            <h2>EclipseXploits Studio</h2>
+            <p>Carregando universo de scripts...</p>
+            <div class="loader-progress">
+                <div class="progress-bar" id="loadingProgress"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
