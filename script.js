@@ -38,7 +38,6 @@ const elements = {
     loginBtn: document.getElementById('loginBtn'),
     userAvatar: document.getElementById('userAvatar'),
     loginModal: document.getElementById('loginModal'),
-    closeModal: document.getElementById('closeModal'),
     loginForm: document.getElementById('loginForm'),
     scriptsList: document.getElementById('scriptsList'),
     chatSection: document.getElementById('chat'),
@@ -48,8 +47,25 @@ const elements = {
     onlineCount: document.getElementById('onlineCount'),
     navLinks: document.querySelector('.nav-links'),
     mobileMenuBtn: document.querySelector('.mobile-menu-btn'),
-    getStartedBtn: document.getElementById('getStartedBtn')
+    logoutBtn: document.getElementById('logoutBtn')
 };
+
+// ==============================================
+// FUNÇÕES AUXILIARES
+// ==============================================
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
 
 // ==============================================
 // INICIALIZAÇÃO
@@ -88,8 +104,15 @@ function setupEventListeners() {
     });
     
     // Close buttons
-    elements.closeModal.addEventListener('click', () => elements.loginModal.style.display = 'none');
-    elements.closeDashboard.addEventListener('click', () => elements.dashboardPanel.style.display = 'none');
+    document.querySelectorAll('.close-modal').forEach(closeBtn => {
+        closeBtn.addEventListener('click', (e) => {
+            if (e.target.id === 'closeDashboard') {
+                elements.dashboardPanel.style.display = 'none';
+            } else {
+                elements.loginModal.style.display = 'none';
+            }
+        });
+    });
     
     // Login form
     elements.loginForm.addEventListener('submit', handleLoginSubmit);
@@ -102,6 +125,11 @@ function setupEventListeners() {
             sendMessage();
         }
     });
+    
+    // Logout
+    if (elements.logoutBtn) {
+        elements.logoutBtn.addEventListener('click', logoutUser);
+    }
     
     // Mobile menu
     if (elements.mobileMenuBtn) {
@@ -125,10 +153,11 @@ function setupEventListeners() {
                 });
                 
                 // Mostrar section alvo
-                document.querySelector(target).style.display = 'block';
-                
-                // Scroll suave
-                document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
+                const targetSection = document.querySelector(target);
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
                 
                 // Fechar mobile menu
                 if (window.innerWidth <= 768) {
@@ -136,18 +165,6 @@ function setupEventListeners() {
                 }
             }
         });
-    });
-    
-    // Get started button
-    if (elements.getStartedBtn) {
-        elements.getStartedBtn.addEventListener('click', () => {
-            document.getElementById('scripts').scrollIntoView({ behavior: 'smooth' });
-        });
-    }
-    
-    // Close devtools warning
-    document.getElementById('closeDevtoolsWarning')?.addEventListener('click', () => {
-        elements.devtoolsDetected.style.display = 'none';
     });
     
     // Close modals on outside click
@@ -195,6 +212,7 @@ async function checkAdminStatus(userId) {
         
         if (isAdmin) {
             console.log("👑 Usuário é admin");
+            showDashboard();
         }
     } catch (error) {
         console.error("❌ Erro ao verificar admin:", error);
@@ -269,6 +287,11 @@ function updateUIForLoggedInUser(user) {
     elements.userAvatar.textContent = initial;
     elements.userAvatar.title = user.email;
     
+    // Show logout button
+    if (elements.logoutBtn) {
+        elements.logoutBtn.style.display = 'block';
+    }
+    
     // Add online indicator
     elements.userAvatar.classList.add('online');
     
@@ -284,6 +307,11 @@ function updateUIForGuest() {
     // Mostrar login button, esconder avatar
     elements.loginBtn.style.display = 'block';
     elements.userAvatar.style.display = 'none';
+    
+    // Hide logout button
+    if (elements.logoutBtn) {
+        elements.logoutBtn.style.display = 'none';
+    }
     
     // Desabilitar chat
     if (elements.chatInput) {
