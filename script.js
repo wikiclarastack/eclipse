@@ -5,7 +5,7 @@
 // Configuração básica do Firebase (em produção, carregue do backend)
 const firebaseConfig = {
     // Em produção, pegue essas credenciais do seu backend
-    apiKey: "CHAVE_AQUI",
+    apiKey: "AIzaSyCeAkDlLb3cAnYQvpo2BwHSB8qktUq7Zbg",
     authDomain: "eclipsexploits.firebaseapp.com",
     databaseURL: "https://eclipsexploits-default-rtdb.firebaseio.com",
     projectId: "eclipsexploits",
