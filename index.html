@@ -2,14 +2,14 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>EclipseXPloits — Segurança em Andamento</title>
+<title>EclipseXPloits — Manutenção de Segurança</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- HEADERS DE SEGURANÇA (front-end) -->
+<!-- CSP compatível com script inline -->
 <meta http-equiv="Content-Security-Policy"
 content="
 default-src 'self';
-script-src 'self';
+script-src 'self' 'unsafe-inline';
 style-src 'self' 'unsafe-inline';
 img-src 'self' data:;
 object-src 'none';
@@ -25,133 +25,58 @@ frame-ancestors 'none';
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Orbitron', sans-serif;
-  user-select: none;
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif}
+body{
+height:100vh;
+background:radial-gradient(circle at top,#0b0f1a,#04060c);
+color:#e6e6e6;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden
 }
-
-body {
-  height: 100vh;
-  background: radial-gradient(circle at top, #0b0f1a, #04060c);
-  color: #e6e6e6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+.bg{
+position:absolute;
+inset:-100%;
+background:repeating-linear-gradient(45deg,rgba(255,255,255,.03),rgba(255,255,255,.03) 2px,transparent 2px,transparent 6px);
+animation:bgMove 30s linear infinite
 }
-
-/* Fundo */
-.bg {
-  position: absolute;
-  inset: -100%;
-  background: repeating-linear-gradient(
-    45deg,
-    rgba(255,255,255,0.03),
-    rgba(255,255,255,0.03) 2px,
-    transparent 2px,
-    transparent 6px
-  );
-  animation: bgMove 30s linear infinite;
+@keyframes bgMove{to{transform:translate(-300px,-300px)}}
+.box{
+position:relative;
+z-index:2;
+background:rgba(8,12,25,.88);
+padding:45px;
+border-radius:18px;
+text-align:center;
+max-width:560px;
+box-shadow:0 0 50px rgba(0,140,255,.4);
+animation:fade 1.4s ease
 }
-
-@keyframes bgMove {
-  to { transform: translate(-300px, -300px); }
+@keyframes fade{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:2.5rem;color:#4da6ff;text-shadow:0 0 15px rgba(77,166,255,.6)}
+.sub{font-size:.85rem;letter-spacing:2px;color:#9bbcff;margin:10px 0 25px}
+.loader{
+width:85px;height:85px;
+border:4px solid rgba(255,255,255,.12);
+border-top:4px solid #4da6ff;
+border-radius:50%;
+animation:spin 1.1s linear infinite;
+margin:0 auto 25px
 }
-
-.box {
-  position: relative;
-  z-index: 2;
-  background: rgba(8,12,25,0.88);
-  padding: 45px;
-  border-radius: 18px;
-  text-align: center;
-  max-width: 560px;
-  box-shadow: 0 0 50px rgba(0,140,255,0.4);
-  animation: fade 1.4s ease;
+@keyframes spin{to{transform:rotate(360deg)}}
+.msg{font-size:.95rem;line-height:1.7;opacity:.9}
+.countdown{display:flex;justify-content:center;gap:15px;margin:25px 0}
+.timeBox{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.15);
+padding:14px;border-radius:10px;min-width:80px
 }
-
-@keyframes fade {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-h1 {
-  font-size: 2.5rem;
-  color: #4da6ff;
-  text-shadow: 0 0 15px rgba(77,166,255,0.6);
-}
-
-.sub {
-  font-size: .85rem;
-  letter-spacing: 2px;
-  color: #9bbcff;
-  margin: 10px 0 25px;
-}
-
-.loader {
-  width: 85px;
-  height: 85px;
-  border: 4px solid rgba(255,255,255,0.12);
-  border-top: 4px solid #4da6ff;
-  border-radius: 50%;
-  animation: spin 1.1s linear infinite;
-  margin: 0 auto 25px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.msg {
-  font-size: .95rem;
-  line-height: 1.7;
-  opacity: .9;
-}
-
-.countdown {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin: 25px 0;
-}
-
-.timeBox {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.15);
-  padding: 14px;
-  border-radius: 10px;
-  min-width: 80px;
-}
-
-.time {
-  font-size: 1.5rem;
-}
-
-.label {
-  font-size: .6rem;
-  opacity: .6;
-}
-
-.status {
-  font-size: .8rem;
-  color: #9bbcff;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: .4; }
-  50% { opacity: 1; }
-  100% { opacity: .4; }
-}
-
-footer {
-  margin-top: 20px;
-  font-size: .7rem;
-  opacity: .4;
-}
+.time{font-size:1.5rem}
+.label{font-size:.6rem;opacity:.6}
+.status{font-size:.8rem;color:#9bbcff;animation:pulse 2s infinite}
+@keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
+footer{margin-top:20px;font-size:.7rem;opacity:.4}
 </style>
 </head>
 <body>
@@ -161,14 +86,13 @@ footer {
 <div class="box">
   <div class="loader"></div>
   <h1>EclipseXPloits</h1>
-  <div class="sub">HARDENING DE SEGURANÇA EM ANDAMENTO</div>
+  <div class="sub">MANUTENÇÃO DE SEGURANÇA</div>
 
   <div class="msg">
-    O sistema está passando por reforço de segurança, validação de permissões,
-    mitigação de ataques e revisão completa da infraestrutura.
+    O sistema está passando por reforço de segurança,
+    revisão de permissões e melhorias estruturais.
     <br><br>
-    Tentativas de inspeção, modificação ou acesso não autorizado são
-    monitoradas e bloqueadas.
+    Serviços críticos estão temporariamente indisponíveis.
   </div>
 
   <div class="countdown">
@@ -179,185 +103,27 @@ footer {
 
   <div class="status" id="status">⏳ PREVISÃO: 14:00 (BRT)</div>
 
-  <footer>© 2026 EclipseXPloits — Security Mode</footer>
+  <footer>© 2026 EclipseXPloits</footer>
 </div>
 
 <script>
-/* ====== ANTI INSPEÇÃO ====== */
-
-// Bloquear botões
+/* Proteções LEVES (não quebram) */
 document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('copy', e => e.preventDefault());
-document.addEventListener('cut', e => e.preventDefault());
-document.addEventListener('paste', e => e.preventDefault());
 
-// Bloquear teclas comuns
-document.addEventListener('keydown', e => {
-  if (
-    e.key === "F12" ||
-    (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key)) ||
-    (e.ctrlKey && ["U","S","P"].includes(e.key))
-  ) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-});
+/* Contador Brasília */
+function update(){
+  const now=new Date();
+  const utc=now.getTime()+now.getTimezoneOffset()*60000;
+  const br=new Date(utc-3*3600000);
+  const target=new Date(br);target.setHours(14,0,0,0);
 
-// Detectar DevTools básico
-setInterval(() => {
-  const before = new Date().getTime();
-  debugger;
-  const after = new Date().getTime();
-  if (after - before > 100) {
-    document.body.innerHTML = "";
-  }
-}, 1000);
-
-/* ====== CONTADOR BRASÍLIA ====== */
-function update() {
-  const now = new Date();
-  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-  const brasilia = new Date(utc - 3 * 3600000);
-
-  const target = new Date(brasilia);
-  target.setHours(14,0,0,0);
-
-  let diff = target - brasilia;
-  if (diff <= 0) {
-    document.getElementById("status").innerText =
-      "🔐 FINALIZANDO VERIFICAÇÕES DE SEGURANÇA...";
-    diff = 0;
-  }
-
-  document.getElementById("h").innerText =
-    String(Math.floor(diff / 3600000)).padStart(2,"0");
-  document.getElementById("m").innerText =
-    String(Math.floor(diff / 60000) % 60).padStart(2,"0");
-  document.getElementById("s").innerText =
-    String(Math.floor(diff / 1000) % 60).padStart(2,"0");
+  let d=target-br;if(d<0)d=0;
+  document.getElementById("h").innerText=String(Math.floor(d/3600000)).padStart(2,"0");
+  document.getElementById("m").innerText=String(Math.floor(d/60000)%60).padStart(2,"0");
+  document.getElementById("s").innerText=String(Math.floor(d/1000)%60).padStart(2,"0");
 }
-
-setInterval(update, 1000);
-update();
+setInterval(update,1000);update();
 </script>
-
-</body>
-</html>      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 12px 14px;
-      border-radius: 10px;
-      min-width: 70px;
-    }
-
-    .time {
-      font-size: 1.4rem;
-      color: #ffffff;
-    }
-
-    .label {
-      font-size: 0.6rem;
-      opacity: 0.6;
-      margin-top: 4px;
-    }
-
-    .status {
-      font-size: 0.8rem;
-      letter-spacing: 1px;
-      color: #9bbcff;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 0.4; }
-      50% { opacity: 1; }
-      100% { opacity: 0.4; }
-    }
-
-    footer {
-      margin-top: 22px;
-      font-size: 0.7rem;
-      opacity: 0.4;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="background"></div>
-
-  <div class="container">
-    <div class="loader"></div>
-
-    <h1>Eclipse<span>XPloits</span></h1>
-    <div class="subtitle">MANUTENÇÃO DE SEGURANÇA ATIVA</div>
-
-    <div class="message">
-      Nosso sistema está passando por um processo avançado de
-      <strong>reforço de segurança</strong>, correção de vulnerabilidades,
-      validação de permissões e melhorias na infraestrutura.
-      <br><br>
-      Durante este período, acessos administrativos, autenticação e
-      serviços críticos estão temporariamente indisponíveis.
-    </div>
-
-    <div class="countdown">
-      <div class="time-box">
-        <div class="time" id="hours">--</div>
-        <div class="label">HORAS</div>
-      </div>
-      <div class="time-box">
-        <div class="time" id="minutes">--</div>
-        <div class="label">MIN</div>
-      </div>
-      <div class="time-box">
-        <div class="time" id="seconds">--</div>
-        <div class="label">SEG</div>
-      </div>
-    </div>
-
-    <div class="status" id="statusText">
-      ⏳ PREVISÃO DE RETORNO: 14:00 (HORÁRIO DE BRASÍLIA)
-    </div>
-
-    <footer>
-      © 2026 EclipseXPloits — Security Maintenance
-    </footer>
-  </div>
-
-  <script>
-    function updateCountdown() {
-      const now = new Date();
-
-      // Ajuste para horário de Brasília (UTC-3)
-      const brasiliaOffset = -3 * 60;
-      const localOffset = now.getTimezoneOffset();
-      const brasiliaTime = new Date(now.getTime() + (localOffset - brasiliaOffset) * 60000);
-
-      const target = new Date(brasiliaTime);
-      target.setHours(14, 0, 0, 0);
-
-      let diff = target - brasiliaTime;
-
-      if (diff <= 0) {
-        document.getElementById("statusText").innerText =
-          "🔐 FINALIZANDO VERIFICAÇÕES DE SEGURANÇA...";
-        document.getElementById("hours").innerText = "00";
-        document.getElementById("minutes").innerText = "00";
-        document.getElementById("seconds").innerText = "00";
-        return;
-      }
-
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-
-      document.getElementById("hours").innerText = String(hours).padStart(2, "0");
-      document.getElementById("minutes").innerText = String(minutes).padStart(2, "0");
-      document.getElementById("seconds").innerText = String(seconds).padStart(2, "0");
-    }
-
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
-  </script>
 
 </body>
 </html>
