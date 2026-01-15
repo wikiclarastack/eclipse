@@ -2358,6 +2358,252 @@ window.copyScript = async function(scriptId) {
 };
 
 // ==============================================
+// FUNÇÃO PARA MOSTRAR MODAL DE ADICIONAR SCRIPT
+// ==============================================
+
+window.showAddScriptModal = function() {
+    if (!currentUser) {
+        showNotification('Faça login para adicionar scripts', 'warning');
+        showLoginModal();
+        return;
+    }
+    
+    // Verificar se usuário está banido
+    if (currentUser) {
+        database.ref('users/' + currentUser.uid).once('value').then(snapshot => {
+            const userData = snapshot.val();
+            if (userData?.isBanned) {
+                showNotification('Você está banido e não pode adicionar scripts', 'error');
+                return;
+            }
+        });
+    }
+    
+    // Limpar o formulário
+    document.getElementById('scriptTitle').value = '';
+    document.getElementById('scriptGame').value = '';
+    document.getElementById('scriptDescription').value = '';
+    document.getElementById('scriptCode').value = '';
+    document.getElementById('scriptLanguage').value = 'Lua';
+    document.getElementById('scriptTags').value = '';
+    
+    // Mostrar o modal
+    showModal('addScriptModal');
+};
+
+// ==============================================
+// FUNÇÃO PARA ADICIONAR SCRIPT
+// ==============================================
+
+window.submitScript = async function() {
+    if (!currentUser) {
+        showNotification('Faça login para adicionar scripts', 'warning');
+        return;
+    }
+    
+    // Coletar dados do formulário
+    const title = document.getElementById('scriptTitle').value.trim();
+    const game = document.getElementById('scriptGame').value.trim();
+    const description = document.getElementById('scriptDescription').value.trim();
+    const code = document.getElementById('scriptCode').value.trim();
+    const language = document.getElementById('scriptLanguage').value;
+    const tags = document.getElementById('scriptTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+    
+    // Validação
+    if (!title) {
+        showNotification('Digite um título para o script', 'error');
+        return;
+    }
+    
+    if (!code) {
+        showNotification('Digite o código do script', 'error');
+        return;
+    }
+    
+    if (code.length < 10) {
+        showNotification('O código do script é muito curto', 'error');
+        return;
+    }
+    
+    try {
+        // Obter dados do usuário
+        const userSnapshot = await database.ref('users/' + currentUser.uid).once('value');
+        const userData = userSnapshot.val();
+        
+        if (userData?.isBanned) {
+            showNotification('Você está banido e não pode adicionar scripts', 'error');
+            return;
+        }
+        
+        // Preparar dados do script
+        const scriptData = {
+            title: title,
+            game: game || 'Geral',
+            description: description || 'Sem descrição disponível.',
+            code: code,
+            language: language || 'Lua',
+            tags: tags,
+            author: currentUser.email.split('@')[0],
+            authorId: currentUser.uid,
+            downloads: 0,
+            rating: 5.0,
+            date: Date.now(),
+            approved: isAdminUser, // Auto-aprovação para admin
+            featured: false
+        };
+        
+        // Salvar no banco de dados
+        const newScriptRef = await database.ref('scripts').push(scriptData);
+        
+        // Enviar notificação de sucesso
+        showNotification('Script adicionado com sucesso!', 'success');
+        
+        // Fechar modal
+        closeModal('addScriptModal');
+        
+        // Log de segurança
+        await logSecurityEvent(
+            "SCRIPT_ADD",
+            `Usuário ${currentUser.email} adicionou script: ${title}`,
+            currentUser.uid,
+            userIP
+        );
+        
+        // Recarregar lista de scripts
+        loadScripts();
+        
+    } catch (error) {
+        console.error("❌ Erro ao adicionar script:", error);
+        showNotification('Erro ao adicionar script', 'error');
+    }
+};
+
+// ==============================================
+// FUNÇÕES PARA EDITAR E EXCLUIR SCRIPTS (ADMIN)
+// ==============================================
+
+window.editScript = async function(scriptId) {
+    if (!isAdminUser) return;
+    
+    try {
+        const snapshot = await database.ref('scripts/' + scriptId).once('value');
+        const script = snapshot.val();
+        
+        if (!script) {
+            showNotification('Script não encontrado', 'error');
+            return;
+        }
+        
+        // Preencher formulário de edição
+        document.getElementById('editScriptTitle').value = script.title || '';
+        document.getElementById('editScriptGame').value = script.game || '';
+        document.getElementById('editScriptDescription').value = script.description || '';
+        document.getElementById('editScriptCode').value = script.code || '';
+        document.getElementById('editScriptLanguage').value = script.language || 'Lua';
+        document.getElementById('editScriptTags').value = script.tags ? script.tags.join(', ') : '';
+        
+        // Salvar ID do script para edição
+        document.getElementById('editScriptModal').dataset.scriptId = scriptId;
+        
+        // Mostrar modal
+        showModal('editScriptModal');
+        
+    } catch (error) {
+        console.error("❌ Erro ao carregar script para edição:", error);
+        showNotification('Erro ao carregar script', 'error');
+    }
+};
+
+window.updateScript = async function() {
+    if (!isAdminUser) return;
+    
+    const scriptId = document.getElementById('editScriptModal').dataset.scriptId;
+    if (!scriptId) return;
+    
+    // Coletar dados do formulário
+    const title = document.getElementById('editScriptTitle').value.trim();
+    const game = document.getElementById('editScriptGame').value.trim();
+    const description = document.getElementById('editScriptDescription').value.trim();
+    const code = document.getElementById('editScriptCode').value.trim();
+    const language = document.getElementById('editScriptLanguage').value;
+    const tags = document.getElementById('editScriptTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+    
+    // Validação
+    if (!title || !code) {
+        showNotification('Preencha todos os campos obrigatórios', 'error');
+        return;
+    }
+    
+    try {
+        const updates = {
+            title: title,
+            game: game || 'Geral',
+            description: description || 'Sem descrição disponível.',
+            code: code,
+            language: language || 'Lua',
+            tags: tags,
+            lastUpdated: Date.now(),
+            updatedBy: currentUser.email
+        };
+        
+        await database.ref('scripts/' + scriptId).update(updates);
+        
+        showNotification('Script atualizado com sucesso!', 'success');
+        closeModal('editScriptModal');
+        
+        // Log de segurança
+        await logSecurityEvent(
+            "SCRIPT_UPDATE",
+            `Admin ${currentUser.email} atualizou script: ${title}`,
+            currentUser.uid,
+            userIP
+        );
+        
+        // Recarregar lista
+        loadScripts();
+        
+    } catch (error) {
+        console.error("❌ Erro ao atualizar script:", error);
+        showNotification('Erro ao atualizar script', 'error');
+    }
+};
+
+window.deleteScript = async function(scriptId) {
+    if (!isAdminUser) return;
+    
+    if (!confirm('Tem certeza que deseja excluir este script?\n\nEsta ação é irreversível!')) return;
+    
+    try {
+        const snapshot = await database.ref('scripts/' + scriptId).once('value');
+        const script = snapshot.val();
+        
+        if (!script) {
+            showNotification('Script não encontrado', 'error');
+            return;
+        }
+        
+        await database.ref('scripts/' + scriptId).remove();
+        
+        showNotification('Script excluído com sucesso!', 'success');
+        
+        // Log de segurança
+        await logSecurityEvent(
+            "SCRIPT_DELETE",
+            `Admin ${currentUser.email} excluiu script: ${script.title}`,
+            currentUser.uid,
+            userIP
+        );
+        
+        // Recarregar lista
+        loadScripts();
+        
+    } catch (error) {
+        console.error("❌ Erro ao excluir script:", error);
+        showNotification('Erro ao excluir script', 'error');
+    }
+};
+
+// ==============================================
 // RANKING SYSTEM
 // ==============================================
 
@@ -3396,6 +3642,132 @@ window.clearAllLogs = async function() {
     } catch (error) {
         console.error("❌ Erro ao limpar logs:", error);
         showNotification('Erro ao limpar logs', 'error');
+    }
+};
+
+// ==============================================
+// FUNÇÃO DE UNMUTE GLOBAL
+// ==============================================
+
+window.unmuteAllUsers = async function() {
+    if (!isAdminUser) return;
+    
+    if (!confirm('Desmutar TODOS os usuários?\n\nEsta ação removerá o mute de todos os usuários do sistema.')) return;
+    
+    try {
+        let unmutedCount = 0;
+        
+        const snapshot = await database.ref('users').once('value');
+        const updates = {};
+        
+        snapshot.forEach(child => {
+            const userId = child.key;
+            const userData = child.val();
+            
+            // Verificar se o usuário está mutado
+            if (userData.isMuted) {
+                updates[userId + '/isMuted'] = false;
+                updates[userId + '/mutedAt'] = null;
+                updates[userId + '/mutedBy'] = null;
+                updates[userId + '/muteReason'] = null;
+                updates[userId + '/muteUntil'] = null;
+                unmutedCount++;
+            }
+        });
+        
+        // Aplicar as atualizações
+        await database.ref('users').update(updates);
+        
+        // Enviar mensagem no chat
+        await database.ref('chat').push({
+            text: `🔊 O administrador removeu o mute de todos os usuários. ${unmutedCount} usuários desmutados.`,
+            timestamp: Date.now(),
+            userId: 'system',
+            userName: 'Sistema',
+            isAdmin: true
+        });
+        
+        // Log de segurança
+        await logSecurityEvent(
+            "GLOBAL_UNMUTE",
+            `Admin ${currentUser.email} removeu mute de ${unmutedCount} usuários`,
+            currentUser.uid,
+            userIP
+        );
+        
+        showNotification(`${unmutedCount} usuários desmutados!`, 'success');
+        
+        // Recarregar a lista de usuários no painel admin
+        if (adminMode) {
+            loadUsersList();
+        }
+        
+    } catch (error) {
+        console.error("❌ Erro ao desmutar usuários:", error);
+        showNotification('Erro ao desmutar usuários', 'error');
+    }
+};
+
+// ==============================================
+// FUNÇÃO PARA REMOVER MUTE DE UM USUÁRIO ESPECÍFICO
+// ==============================================
+
+window.adminUnmuteUser = async function(userId) {
+    if (!isAdminUser) return;
+    
+    try {
+        // Obter dados do usuário primeiro
+        const snapshot = await database.ref('users/' + userId).once('value');
+        const user = snapshot.val();
+        
+        if (!user) {
+            showNotification("Usuário não encontrado", "error");
+            return;
+        }
+        
+        if (!user.isMuted) {
+            showNotification("Este usuário não está mutado", "info");
+            return;
+        }
+        
+        if (!confirm(`Desmutar o usuário ${user.username || user.email.split('@')[0]}?`)) return;
+        
+        // Remover mute
+        await database.ref('users/' + userId).update({
+            isMuted: false,
+            mutedAt: null,
+            mutedBy: null,
+            muteReason: null,
+            muteUntil: null
+        });
+        
+        showNotification('Usuário desmutado com sucesso!', "success");
+        
+        // Enviar mensagem no chat
+        await database.ref('chat').push({
+            text: `🔊 O usuário ${user.username || user.email.split('@')[0]} foi desmutado.`,
+            timestamp: Date.now(),
+            userId: 'system',
+            userName: 'Sistema',
+            isAdmin: true
+        });
+        
+        // Log de segurança
+        await logSecurityEvent(
+            "USER_UNMUTE",
+            `Admin ${currentUser.email} removeu mute do usuário ${user.email}`,
+            userId,
+            user.lastIP
+        );
+        
+        // Recarregar lista
+        if (adminMode) {
+            loadUsersList();
+        }
+        
+    } catch (error) {
+        console.error("❌ Erro ao desmutar usuário:", error);
+        showNotification('Erro ao desmutar usuário', "error");
     }
 };
 
